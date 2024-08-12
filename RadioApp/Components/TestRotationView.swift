@@ -8,10 +8,9 @@
 import SwiftUI
 
 struct TestRotationView: View {
-    var appManager: ViewModel
     var body: some View {
         VStack{
-            VolumeView(appManager: appManager, rotation: true)
+            VolumeView(rotation: true)
                 .frame(height: 200)
             //.preferredColorScheme(.dark)
             //так как у нас компонент идет через rotationEffect
@@ -30,10 +29,10 @@ struct TestRotationView: View {
 }
 
 //MARK: - PREVIEW
-//struct TestRotationView_Previews: PreviewProvider {
-//    static let previewAppManager = ViewModel()
-//    static var previews: some View {
-//        TestRotationView()
-//            .environmentObject(previewAppManager)
-//    }
-//}
+struct TestRotationView_Previews: PreviewProvider {
+    static let previewAppManager = HomeViewModel()
+    static var previews: some View {
+        TestRotationView()
+            .environmentObject(previewAppManager)
+    }
+}

@@ -7,54 +7,61 @@
 
 import SwiftUI
 
+// MARK: - SignInView
 struct SignInView: View {
     // MARK: - Properties
-    @ObservedObject var appManager: ViewModel
-    @State private var isAuthenticated = false
-    @State private var showAlert = false
+    @StateObject var viewModel: AuthViewModel
     @State private var alertMessage = ""
+    
+    // MARK: - Initializer
+    init(
+        authService: AuthService = .shared
+    ) {
+        self._viewModel = StateObject(
+            wrappedValue: AuthViewModel(
+                authService: authService
+            )
+        )
+    }
     
     // MARK: - Body
     var body: some View {
-        NavigationView {
-            ZStack {
-                // Backgrounds
-                //                AnimatedBackgroundView()
-                //                AuthBackgroundView()
+        ZStack {
+            // Backgrounds
+            AnimatedBackgroundView()
+            AuthBackgroundView()
+            
+            VStack(alignment: .leading) {
+                Spacer()
                 
-                VStack(alignment: .leading) {
-                    Spacer()
-                    
-                 //   appLogo
-                    
-                   // titleText
-                    
-                  //  subtitleText
-                    
-                   inputFields
-                    
-                   // socialMediaButton
-                    
-                    signInButton
-                    
-                  //  signUpButton
-                    
-                    Spacer()
-                }
-                .padding()
-                .alert(isPresented: $showAlert) {
-                    Alert(
-                        title: Text("Error"),
-                        message: Text(alertMessage),
-                        dismissButton: .default(Text("OK"))
-                    )
-                }
+                appLogo
+                
+                titleText
+                
+                subtitleText
+                
+                inputFields
+                
+                socialMediaButton
+                
+                signInButton
+                
+                signUpButton
+                
+                Spacer()
+            }
+            .padding()
+            .alert(isPresented: isPresentedAlert()) {
+                Alert(
+                    title: Text("Error"),
+                    message: Text(viewModel.error?.localizedDescription ?? ""),
+                    dismissButton: .default(Text("OK"),
+                    action: viewModel.cancelErrorAlert)
+                )
             }
         }
-        .navigationViewStyle(.stack)
-//        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
     }
+    
     // MARK: - Subviews
     private var appLogo: some View {
         Image("Group 3")
@@ -76,10 +83,10 @@ struct SignInView: View {
     
     private var inputFields: some View {
         VStack {
-            TextField(Resources.Text.SignIn.email, text: $appManager.email)
+            TextField(Resources.Text.SignIn.email, text: $viewModel.email)
                 .font(.title)
             
-            SecureField(Resources.Text.SignIn.password, text: $appManager.password)
+            SecureField(Resources.Text.SignIn.password, text: $viewModel.password)
                 .font(.title)
         }
     }
@@ -96,36 +103,16 @@ struct SignInView: View {
     }
     
     private var signInButton: some View {
-        //        CustomButton(action: {
-        //            Task {
-        //                await appManager.signIn()
-        //            }
-        //            isAuthenticated = true
-        //        },
-        //                     title: Resources.Text.SignIn.title,
-        //                     buttonType: .onboarding
-        //        )
-        //        .background(
-        //            NavigationLink(destination: ContentView(appManager: appManager), isActive: $isAuthenticated) {
-        //                EmptyView()
-        //            }
-        //        )
-
-            
-            Button(Resources.Text.SignIn.title){
+        NavigationLink(destination: ContentView(), isActive: $viewModel.isAuthenticated) {
+            CustomButton(action: {
                 Task {
-                        do {
-                            try await appManager.test()
-                        } catch {
-                            // Обработка ошибки
-                            print("Ошибка при выполнении test(): (error)")
-                        }
-                    }
-            }
-
-        
-        
-        
+                    await signIn()
+                }
+            },
+                         title: Resources.Text.SignIn.title,
+                         buttonType: .onboarding
+            )
+        }
     }
     
     private var signUpButton: some View {
@@ -136,25 +123,19 @@ struct SignInView: View {
     }
     
     // MARK: - Functions
-    //    private func signIn() async {
-    //        await appManager.signIn()
-    //        if let error = await appManager.error {
-    //            alertMessage = error.localizedDescription
-    //            showAlert = true
-    //
-    //        } else {
-    //            isAuthenticated = true
-    //        }
-    //    }
+    private func signIn() async {
+        await viewModel.signIn()
+    }
+    
+    private func isPresentedAlert() -> Binding<Bool> {
+        Binding(get: { viewModel.error != nil },
+                set: { isPresenting in
+            if isPresenting { return }
+        })
+    }
 }
 
-
-// MARK: - Previews
-struct SignInView_Previews: PreviewProvider {
-    static let previewAppManager = ViewModel()
-    
-    static var previews: some View {
-        SignInView(appManager: previewAppManager)
-        
-    }
+// MARK: - Preview
+#Preview {
+    SignInView()
 }

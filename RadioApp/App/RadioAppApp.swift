@@ -9,22 +9,31 @@ import SwiftUI
 import AVFAudio
 import FirebaseCore
 import FirebaseAuth
-import CoreData
-
 
 @main
 struct RadioAppApp: App {
     //MARK: -
-    @StateObject var appManager = ViewModel()
+    @AppStorage("isOnboarding") var isOnboarding = false
     // register app delegate for Firebase setup
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    //MARK: -
     
+    //MARK: - Body
     var body: some Scene {
         WindowGroup {
-            TransitView(appManager: appManager)
-                .preferredColorScheme(.dark)
-                .environment(\.managedObjectContext, appManager.container.viewContext)
+            NavigationView {
+                if !isOnboarding {
+                    WelcomeView()
+                        .preferredColorScheme(.dark)
+                } else if AuthService.shared.isAuthenticated() {
+                    ContentView()
+//                        .navigationBarHidden(true) 
+                        .preferredColorScheme(.dark)
+                } else {
+                    SignInView()
+                        .navigationBarHidden(true)
+                        .preferredColorScheme(.dark)
+                }
+            }
         }
     }
 }

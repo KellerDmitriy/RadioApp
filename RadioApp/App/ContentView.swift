@@ -8,34 +8,71 @@
 import SwiftUI
 
 struct ContentView: View {
-    @ObservedObject var appManager: ViewModel
-    @State var selectedTab: Tab = .popular
-    @State var showTabBar: Bool = true
-    @State var tapBarVisible = true
+    
+    @StateObject var appManager: HomeViewModel
+    @State private var selectedTab: Tab = .popular
+    
+    @State private var isProfileViewActive = false
+    
+    init(
+        authService: AuthService = .shared,
+        networkService: NetworkService = .shared,
+        amplitudeService: AmplitudeService = .shared,
+        coreDataService: CoreDataService = .shared
+    ) {
+        self._appManager = StateObject(
+            wrappedValue: HomeViewModel(
+                authService: authService,
+                networkService: networkService,
+                amplitudeService: amplitudeService,
+                coreDataService: coreDataService
+            )
+        )
+    }
+    
     var body: some View {
-        NavigationView {
-            VStack {
-                Spacer()
-                switch selectedTab {
-                case .popular:
-                    PopularView(appManager: appManager)
-                case .favorites:
-                    FavoritesView(appManager: appManager)
-                        
-                case .allStations:
-                    AllStationsView(appManager: appManager)
-                }
-                CustomTabBarView(appManager: appManager, selectedTab: $selectedTab)
-                Spacer()
+        VStack {
+            switch selectedTab {
+            case .popular:
+                PopularView()
+                    .environmentObject(appManager)
+                
+            case .favorites:
+                FavoritesView()
+                    .environmentObject(appManager)
+                
+            case .allStations:
+                AllStationsView()
+                    .environmentObject(appManager)
             }
-            //.navigationViewStyle(.stack)
-            .ignoresSafeArea()
-            .navigationBarBackButtonHidden(true)
-            .dynamicTypeSize(.xSmall ... .xLarge)
+            
+            CustomTabBarView(selectedTab: $selectedTab)
+                .environmentObject(appManager)
+                .ignoresSafeArea()
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        ToolbarName()
+                    }
+                    ToolbarItem(placement: .topBarTrailing) {
+                        ToolbarProfile(toolbarRoute: {
+                            withAnimation(.easeInOut) {
+                                isProfileViewActive.toggle()
+                            }
+                        })
+                    }
+                }
+                .environmentObject(appManager)
         }
+        .background(
+            NavigationLink(destination: ProfileView(),
+                           isActive: $isProfileViewActive,
+                           label: { EmptyView() })
+        )
+        .navigationBarBackButtonHidden(true)
     }
 }
 
+
 #Preview {
-    ContentView(appManager: ViewModel())
+    ContentView()
 }

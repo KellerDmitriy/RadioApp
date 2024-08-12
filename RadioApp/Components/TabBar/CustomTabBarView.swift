@@ -8,12 +8,10 @@
 import SwiftUI
 
 struct CustomTabBarView: View {
-    //@EnvironmentObject var appManager: ViewModel
-    var appManager: ViewModel
+    @EnvironmentObject var appManager: HomeViewModel
     @Binding var selectedTab: Tab
 
     var body: some View {
-
             HStack {
                 Button {
                     selectedTab = .popular
@@ -74,9 +72,9 @@ struct CustomTabBarView: View {
 
             .overlay {
                 HStack(spacing: 30) {
-                    BackButtonView(appManager: appManager)
-                    PlayButtonView(appManager: appManager)
-                    ForwardButtonView(appManager: appManager)
+                    BackButtonView()
+                    PlayButtonView()
+                    ForwardButtonView()
                 }
                 .offset(CGSize(width: 4, height: -120))
             }
@@ -87,7 +85,7 @@ struct CustomTabBarView: View {
 }
 
 
-//#Preview {
-//    ContentView()
-//        .environmentObject(ViewModel())
-//}
+#Preview {
+    ContentView()
+        .environmentObject(HomeViewModel())
+}

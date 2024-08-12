@@ -7,39 +7,63 @@
 
 import SwiftUI
 
-struct SignUpView: View {    
-    //@EnvironmentObject var appManager: ViewModel
-    @ObservedObject var appManager: ViewModel
+// MARK: - SignUpView
+struct SignUpView: View {
+    // MARK: - Properties
+    @StateObject var viewModel: AuthViewModel
+    
+    // MARK: - Initializer
+    init(
+        authService: AuthService = .shared
+    ) {
+        self._viewModel = StateObject(
+            wrappedValue: AuthViewModel(
+                authService: authService
+            )
+        )
+    }
+    
+    // MARK: - Body
     var body: some View {
         ZStack {
+            // Background Views
             AnimatedBackgroundView()
             AuthBackgroundView()
             
+            // Content
             VStack(alignment: .leading) {
                 Spacer()
                 
-                Image("Group 3").resizable()
+                // App Logo
+                Image("Group 3")
+                    .resizable()
                     .frame(width: UIScreen.width * 1/4, height: UIScreen.width * 1/4)
+                
+                // Title Text
                 Text(Resources.Text.SignUp.title)
                     .font(.custom(.sfBold, size: UIScreen.height * 1/16))
                     .padding(.bottom, UIScreen.height * 1/32)
                 
+                // Subtitle Text
                 Text(Resources.Text.SignUp.toStartPlay)
                     .font(.custom(.sfRegular, size: UIScreen.height * 1/48))
                     .frame(maxWidth: UIScreen.width * 1/3)
                 
-                TextField(Resources.Text.SignUp.name, text: $appManager.email)
+                // Input Fields
+                TextField(Resources.Text.SignUp.name, text: $viewModel.email) // Note: Should probably be $viewModel.username
                     .font(.title)
                 
-                TextField(Resources.Text.SignUp.email, text: $appManager.email)
+                TextField(Resources.Text.SignUp.email, text: $viewModel.email)
                     .font(.title)
                 
-                SecureField(Resources.Text.SignUp.password, text: $appManager.password)
+                SecureField(Resources.Text.SignUp.password, text: $viewModel.password)
                     .font(.title)
                                 
-                CustomButton(action: appManager.registerUser, title: Resources.Text.SignUp.title, buttonType: .onboarding)
+                // Register Button
+                CustomButton(action: viewModel.registerUser, title: Resources.Text.SignUp.title, buttonType: .onboarding)
                 // TODO: изменить тип кнопки
                 
+                // Sign In Button
                 Button(action: {}) {
                     Text(Resources.Text.SignUp.orSignIn)
                         .foregroundStyle(.white)
@@ -52,12 +76,7 @@ struct SignUpView: View {
     }
 }
 
-//struct SignUpView_Previews: PreviewProvider {
-//    static let previewAppManager = ViewModel()
-//    
-//    static var previews: some View {
-//        SignUpView()
-//            .environmentObject(previewAppManager)
-//    }
-//}
-
+// MARK: - Preview
+#Preview {
+    SignUpView()
+}
