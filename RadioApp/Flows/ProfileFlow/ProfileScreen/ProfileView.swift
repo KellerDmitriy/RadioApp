@@ -11,11 +11,8 @@ import SwiftUI
 struct ProfileView: View {
     // MARK: - Properties
     @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
- 
     
     @StateObject var viewModel: ProfileViewModel
-    
-    @State private var imageURL: URL? = nil
     
     init(
         authService: AuthService = .shared,
@@ -86,10 +83,12 @@ struct ProfileView: View {
             
             .alert(isPresented: isPresentedAlert(),
                    error: viewModel.error) {
-                Button("Ok", action:
-                        viewModel.tapErrorOk)
-                Button("Cancel", action:
-                        viewModel.cancelErrorAlert)
+                Button("Ok", role: .destructive) {
+                    viewModel.tapErrorOk()
+                }
+                Button("Cancel", role: .cancel) {
+                    viewModel.cancelErrorAlert()
+                }
             }
         }
     }

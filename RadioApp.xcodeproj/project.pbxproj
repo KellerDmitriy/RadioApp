@@ -30,7 +30,7 @@
 		2663C7A52C56A1F2002EFD0C /* VolumeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2663C7A42C56A1F2002EFD0C /* VolumeView.swift */; };
 		2663C7A72C56A212002EFD0C /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2663C7A62C56A212002EFD0C /* SearchBarView.swift */; };
 		2663C7A92C56A249002EFD0C /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2663C7A82C56A249002EFD0C /* HomeViewModel.swift */; };
-		2663C7AB2C56A257002EFD0C /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2663C7AA2C56A257002EFD0C /* Model.swift */; };
+		2663C7AB2C56A257002EFD0C /* StationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2663C7AA2C56A257002EFD0C /* StationModel.swift */; };
 		2663C7AE2C56A2B9002EFD0C /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 2663C7AD2C56A2B9002EFD0C /* Kingfisher */; };
 		26742C1B2C668A5000668D86 /* TestEq.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26742C1A2C668A5000668D86 /* TestEq.swift */; };
 		268696642C57DC330075E9DC /* StationPopularView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268696632C57DC330075E9DC /* StationPopularView.swift */; };
@@ -72,6 +72,8 @@
 		E18529E12C5D30F800BBE649 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E18529E02C5D30F800BBE649 /* ImagePicker.swift */; };
 		E1B9E4CC2C69231B00793E88 /* CoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B9E4CB2C69231B00793E88 /* CoreDataService.swift */; };
 		E1C8A2B62C69EB9900DF542B /* FavoritesComponentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C8A2B52C69EB9900DF542B /* FavoritesComponentView.swift */; };
+		E1C8A2BD2C6A068700DF542B /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C8A2BC2C6A068700DF542B /* UserService.swift */; };
+		E1C8A2BF2C6A0F7800DF542B /* AuthDataResultModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C8A2BE2C6A0F7800DF542B /* AuthDataResultModel.swift */; };
 		E1E497DA2C56D14F0099440D /* Resources.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E497D92C56D14F0099440D /* Resources.swift */; };
 		E1E497E62C56D5380099440D /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E497E52C56D5380099440D /* NetworkService.swift */; };
 		E1E497EB2C56D8500099440D /* DS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E497EA2C56D8500099440D /* DS.swift */; };
@@ -119,7 +121,7 @@
 		2663C7A42C56A1F2002EFD0C /* VolumeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeView.swift; sourceTree = "<group>"; };
 		2663C7A62C56A212002EFD0C /* SearchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		2663C7A82C56A249002EFD0C /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
-		2663C7AA2C56A257002EFD0C /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		2663C7AA2C56A257002EFD0C /* StationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationModel.swift; sourceTree = "<group>"; };
 		26742C1A2C668A5000668D86 /* TestEq.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestEq.swift; sourceTree = "<group>"; };
 		268696632C57DC330075E9DC /* StationPopularView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationPopularView.swift; sourceTree = "<group>"; };
 		268696652C57E0320075E9DC /* VoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoteView.swift; sourceTree = "<group>"; };
@@ -157,6 +159,8 @@
 		E18529E02C5D30F800BBE649 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		E1B9E4CB2C69231B00793E88 /* CoreDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataService.swift; sourceTree = "<group>"; };
 		E1C8A2B52C69EB9900DF542B /* FavoritesComponentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoritesComponentView.swift; sourceTree = "<group>"; };
+		E1C8A2BC2C6A068700DF542B /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
+		E1C8A2BE2C6A0F7800DF542B /* AuthDataResultModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthDataResultModel.swift; sourceTree = "<group>"; };
 		E1E497D92C56D14F0099440D /* Resources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resources.swift; sourceTree = "<group>"; };
 		E1E497E52C56D5380099440D /* NetworkService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		E1E497EA2C56D8500099440D /* DS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DS.swift; sourceTree = "<group>"; };
@@ -324,7 +328,8 @@
 		2663C7912C569F89002EFD0C /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				2663C7AA2C56A257002EFD0C /* Model.swift */,
+				2663C7AA2C56A257002EFD0C /* StationModel.swift */,
+				E1C8A2BE2C6A0F7800DF542B /* AuthDataResultModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -493,6 +498,7 @@
 				E1E87BB42C649F450070D855 /* NotificationsService.swift */,
 				E1E87BBB2C65E7C10070D855 /* LocalizationService.swift */,
 				7A67B1532C65F718006EBE13 /* AmplitudeService.swift */,
+				E1C8A2BC2C6A068700DF542B /* UserService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -709,6 +715,7 @@
 				E1E87BC82C68929B0070D855 /* LikeStations.xcdatamodeld in Sources */,
 				E1E497E62C56D5380099440D /* NetworkService.swift in Sources */,
 				E1B9E4CC2C69231B00793E88 /* CoreDataService.swift in Sources */,
+				E1C8A2BD2C6A068700DF542B /* UserService.swift in Sources */,
 				2663C7A72C56A212002EFD0C /* SearchBarView.swift in Sources */,
 				7AAEB6F92C638482004D7424 /* ToolbarProfile.swift in Sources */,
 				2277BB4A2C5F2D0E00317DD2 /* ForgotPassOneView.swift in Sources */,
@@ -719,12 +726,13 @@
 				7A67B1542C65F718006EBE13 /* AmplitudeService.swift in Sources */,
 				26D180992C5AA0A300D4EF68 /* PopularView.swift in Sources */,
 				7A89B80F2C663A2100B6F76D /* StationDetailsView.swift in Sources */,
+				E1C8A2BF2C6A0F7800DF542B /* AuthDataResultModel.swift in Sources */,
 				2663C7A92C56A249002EFD0C /* HomeViewModel.swift in Sources */,
 				26A737972C5A49490002F1E9 /* PlayButtonView.swift in Sources */,
 				E1E87BD32C68BE850070D855 /* AuthViewModel.swift in Sources */,
 				E1E87BBC2C65E7C10070D855 /* LocalizationService.swift in Sources */,
 				E16EBD5B2C5CB42A0010BF71 /* RadioAppApp.swift in Sources */,
-				2663C7AB2C56A257002EFD0C /* Model.swift in Sources */,
+				2663C7AB2C56A257002EFD0C /* StationModel.swift in Sources */,
 				E1C8A2B62C69EB9900DF542B /* FavoritesComponentView.swift in Sources */,
 				E16EBD572C5CB3F10010BF71 /* Color + Ext.swift in Sources */,
 				7A7A4B382C5B64DE00CD8794 /* AllStationsView.swift in Sources */,

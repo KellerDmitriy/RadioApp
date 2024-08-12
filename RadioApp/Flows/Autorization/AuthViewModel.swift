@@ -28,7 +28,7 @@ final class AuthViewModel: ObservableObject {
     //    MARK: - AuthService Methods
     func signIn() async {
             do {
-                try await authService.signIn(with: email, password: password)
+                try await authService.signInUser(email: email, password: password)
                 isAuthenticated = authService.isAuthenticated()
                 print("isAuthenticated set to \(isAuthenticated)")
             } catch {
@@ -38,7 +38,7 @@ final class AuthViewModel: ObservableObject {
     
     func registerUser() {
         Task {
-            try await authService.registerUser(with: email, password: password, username: username)
+            try await authService.createUser(name: username, email: email, password: password)
             isUserRegistered = true
         }
     }

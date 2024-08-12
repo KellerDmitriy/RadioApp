@@ -12,7 +12,7 @@ struct StationPopularView: View {
     @EnvironmentObject var appManager: HomeViewModel
     @Binding var selectedStationID: String
     @State private var isActive = false
-    var station: Station
+    var station: StationModel
     //MARK: - BODY
     var body: some View {
             ZStack{

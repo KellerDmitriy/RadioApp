@@ -72,7 +72,7 @@ struct VoteView: View {
 struct VoteView_Previews: PreviewProvider {
     static let previewAppManager = HomeViewModel()
     static var previews: some View {
-        VoteView(isShow: .random(), idStation: Station.testStation().stationuuid)
+        VoteView(isShow: .random(), idStation: StationModel.testStation().stationuuid)
             .environmentObject(previewAppManager)
     }
 }

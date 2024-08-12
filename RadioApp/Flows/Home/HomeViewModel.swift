@@ -22,7 +22,7 @@ final class HomeViewModel: ObservableObject {
     var amplitude: CGFloat = 0.0
    
 
-    var stations = [Station]()
+    var stations = [StationModel]()
 
    
    var volume: CGFloat = CGFloat(AVAudioSession.sharedInstance().outputVolume)
@@ -59,7 +59,7 @@ final class HomeViewModel: ObservableObject {
     
     
     func fetchSearchStations() async throws {
-        var fetchSearchStations: [Station]
+        var fetchSearchStations: [StationModel]
         fetchSearchStations = try await networkService.searchByName(searchText: searchText)
         stations = fetchSearchStations
     }
@@ -147,13 +147,13 @@ final class HomeViewModel: ObservableObject {
 
 
     func fetchTopStations() async throws {
-        var fetchedStations: [Station]
+        var fetchedStations: [StationModel]
         fetchedStations = try await networkService.getTopStations(numberLimit: 20)
         stations = fetchedStations
     }
 
     func fetchAllStations() async throws {
-        var fetchedAllStations: [Station]
+        var fetchedAllStations: [StationModel]
         fetchedAllStations = try await networkService.getAllStations()
         stations = fetchedAllStations
     }
@@ -165,7 +165,7 @@ final class HomeViewModel: ObservableObject {
     
     //обновление (votes) текущей станции в случае успешного запроса
     func getOneStationByID(id: String) async throws {
-        var fetchedStation: [Station]
+        var fetchedStation: [StationModel]
         var indexStation: Int?
         fetchedStation = try await networkService.getStationById(id: id)
         for (index, station) in stations.enumerated() {
@@ -208,7 +208,7 @@ final class HomeViewModel: ObservableObject {
         stations.removeAll()
         if stationData.count > 0 {
             for station in stationData {
-                let likeStation = Station(stationuuid: station.stationuuid ?? "", name: station.name ?? "", url: station.url ?? "", favicon: station.favicon ?? "", tags: station.tags ?? "", countrycode: station.countrycode ?? "", votes: station.votes)
+                let likeStation = StationModel(stationuuid: station.stationuuid ?? "", name: station.name ?? "", url: station.url ?? "", favicon: station.favicon ?? "", tags: station.tags ?? "", countrycode: station.countrycode ?? "", votes: station.votes)
                 stations.append(likeStation)
             }
             return true
@@ -300,7 +300,7 @@ final class HomeViewModel: ObservableObject {
     
     
     //запрос данных станции при нажатии на сердечно like
-    func getStationForID(id: String) -> Station? {
+    func getStationForID(id: String) -> StationModel? {
         var indexStation: Int?
         for (index, station) in stations.enumerated() {
             if selectedStation == station.stationuuid{
@@ -384,31 +384,14 @@ final class HomeViewModel: ObservableObject {
 
     // MARK: - Auth methods
     func getUserInfo() {
-        let user = authService.getCurrentUserModel()
-        username = user?.userName ?? ""
-        userProfileImage = UIImage(named: user?.profileImage ?? Resources.Image.eliseev)
+//        let user = authService.getAuthenticatedUser()
+//        username = user?.userName ?? ""
+//#warning("исправить")
+//        userProfileImage = UIImage(named:
+//                                    user?.profileImageURL
+//                                   ?? "https://img.gazeta.ru/files3/198/17072198/lii-pic_32ratio_900x600-900x600-45168.jpg")
     }
     
-    func signIn() async {
-            do {
-                try await AuthService.shared.signIn(with: email, password: password)
-            } catch {
-//                self.error = error
-            }
-        }
-
-    func registerUser() {
-        Task {
-            try await AuthService.shared.registerUser(with: email, password: password, username: username)
-            isUserRegistered = true
-        }
-    }
-
-    func signOut() {
-        Task {
-            try AuthService.shared.signUserOut()
-        }
-    }
     
     //get Tag in String with ","
     func getString(tags: String)->String? {

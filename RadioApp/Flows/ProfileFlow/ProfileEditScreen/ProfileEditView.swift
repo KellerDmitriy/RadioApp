@@ -9,14 +9,31 @@ import SwiftUI
 
 struct ProfileEditView: View {
     // MARK: - Properties
-    @State var userName: String
-    @State var userEmail: String
-    @State var profileImage: UIImage?
+    @StateObject var viewModel: ProfileEditViewModel
     
     @State private var showChangedView = false
     @State private var blurBackground = false
     @State private var isImagePickerPresented = false
     @State private var imagePickerSource: UIImagePickerController.SourceType = .camera
+    
+    init(
+        userEmail: String,
+        userName: String,
+        profileImage: UIImage?,
+
+        authService: AuthService = .shared,
+        firebaseService: FirebaseStorageService = .shared
+    ) {
+        self._viewModel = StateObject(
+            wrappedValue: ProfileEditViewModel(
+                userEmail: userEmail,
+                userName: userName,
+                profileImage: profileImage,
+                authService: authService,
+                firebaseStorage: firebaseService
+            )
+        )
+    }
     
     // MARK: - Drawing Constants
     private struct Drawing {
@@ -45,22 +62,22 @@ struct ProfileEditView: View {
                     VStack(spacing: Drawing.spacing) {
                         // MARK: - Profile Image Section
                         ProfileHeaderView(
-                            userName: $userName,
-                            userEmail: $userEmail,
-                            profileImage: $profileImage,
+                            userName: $viewModel.userName,
+                            userEmail: $viewModel.userEmail,
+                            profileImage: $viewModel.profileImage,
                             showChangedPhotoView: $showChangedView
                         )
                         
                         // MARK: - Editable Fields Section
                         CustomTextField(
-                            value: $userName,
+                            value: $viewModel.userName,
                             placeHolder: Resources.Text.enterName,
                             titleBorder: Resources.Text.fullName
                         )
                         .padding(.top, Drawing.fieldTopPadding)
                         
                         CustomTextField(
-                            value: $userEmail,
+                            value: $viewModel.userEmail,
                             placeHolder: Resources.Text.enterEmail,
                             titleBorder: Resources.Text.email
                         )
@@ -111,7 +128,7 @@ struct ProfileEditView: View {
                         hideChangedPhotoView()
                     },
                     onDeletePhoto: {
-                        profileImage = UIImage(systemName: Resources.Image.fileIcon)
+                        deletePhoto()
                         hideChangedPhotoView()
                     }
                 )
@@ -125,7 +142,7 @@ struct ProfileEditView: View {
         }
         .sheet(isPresented: $isImagePickerPresented) {
             ImagePicker(sourceType: imagePickerSource) { image in
-                profileImage = image
+                viewModel.profileImage = image
             }
             .edgesIgnoringSafeArea(.all)
         }
@@ -147,11 +164,11 @@ struct ProfileEditView: View {
         isImagePickerPresented = true
     }
     
+    func deletePhoto() {
+        viewModel.deleteProfileImage()
+    }
     func saveImageURL() {
-//        viewModel.saveProfileImage(
-//            profileImage
-//            ?? UIImage(systemName: Resources.Image.fileIcon)!
-//        )
+//        viewModel.saveProfileImage(<#T##image: UIImage##UIImage#>)
     }
 }
 
@@ -159,8 +176,7 @@ struct ProfileEditView: View {
 struct ProfileEditView_Previews: PreviewProvider {
     static var previews: some View {
         ProfileEditView(
-            userName: "Stephen",
-            userEmail: "stephen@ds",
+            userEmail: "stephen@ds", userName: "Stephen",
             profileImage: (UIImage(named: "stephen")!)
         )
     }

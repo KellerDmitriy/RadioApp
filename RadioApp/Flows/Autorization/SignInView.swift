@@ -11,7 +11,7 @@ import SwiftUI
 struct SignInView: View {
     // MARK: - Properties
     @StateObject var viewModel: AuthViewModel
-    @State private var alertMessage = ""
+    @State private var isSignUpActive = false
     
     // MARK: - Initializer
     init(
@@ -59,6 +59,12 @@ struct SignInView: View {
                     action: viewModel.cancelErrorAlert)
                 )
             }
+            NavigationLink(
+                          destination: SignUpView(),
+                          isActive: $isSignUpActive
+                      ) {
+                          EmptyView()
+                      }
         }
     }
     
@@ -116,7 +122,7 @@ struct SignInView: View {
     }
     
     private var signUpButton: some View {
-        Button(action: {}) {
+        Button(action: { isSignUpActive = true } ) {
             Text(Resources.Text.SignIn.orSignUp)
                 .foregroundStyle(.white)
         }

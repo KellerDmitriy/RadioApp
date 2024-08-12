@@ -58,8 +58,8 @@ struct ProfileInfoView: View {
             Spacer()
             
             NavigationLink(destination: ProfileEditView(
+                userEmail: userEmail, 
                 userName: userName,
-                userEmail: userEmail,
                 profileImage: profileImage
             )
             )

@@ -12,100 +12,95 @@ import Firebase
 
 // This service class will consist of login, sign up and logout auth
 
+enum AuthProviderOption: String {
+    case email = "password"
+    case google = "google.com"
+}
+
 final class AuthService {
     // MARK: - Properties
     static let shared = AuthService()
     
-    @Published var userSession: FirebaseAuth.User?
-    
     // MARK: - Initializer
-    private init() {
-        self.userSession = Auth.auth().currentUser
-        print(userSession ?? "no data for user Auth")
-    }
+    private init() {}
     
     // MARK: - Methods
     func isAuthenticated() -> Bool {
         return Auth.auth().currentUser?.uid != nil
     }
     
-    /// Registers a new user with the given email, password, and username
-    /// - Parameters:
-    ///   - email: The email of the new user
-    ///   - password: The password of the new user
-    ///   - username: The username of the new user
-    func registerUser(with email: String, password: String, username: String) async throws {
-        do {
-            let result = try await Auth.auth().createUser(withEmail: email, password: password)
-            print("\(result.user.uid)")
-            self.userSession = result.user
-        } catch {
-            print("DEBUG: Could not register the user")
-        }
-    }
-    
-    /// Signs in a user with the given email and password
-    /// - Parameters:
-    ///   - email: The email of the user
-    ///   - password: The password of the user
-    func signIn(with email: String, password: String) async throws {
-        do {
-            let result = try await Auth.auth().signIn(withEmail: email, password: password)
-            userSession = result.user
-            print("DEBUG: Successfully signed user in: \(result.user.uid)")
-        } catch {
-            throw error
-        }
-    }
-    
-    /// Gets the current user model
-    /// - Returns: A UserModel instance representing the current user, or nil if no user is signed in
-    func getCurrentUserModel() -> UserModel? {
+    func getAuthenticatedUser() throws -> AuthDataResultModel {
         guard let user = Auth.auth().currentUser else {
-            return nil
+            throw URLError(.badServerResponse)
         }
         
-        return UserModel(
-            id: user.uid,
-            userName: user.displayName ?? "",
-            email: user.email ?? "",
-            profileImage: user.photoURL?.absoluteString
-        )
+        return AuthDataResultModel(user: user)
+    }
+        
+    func getProviders() throws -> [AuthProviderOption] {
+        guard let providerData = Auth.auth().currentUser?.providerData else {
+            throw URLError(.badServerResponse)
+        }
+        
+        var providers: [AuthProviderOption] = []
+        for provider in providerData {
+            if let option = AuthProviderOption(rawValue: provider.providerID) {
+                providers.append(option)
+            } else {
+                assertionFailure("Provider option not found: \(provider.providerID)")
+            }
+        }
+        print(providers)
+        return providers
+    }
+        
+    func signOut() throws {
+        try Auth.auth().signOut()
     }
     
-    /// Updates the current user's profile with the given display name and photo URL
-    /// - Parameters:
-    ///   - displayName: The new display name for the user
-    ///   - photoURL: The new photo URL for the user
-    func updateUserProfile(displayName: String?, photoURL: URL?) async throws {
+    func delete() async throws {
         guard let user = Auth.auth().currentUser else {
-            throw NSError(domain: "No user is signed in", code: -1, userInfo: nil)
+            throw URLError(.badURL)
         }
         
-        let changeRequest = user.createProfileChangeRequest()
-        changeRequest.displayName = displayName
-        changeRequest.photoURL = photoURL
-        
-        try await changeRequest.commitChanges()
+        try await user.delete()
+    }
+}
+
+// MARK: SIGN IN EMAIL
+
+extension AuthService {
+    
+    @discardableResult
+    func createUser(name: String, email: String, password: String) async throws -> AuthDataResultModel {
+        let authDataResult = try await Auth.auth().createUser(withEmail: email, password: password)
+        return AuthDataResultModel(user: authDataResult.user)
     }
     
-    /// Updates the email of the current user
-    /// - Parameter email: The new email for the user
-    func updateEmail(_ email: String) async throws {
+    @discardableResult
+    func signInUser(email: String, password: String) async throws -> AuthDataResultModel {
+        let authDataResult = try await Auth.auth().signIn(withEmail: email, password: password)
+        return AuthDataResultModel(user: authDataResult.user)
+    }
+    
+    func resetPassword(email: String) async throws {
+        try await Auth.auth().sendPasswordReset(withEmail: email)
+    }
+    
+    func updatePassword(password: String) async throws {
         guard let user = Auth.auth().currentUser else {
-            throw NSError(domain: "No user is signed in", code: -1, userInfo: nil)
+            throw URLError(.badServerResponse)
         }
         
-        try await user.sendEmailVerification(beforeUpdatingEmail: email)
+        try await user.updatePassword(to: password)
     }
     
-    /// Signs out the current user
-    func signUserOut() throws {
-        do {
-            try Auth.auth().signOut()
-            self.userSession = nil
-        } catch {
-            throw error
+    func updateEmail(email: String) async throws {
+        guard let user = Auth.auth().currentUser else {
+            throw URLError(.badServerResponse)
         }
+        
+        try await user.updateEmail(to: email)
     }
+
 }

@@ -64,28 +64,37 @@ enum ProfileFlowError: LocalizedError {
 
 final class ProfileViewModel: ObservableObject {
     // MARK: - Stored Properties
-    @Published var currentUser: UserModel?
+    @Published var authProviders: [AuthProviderOption] = []
+    @Published var authUser: AuthDataResultModel? = nil
+    
+    @Published private(set) var currentUser: DBUser? = nil
+    
     @Published var error: ProfileFlowError?
     @AppStorage("isOnboarding") var isOnboarding = true
     
-    var userName: String { currentUser?.userName ?? "" }
+    var userName: String { currentUser?.name ?? "" }
     var userEmail: String { currentUser?.email ?? "" }
-    //    var profileImage: String { currentUser?.profileImage }
+    var profileImageURL: String {
+        currentUser?.photoURL
+        ?? "https://img.gazeta.ru/files3/198/17072198/lii-pic_32ratio_900x600-900x600-45168.jpg"
+    }
     
+    private let userService: UserService
     private let authService: AuthService
     private let firebaseStorage: FirebaseStorageService
     private let notificationsService: NotificationsService
     
     // MARK: - Initializer
     init(
+        userService: UserService = .shared,
         authService: AuthService = .shared,
         firebaseStorage: FirebaseStorageService = .shared,
         notificationsService: NotificationsService = .shared) {
+            self.userService = userService
             self.authService = authService
             self.firebaseStorage = firebaseStorage
             self.notificationsService = notificationsService
-            
-            fetchUser()
+            loadCurrentUser()
         }
     
     // MARK: - Methods
@@ -99,30 +108,34 @@ final class ProfileViewModel: ObservableObject {
         default: return
         }
     }
-        
+    
     // MARK: - Storage Methods
-    func getProfileImage(path: String) {
-        guard currentUser != nil else { return }
-        Task {
-            try await firebaseStorage.getUrlForImage(path: path)
+    
+    
+    //    MARK: - AuthService Methods
+    func loadAuthProviders() {
+        if let providers = try? authService.getProviders() {
+            authProviders = providers
         }
     }
     
-    //    MARK: - AuthService Methods
-    func fetchUser() {
+    func loadAuthUser() {
+        self.authUser = try? authService.getAuthenticatedUser()
+    }
+    
+    func loadCurrentUser() {
         Task {
-            currentUser = authService.getCurrentUserModel()
+            let authDataResult = try authService.getAuthenticatedUser()
+            self.currentUser = try await userService.getUser(userId: authDataResult.uid)
         }
     }
     
     func logOut() {
         do {
-            try authService.signUserOut()
+            try authService.signOut()
             isOnboarding.toggle()
         } catch {
-            Task {
-                self.error = ProfileFlowError.map(error)
-            }
+            self.error = ProfileFlowError.map(error)
         }
     }
     

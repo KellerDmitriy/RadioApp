@@ -8,15 +8,33 @@
 import SwiftUI
 
 final class ProfileEditViewModel: ObservableObject {
+
     
-    @Published var currentUser: UserModel?
+    @Published private(set) var currentUser: DBUser? = nil
     @Published var error: ProfileFlowError?
     
+    var userEmail: String
+    var userName: String
+    var profileImage: UIImage?
+    
+    private let userService: UserService
     private let authService: AuthService
     private let firebaseStorage: FirebaseStorageService
-
+    
     // MARK: - Initializer
-    init(authService: AuthService, firebaseStorage: FirebaseStorageService) {
+    init(
+        userEmail: String,
+        userName: String,
+        profileImage: UIImage?,
+        userService: UserService = .shared,
+        authService: AuthService = .shared,
+        firebaseStorage: FirebaseStorageService = .shared)
+    {
+        self.userEmail = userEmail
+        self.userName = userName
+        self.profileImage = profileImage
+        
+        self.userService = userService
         self.authService = authService
         self.firebaseStorage = firebaseStorage
     }
@@ -25,29 +43,32 @@ final class ProfileEditViewModel: ObservableObject {
         guard let currentUser else { return }
         
         Task {
-            let (_, _) = try await firebaseStorage.saveImage(image: image, userID: currentUser.id) //let (path, name)
+            let (path, name) = try await firebaseStorage.saveImage(
+                image: image,
+                userID: currentUser.userID
+            )
+            
+            print("SUCCESS!")
+            print(path)
+            let url = try await firebaseStorage.getUrlForImage(path: path)
+            try await userService.updateUserProfileImagePath(
+                userId: currentUser.userID,
+                path: path,
+                url: url.absoluteString
+            )
         }
     }
     
-    func updateUserProfile(_ name: String?, _ email: String?, _ avatar: UIImage?) {
+    func deleteProfileImage() {
+        guard let currentUser, let path = currentUser.profileImagePath else { return }
+        
         Task {
-            do {
-                let photoURL: URL? = nil //var
-                
-//                if let avatar = avatar {
-//                    photoURL = try await authService.uploadAvatar(image: avatar, userId: currentUser?.id ?? "")
-//                }
-                
-                if let email = email {
-                    try await authService.updateEmail(email)
-                }
-                
-                try await authService.updateUserProfile(displayName: name, photoURL: photoURL)
-                
-
-            } catch {
-                    self.error = ProfileFlowError.map(error)
-            }
+            try await firebaseStorage.deleteImage(path: path)
+            try await userService.updateUserProfileImagePath(
+                userId: currentUser.userID,
+                path: nil,
+                url: nil
+            )
         }
     }
 }

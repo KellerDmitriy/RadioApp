@@ -17,7 +17,7 @@ struct FavoritesComponentView: View {
     @Binding var selectedStationID: String
     @State private var isActive = false
     //@State private var isActive = false
-    var station: Station
+    var station: StationModel
     //MARK: - BODY
     var body: some View {
         ZStack {

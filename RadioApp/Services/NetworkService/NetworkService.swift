@@ -14,8 +14,8 @@ final class NetworkService {
     
     // MARK: - get top stations
     
-    func getTopStations(numberLimit: Int) async throws -> [Station] {
-        var stations = [Station]()
+    func getTopStations(numberLimit: Int) async throws -> [StationModel] {
+        var stations = [StationModel]()
         
         guard let url = URLManager.shared.createURLTop(numberLimit: numberLimit) else {
             throw NetworkError.badURL
@@ -27,7 +27,7 @@ final class NetworkService {
             throw NetworkError.badResponse
         }
         
-        guard let decodedStations = try? JSONDecoder().decode([Station].self, from: data) else {
+        guard let decodedStations = try? JSONDecoder().decode([StationModel].self, from: data) else {
             throw NetworkError.decodingError
         }
         
@@ -37,8 +37,8 @@ final class NetworkService {
     
     // MARK: - get top stations
     
-    func getAllStations() async throws -> [Station] {
-        var allStations = [Station]()
+    func getAllStations() async throws -> [StationModel] {
+        var allStations = [StationModel]()
         
         guard let url = URLManager.shared.createURLAll() else {
             throw NetworkError.badURL
@@ -50,7 +50,7 @@ final class NetworkService {
             throw NetworkError.badResponse
         }
         
-        guard let decodedStations = try? JSONDecoder().decode([Station].self, from: data) else {
+        guard let decodedStations = try? JSONDecoder().decode([StationModel].self, from: data) else {
             throw NetworkError.decodingError
         }
         
@@ -60,8 +60,8 @@ final class NetworkService {
     
     // MARK: - get station by UUID
     
-    func getStationById(id: String) async throws -> [Station] {
-        var stationById = [Station]()
+    func getStationById(id: String) async throws -> [StationModel] {
+        var stationById = [StationModel]()
         
         guard let url = URLManager.shared.createURLUUID(id: id) else {
             throw NetworkError.badURL
@@ -73,7 +73,7 @@ final class NetworkService {
             throw NetworkError.badResponse
         }
         
-        guard let decodedStation = try? JSONDecoder().decode([Station].self, from: data) else {
+        guard let decodedStation = try? JSONDecoder().decode([StationModel].self, from: data) else {
             throw NetworkError.decodingError
         }
         
@@ -99,8 +99,8 @@ final class NetworkService {
     
     // MARK: - search Station
     
-    func searchByName(searchText: String) async throws -> [Station] {
-        var searchByName = [Station]()
+    func searchByName(searchText: String) async throws -> [StationModel] {
+        var searchByName = [StationModel]()
         
         guard let url = URLManager.shared.createURLSearch(searchText: searchText) else {
             throw NetworkError.badURL
@@ -112,7 +112,7 @@ final class NetworkService {
             throw NetworkError.badResponse
         }
         
-        guard let decodedStation = try? JSONDecoder().decode([Station].self, from: data) else {
+        guard let decodedStation = try? JSONDecoder().decode([StationModel].self, from: data) else {
             throw NetworkError.decodingError
         }
         

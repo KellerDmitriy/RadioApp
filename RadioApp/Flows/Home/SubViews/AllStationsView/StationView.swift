@@ -11,7 +11,7 @@ struct StationView: View {
 
     @EnvironmentObject var appManager: HomeViewModel
     @Binding var selectedStationID: String
-    var station: Station
+    var station: StationModel
     @State private var isActive = false
     var body: some View {
 

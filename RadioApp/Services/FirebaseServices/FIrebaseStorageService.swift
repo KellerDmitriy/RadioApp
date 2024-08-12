@@ -34,6 +34,10 @@ final class FirebaseStorageService {
         storage.child("users").child(userID)
     }
     
+    func getPathForImage(path: String) -> StorageReference {
+        Storage.storage().reference(withPath: path)
+    }
+    
     // MARK: - Public Methods
     
     /// Retrieves the download URL for an image stored in Firebase Storage
@@ -95,5 +99,9 @@ final class FirebaseStorageService {
         }
         
         return try await saveImage(data: data, userID: userID)
+    }
+    
+    func deleteImage(path: String) async throws {
+        try await getPathForImage(path: path).delete()
     }
 }
