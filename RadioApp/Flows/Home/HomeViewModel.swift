@@ -386,7 +386,7 @@ final class HomeViewModel: ObservableObject {
     func getUserInfo() {
 //        let user = authService.getAuthenticatedUser()
 //        username = user?.userName ?? ""
-//#warning("исправить")
+#warning("исправить")
 //        userProfileImage = UIImage(named:
 //                                    user?.profileImageURL
 //                                   ?? "https://img.gazeta.ru/files3/198/17072198/lii-pic_32ratio_900x600-900x600-45168.jpg")

@@ -168,7 +168,7 @@ struct ProfileEditView: View {
         viewModel.deleteProfileImage()
     }
     func saveImageURL() {
-//        viewModel.saveProfileImage(<#T##image: UIImage##UIImage#>)
+//        viewModel.saveProfileImage(T##image: UIImage##UIImage)
     }
 }
 

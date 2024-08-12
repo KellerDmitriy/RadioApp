@@ -49,6 +49,7 @@ struct ContentView: View {
             CustomTabBarView(selectedTab: $selectedTab)
                 .environmentObject(appManager)
                 .ignoresSafeArea()
+            
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         ToolbarName()
