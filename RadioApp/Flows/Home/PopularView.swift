@@ -10,6 +10,8 @@ import SwiftUI
 struct PopularView: View {
     //MARK: - PROPERTIES
     @EnvironmentObject var appManager: HomeViewModel
+    @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
+    
     let columns = [
         GridItem(.flexible(minimum: 139, maximum: 139)),
         GridItem(.flexible(minimum: 139, maximum: 139))
@@ -18,7 +20,7 @@ struct PopularView: View {
     var body: some View {
             VStack{
                 HStack {
-                    Text("Popular")
+                    Text(Resources.Text.popular.localized(language))
                         .font(.custom(DS.Fonts.sfRegular, size: 30))
                         .foregroundStyle(.white)
                     Spacer()

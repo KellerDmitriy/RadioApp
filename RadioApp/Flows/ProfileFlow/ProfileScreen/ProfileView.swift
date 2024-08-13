@@ -96,7 +96,8 @@ struct ProfileView: View {
     //    MARK: - Private Methods
     
     private func notificationAction() {
-        //        viewModel.configureNotifications()
+        viewModel.requestNotificationAuthorization()
+        viewModel.notificationAction()
     }
     
     private func isPresentedAlert() -> Binding<Bool> {

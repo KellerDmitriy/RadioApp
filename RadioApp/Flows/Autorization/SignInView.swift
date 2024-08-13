@@ -10,6 +10,8 @@ import SwiftUI
 // MARK: - SignInView
 struct SignInView: View {
     // MARK: - Properties
+    @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
+    
     @StateObject var viewModel: AuthViewModel
     @State private var isSignUpActive = false
     
@@ -53,18 +55,18 @@ struct SignInView: View {
             .padding()
             .alert(isPresented: isPresentedAlert()) {
                 Alert(
-                    title: Text("Error"),
+                    title: Text(Resources.Text.error.localized(language)),
                     message: Text(viewModel.error?.localizedDescription ?? ""),
-                    dismissButton: .default(Text("OK"),
+                    dismissButton: .default(Text(Resources.Text.ok.localized(language)),
                     action: viewModel.cancelErrorAlert)
                 )
             }
             NavigationLink(
-                          destination: SignUpView(),
-                          isActive: $isSignUpActive
-                      ) {
-                          EmptyView()
-                      }
+                destination: SignUpView(),
+                isActive: $isSignUpActive
+            ) {
+                EmptyView()
+            }
         }
     }
     
@@ -76,30 +78,43 @@ struct SignInView: View {
     }
     
     private var titleText: some View {
-        Text(Resources.Text.SignIn.title)
+        Text(Resources.Text.signIn.localized(language))
             .font(.custom(.sfBold, size: UIScreen.height * 1/16))
             .padding(.bottom, UIScreen.height * 1/32)
     }
     
     private var subtitleText: some View {
-        Text(Resources.Text.SignIn.toStartPlay)
+        Text(Resources.Text.toStartPlay.localized(language))
             .font(.custom(.sfRegular, size: UIScreen.height * 1/48))
             .frame(maxWidth: UIScreen.width * 1/3)
     }
     
     private var inputFields: some View {
         VStack {
-            TextField(Resources.Text.SignIn.email, text: $viewModel.email)
-                .font(.title)
+            CustomTextField(
+                value: $viewModel.email,
+                placeHolder: Resources.Text.email.localized(language),
+                titleBorder: Resources.Text.email
+            )
+            .autocapitalization(.none)
+            .keyboardType(.emailAddress)
+            .padding(.top, 16)
             
-            SecureField(Resources.Text.SignIn.password, text: $viewModel.password)
-                .font(.title)
+            CustomTextField(
+                value: $viewModel.password,
+                placeHolder: Resources.Text.password.localized(language),
+                titleBorder: Resources.Text.password.localized(language),
+                isSecure: true
+            )
+            .padding(.top, 16)
+            .autocapitalization(.none)
         }
+        
     }
     
     private var socialMediaButton: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(Resources.Text.SignIn.orConnectWith)
+            Text(Resources.Text.orConnectWith.localized(language))
             
             Button(action: {}) {
                 Text("G+")
@@ -115,15 +130,15 @@ struct SignInView: View {
                     await signIn()
                 }
             },
-                         title: Resources.Text.SignIn.title,
-                         buttonType: .onboarding
+            title: Resources.Text.signIn.localized(language),
+            buttonType: .onboarding
             )
         }
     }
     
     private var signUpButton: some View {
-        Button(action: { isSignUpActive = true } ) {
-            Text(Resources.Text.SignIn.orSignUp)
+        Button(action: { isSignUpActive = true }) {
+            Text(Resources.Text.orSignUp.localized(language))
                 .foregroundStyle(.white)
         }
     }

@@ -15,54 +15,45 @@ enum Resources {
         static let enjoyTheBestRadio = "Enjoy the best radio stations from your home, don't miss out on anything"
         static let getStarted = "Get Started"
         
+        // MARK: - Common
+        static let popular = "Popular"
+        static let favorites = "Favorites"
+        static let allStations = "All Stations"
+        
+        static let searchRadio = "Search radio station"
         /// SignIn
-        enum SignIn {
-            static let title = "Sign In"
-            static let toStartPlay = "to start play"
-            static let email = "Email"
-            static let emailPlaceholder = "Your email"
-            static let password = "Password"
-            static let passwordPlaceholder = "Your password"
-            static let forgotPassword = "Forgot Password?"
-            static let orConnectWith = "Or connect with"
-            static let orSignUp = "Or Sign Up"
-        }
-
+        static let ok = "Ok"
+        static let error = "Error"
+        static let signIn = "Sign In"
+        static let toStartPlay = "to start play"
+        static let email = "Email"
+        static let emailPlaceholder = "Your email"
+        static let password = "Password"
+        static let passwordPlaceholder = "Your password"
+        static let forgotPassword = "Forgot Password?"
+        static let orConnectWith = "Or connect with"
+        static let orSignUp = "Or Sign Up"
+        
         /// SignUp
-        enum SignUp {
-            static let title = "Sign Up"
-            static let toStartPlay = "to start play"
-            static let name = "Name"
-            static let namePlaceholder = "Your name"
-            static let email = "Email"
-            static let emailPlaceholder = "Your email"
-            static let password = "Password"
-            static let passwordPlaceholder = "Your password"
-            static let orSignIn = "Or Sign In"
-        }
+        static let signUp = "Sign Up"
+        static let name = "Name"
+        static let orSignIn = "Or Sign In"
         
         /// ForgotPassOne
-        enum ForgotPassOne {
-            static let title = "Forgot Password"
-            static let email = "Email"
-            static let emailPlaceholder = "Your email"
-            static let sent = "Sent"
-        }
+        static let sent = "Sent"
+        
         
         /// ForgotPassTwo
-        enum ForgotPassTwo {
-            static let title = "Forgot Password"
-            static let password = "Password"
-            static let passwordPlaceholder = "Your password"
-            static let confirmPassword = "Confirm password"
-            static let confirmPasswordPlaceholder = "Your password"
-            static let changePassword = "Change password"
-        }
-
+        static let confirmPassword = "Confirm password"
+        static let confirmPasswordPlaceholder = "Your password"
+        static let changePassword = "Change password"
+        
+        
         /// Profile
         static let messagesNotifications = "Messages Notifications"
         static let showNotifications = "Show Notifications"
         static let selectTime = "Select Time"
+        static let `repeat` = "Repeat"
         static let selectTimeAndDays = "Select Time and Days"
         static let exceptions = "Exceptions"
         static let settings = "Settings"
@@ -75,7 +66,6 @@ enum Resources {
         static let aboutUs = "About Us"
         static let logOut = "Log Out"
         static let fullName = "Full Name"
-        static let email = "Email"
         static let saveChanges = "Save Changes"
         static let english = "english"
         static let russian = "russian"
@@ -100,6 +90,20 @@ enum Resources {
         
         static let kukarskiy = "Evgeniy Kukarskiy"
         static let kukarskiyGit = "https://github.com/EKukarskiy"
+        
+        static let notificationTitle = "Random Notification"
+        static let notificationBody1 = "Time for a break! 🎉"
+        static let notificationBody2 = "Don't forget to enjoy the little things! 😊"
+        static let notificationBody3 = "Here's a friendly reminder to smile today! 😄"
+        static let notificationBody4 = "Keep up the great work! 💪"
+        static let notificationBody = "It's time to turn on your favorite wave🎵"
+        // Legal Policies
+        static let terms = "Terms and Conditions"
+        static let termsDescription = "These Terms and Conditions outline the rules and regulations for the use of our service. By accessing or using our service, you agree to comply with these terms. We may update these terms from time to time, so please review them periodically."
+        static let termsDescription2 = "If you continue to use the service after any changes, it means you accept the new terms. We are not responsible for any changes to the service or these terms and recommend checking regularly for updates."
+        static let changesToService = "Changes to the Service and/or Terms"
+        static let changesDescription = "We reserve the right to modify or discontinue the service at any time. We will notify users of significant changes to the service or these terms. Continued use of the service implies acceptance of any modifications."
+        static let changesDescription2 = "We may also update these terms to reflect changes in our practices or legal requirements. We will provide notice of any material changes, but it is your responsibility to review these terms regularly."
         
         
         

@@ -11,6 +11,7 @@ import SwiftUI
 struct SignUpView: View {
     // MARK: - Properties
     @StateObject var viewModel: AuthViewModel
+    @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
     
     // MARK: - Initializer
     init(
@@ -40,38 +41,57 @@ struct SignUpView: View {
                     .frame(width: UIScreen.width * 1/4, height: UIScreen.width * 1/4)
                 
                 // Title Text
-                Text(Resources.Text.SignUp.title)
+                Text(Resources.Text.signUp.localized(language))
                     .font(.custom(.sfBold, size: UIScreen.height * 1/16))
                     .padding(.bottom, UIScreen.height * 1/32)
                 
-                // Subtitle Text
-                Text(Resources.Text.SignUp.toStartPlay)
-                    .font(.custom(.sfRegular, size: UIScreen.height * 1/48))
-                    .frame(maxWidth: UIScreen.width * 1/3)
-                
+
                 // Input Fields
-                TextField(Resources.Text.SignUp.name, text: $viewModel.email) // Note: Should probably be $viewModel.username
-                    .font(.title)
+                CustomTextField(
+                    value: $viewModel.username,
+                    placeHolder: Resources.Text.enterName.localized(language),
+                    titleBorder: Resources.Text.name.localized(language)
+                )
+                .autocapitalization(.none)
+                .padding(.top, 16)
                 
-                TextField(Resources.Text.SignUp.email, text: $viewModel.email)
-                    .font(.title)
+                CustomTextField(
+                    value: $viewModel.email,
+                    placeHolder: Resources.Text.email.localized(language),
+                    titleBorder: Resources.Text.email
+                )
+                .autocapitalization(.none)
+                .padding(.top, 16)
+                .keyboardType(.emailAddress)
                 
-                SecureField(Resources.Text.SignUp.password, text: $viewModel.password)
-                    .font(.title)
+                CustomTextField(
+                    value: $viewModel.password,
+                    placeHolder: Resources.Text.password.localized(language),
+                    titleBorder: Resources.Text.password.localized(language),
+                    isSecure: true
+                )
+                .autocapitalization(.none)
+                .padding(.top, 16)
                                 
                 // Register Button
-                CustomButton(action: viewModel.registerUser, title: Resources.Text.SignUp.title, buttonType: .onboarding)
+                CustomButton(action: viewModel.registerUser, title: Resources.Text.signUp.localized(language), buttonType: .onboarding)
                 // TODO: изменить тип кнопки
                 
                 // Sign In Button
                 Button(action: {}) {
-                    Text(Resources.Text.SignUp.orSignIn)
+                    Text(Resources.Text.orSignIn.localized(language))
                         .foregroundStyle(.white)
                 }
                 
                 Spacer()
             }
             .padding()
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                BackBarButton()
+            }
         }
     }
 }

@@ -9,11 +9,12 @@ import SwiftUI
 
 struct AllStationsView: View {
     @EnvironmentObject var appManager: HomeViewModel
+    @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
     @State private var isSearching: Bool = false
     var body: some View {
         VStack{
             HStack {
-                Text("All stations")
+                Text(Resources.Text.allStations.localized(language))
                     .font(.custom(DS.Fonts.sfRegular, size: 30))
                     .foregroundStyle(.white)
                 Spacer()

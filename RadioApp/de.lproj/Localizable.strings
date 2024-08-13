@@ -8,9 +8,14 @@
 
 /* German */
 /* Onboarding */
+"Search radio station" = "Radiostation suchen";
 "Let’s Get Started" = "Lass uns anfangen";
 "Enjoy the best radio stations from your home, don't miss out on anything" = "Genieße die besten Radiosender von zu Hause aus, verpasse nichts";
 "Get Started" = "Loslegen";
+
+"Popular" = "Beliebt";
+"Favorites" = "Favoriten";
+"All Stations" = "Alle Stationen";
 
 /* Sign In */
 "Sign In" = "Anmelden";
@@ -86,3 +91,17 @@
 "Show Notifications" = "Benachrichtigungen anzeigen";
 "Select Time and Days" = "Wählen Sie Zeit und Tage";
 "Select Time" = "Zeit auswählen";
+"Repeat" = "Wiederholen";
+"Terms and Conditions" = "Allgemeine Geschäftsbedingungen";
+"These Terms and Conditions outline the rules and regulations for the use of our service. By accessing or using our service, you agree to comply with these terms. We may update these terms from time to time, so please review them periodically." = "Diese Allgemeinen Geschäftsbedingungen umreißen die Regeln und Vorschriften für die Nutzung unseres Dienstes. Durch den Zugriff auf oder die Nutzung unseres Dienstes stimmen Sie diesen Bedingungen zu. Wir können diese Bedingungen von Zeit zu Zeit aktualisieren, daher sollten Sie sie regelmäßig überprüfen.";
+"If you continue to use the service after any changes, it means you accept the new terms. We are not responsible for any changes to the service or these terms and recommend checking regularly for updates." = "Wenn Sie den Dienst nach Änderungen weiterhin nutzen, bedeutet dies, dass Sie die neuen Bedingungen akzeptieren. Wir sind nicht verantwortlich für Änderungen am Dienst oder diesen Bedingungen und empfehlen, regelmäßig nach Updates zu suchen.";
+"Changes to the Service and/or Terms" = "Änderungen des Dienstes und/oder der Bedingungen";
+"We reserve the right to modify or discontinue the service at any time. We will notify users of significant changes to the service or these terms. Continued use of the service implies acceptance of any modifications." = "Wir behalten uns das Recht vor, den Dienst jederzeit zu ändern oder einzustellen. Wir werden die Benutzer über wesentliche Änderungen des Dienstes oder dieser Bedingungen informieren. Die fortgesetzte Nutzung des Dienstes impliziert die Akzeptanz von Änderungen.";
+"We may also update these terms to reflect changes in our practices or legal requirements. We will provide notice of any material changes, but it is your responsibility to review these terms regularly." = "Wir können diese Bedingungen auch aktualisieren, um Änderungen in unseren Praktiken oder rechtlichen Anforderungen widerzuspiegeln. Wir werden über wesentliche Änderungen informieren, aber es liegt in Ihrer Verantwortung, diese Bedingungen regelmäßig zu überprüfen.";
+"Legal and Policies" = "Rechtliche Hinweise und Richtlinien";
+
+"Time for a break! 🎉" = "Zeit für eine Pause! 🎉";
+"Don't forget to enjoy the little things! 😊" = "Vergiss nicht, die kleinen Dinge zu genießen! 😊";
+"Here's a friendly reminder to smile today! 😄" = "Hier ist eine freundliche Erinnerung, heute zu lächeln! 😄";
+"Keep up the great work! 💪" = "Mach weiter so! 💪";
+"It's time to turn on your favorite wave🎵" = "Es ist Zeit, deine Lieblingswelle einzuschalten🎵";

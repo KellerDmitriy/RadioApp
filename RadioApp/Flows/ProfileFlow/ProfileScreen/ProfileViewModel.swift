@@ -143,4 +143,8 @@ final class ProfileViewModel: ObservableObject {
     func notificationAction() {
         notificationsService.sendTestNotification()
     }
+    
+    func requestNotificationAuthorization() {
+        notificationsService.requestNotificationAuthorization()
+    }
 }

@@ -10,13 +10,14 @@ import CoreData
 
 struct FavoritesView: View {
     @EnvironmentObject var appManager: HomeViewModel
+    @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
     @FetchRequest(sortDescriptors: []) var stationData: FetchedResults<StationData>
     @Environment(\.managedObjectContext) var moc
     
     var body: some View {
         VStack{
             HStack {
-                Text("Favorites")
+                Text(Resources.Text.favorites.localized(language))
                     .font(.custom(DS.Fonts.sfRegular, size: 30))
                     .foregroundStyle(.white)
                 Spacer()

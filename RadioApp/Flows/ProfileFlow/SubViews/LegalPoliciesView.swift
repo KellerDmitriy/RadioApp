@@ -8,53 +8,41 @@
 import SwiftUI
 
 struct LegalPoliciesView: View {
+    @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
+    
     var body: some View {
         ZStack {
             DS.Colors.darkBlue
                 .ignoresSafeArea()
+            
             ScrollView {
                 VStack(alignment: .leading) {
-                    Text("Tearms")
-                        .font(
-                            .custom(
-                                .sfBold,
-                                size: 18
-                            )
-                        )
+                    Text(Resources.Text.terms.localized(language))
+                        .font(.custom(.sfBold, size: 18))
                     
-                    Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eget ornare quam vel facilisis feugiat amet sagittis arcu, tortor. Sapien, consequat ultrices morbi orci semper sit nulla. Leo auctor ut etiam est, amet aliquet ut vivamus. Odio vulputate est id tincidunt fames.")
+                    Text(Resources.Text.termsDescription.localized(language))
                         .padding(.top, 6)
                     
-                    Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eget ornare quam vel facilisis feugiat amet sagittis arcu, tortor. Sapien, consequat ultrices morbi orci semper sit nulla. Leo auctor ut etiam est, amet aliquet ut vivamus. Odio vulputate est id tincidunt fames.")
+                    Text(Resources.Text.termsDescription2.localized(language))
                     
-                    Text("Changes to the Service and/or Terms:")
-                        .font(
-                            .custom(
-                                .sfBold,
-                                size: 16
-                            )
-                        )
+                    Text(Resources.Text.changesToService.localized(language))
+                        .font(.custom(.sfBold, size: 16))
                         .padding(.top, 20)
                     
-                    Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eget ornare quam vel facilisis feugiat amet sagittis arcu, tortor. Sapien, consequat ultrices morbi orci semper sit nulla. Leo auctor ut etiam est, amet aliquet ut vivamus. Odio vulputate est id tincidunt fames.")
+                    Text(Resources.Text.changesDescription.localized(language))
                         .padding(.top, 6)
                     
-                    Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eget ornare quam vel facilisis feugiat amet sagittis arcu, tortor. Sapien, consequat ultrices morbi orci semper sit nulla. Leo auctor ut etiam est, amet aliquet ut vivamus. Odio vulputate est id tincidunt fames.")
+                    Text(Resources.Text.changesDescription2.localized(language))
                     
                     Spacer()
                 }
-                .font(
-                    .custom(
-                        .sfBold,
-                        size: 16
-                    )
-                )
+                .font(.custom(.sfBold, size: 16))
                 .foregroundColor(.white)
                 .padding(.horizontal, 20)
                 .padding(.top, 20)
             }
         }
-        .navigationTitle(Resources.Text.legalAndPolicies)
+        .navigationTitle(Resources.Text.legalAndPolicies.localized(language))
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
@@ -64,7 +52,7 @@ struct LegalPoliciesView: View {
     }
 }
 
-
+// MARK: - Preview
 #Preview {
     LegalPoliciesView()
 }

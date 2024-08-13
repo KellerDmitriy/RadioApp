@@ -1,10 +1,3 @@
-//
-//  CustomTextField.swift
-//  RadioApp
-//
-//  Created by Келлер Дмитрий on 01.08.2024.
-//
-
 import SwiftUI
 
 // MARK: - CustomTextField
@@ -13,13 +6,15 @@ struct CustomTextField: View {
     @Binding var value: String
     var placeHolder: String
     var titleBorder: String
+    var isSecure: Bool = false
     
     // MARK: - Drawing Constants
     private struct Drawing {
+        static let height: CGFloat = 50
         static let leadingPadding: CGFloat = 16
         static let verticalPadding: CGFloat = 16
         static let horizontalPadding: CGFloat = 16
-        static let cornerRadius: CGFloat = 16
+        static let cornerRadius: CGFloat = 8
         static let strokeWidth: CGFloat = 1.0
         static let strokeOpacity: CGFloat = 0.3
         static let titleFontSize: CGFloat = 18
@@ -27,7 +22,7 @@ struct CustomTextField: View {
         static let titleOffsetY: CGFloat = -28
         static let borderColor = DS.Colors.pinkNeon
         static let textColor = Color.white
-        static let filledBorderColor = Color.gray
+        static let filledBorderColor = DS.Colors.blueLight
         static let backgroundWidth: CGFloat = 100
         static let backgroundHeight: CGFloat = 20
         static let backgroundColor = Color.clear
@@ -35,13 +30,26 @@ struct CustomTextField: View {
     
     // MARK: - Body
     var body: some View {
-        TextField(
-            placeHolder,
-            text: $value
-        )
-        .padding(.leading, Drawing.leadingPadding)
-        .padding(.vertical, Drawing.verticalPadding)
-        .foregroundStyle(Drawing.textColor)
+        Group {
+            if isSecure {
+                SecureField(
+                    placeHolder,
+                    text: $value
+                )
+                .padding(.leading, Drawing.leadingPadding)
+                .padding(.vertical, Drawing.verticalPadding)
+                .frame(height: Drawing.height)
+            } else {
+                TextField(
+                    placeHolder,
+                    text: $value
+                )
+                .padding(.leading, Drawing.leadingPadding)
+                .padding(.vertical, Drawing.verticalPadding)
+                .frame(height: Drawing.height)
+            }
+        }
+        .foregroundColor(Drawing.textColor)
         .disableAutocorrection(true)
         .overlay {
             ZStack {
@@ -53,7 +61,6 @@ struct CustomTextField: View {
                     .opacity(Drawing.strokeOpacity)
                 ZStack {
                     Drawing.backgroundColor
-                   
                         .frame(
                             width: Drawing.backgroundWidth,
                             height: Drawing.backgroundHeight
@@ -64,7 +71,7 @@ struct CustomTextField: View {
                             y: Drawing.titleOffsetY
                         )
                     Text(titleBorder.capitalized)
-                        .foregroundStyle(Drawing.textColor)
+                        .foregroundColor(Drawing.textColor) // Используйте foregroundColor
                         .font(.custom(.sfBold, size: Drawing.titleFontSize))
                         .offset(
                             x: Drawing.titleOffsetX,
@@ -81,6 +88,7 @@ struct CustomTextField: View {
     CustomTextField(
         value: .constant("Value"),
         placeHolder: "email",
-        titleBorder: "email"
+        titleBorder: "email",
+        isSecure: true
     )
 }

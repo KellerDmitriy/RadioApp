@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SearchBarView: View {
-
+    @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
     @EnvironmentObject var appManager: HomeViewModel
     @State var searchText: String = ""
     @Binding var isSearching: Bool
@@ -25,7 +25,7 @@ struct SearchBarView: View {
                     .scaledToFill()
                     .frame(width: 18, height: 18)
 
-                CustomTextField(placeholder: Text("Search radio station").foregroundColor(.white), text: $appManager.searchText)
+                CustomTextField(placeholder: Text(Resources.Text.searchRadio.localized(language)).foregroundColor(.white), text: $appManager.searchText)
                     .font(.custom(DS.Fonts.sfRegular, size: 14))
                     .foregroundColor(.white)
 

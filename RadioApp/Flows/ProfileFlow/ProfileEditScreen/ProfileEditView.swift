@@ -74,6 +74,7 @@ struct ProfileEditView: View {
                             placeHolder: Resources.Text.enterName,
                             titleBorder: Resources.Text.fullName
                         )
+                        .autocapitalization(.none)
                         .padding(.top, Drawing.fieldTopPadding)
                         
                         CustomTextField(
@@ -81,6 +82,9 @@ struct ProfileEditView: View {
                             placeHolder: Resources.Text.enterEmail,
                             titleBorder: Resources.Text.email
                         )
+
+                        .autocapitalization(.none)
+                        .keyboardType(.emailAddress)
                         .padding(.top, Drawing.fieldTopPadding)
                         
                         Spacer()

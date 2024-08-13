@@ -10,7 +10,7 @@ import SwiftUI
 final class AuthViewModel: ObservableObject {
     var email = ""
     var password = ""
-    @Published var username = "Mark"
+    var username = ""
    
     @Published var isAuthenticated: Bool
     @Published var error: Error?

@@ -7,85 +7,94 @@
 
 import SwiftUI
 
+
+// MARK: - CustomTabBarView
 struct CustomTabBarView: View {
     @EnvironmentObject var appManager: HomeViewModel
     @Binding var selectedTab: Tab
-
+//    @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
+    // MARK: - Body
     var body: some View {
-            HStack {
-                Button {
-                    selectedTab = .popular
-                    appManager.isActiveDetailView = false
-                } label: {
+        HStack {
+            // Popular Button
+            Button {
+                selectedTab = .popular
+                appManager.isActiveDetailView = false
+            } label: {
+                VStack {
+                    Text(selectedTab == .popular 
+                         ? Resources.Text.popular
+                         : Resources.Text.popular
+                    )
+                        .font(.custom(DS.Fonts.sfMedium, size: 19))
+                        .foregroundColor(selectedTab == .popular ? Color.white : DS.Colors.grayNotActive)
 
-                    VStack {
-                        Text(selectedTab == .popular ? "Popular" : "Popular")
-                            .font(.custom(DS.Fonts.sfMedium, size: 19))
-                            .foregroundColor(selectedTab == .popular ? Color.white : DS.Colors.grayNotActive)
-
-                        Circle()
-                            .frame(width: 15, height: 15)
-                            .foregroundColor(selectedTab == .popular ? DS.Colors.blueNeon : DS.Colors.darkBlue)
-                            .clipShape(Circle())
-                    }
+                    Circle()
+                        .frame(width: 15, height: 15)
+                        .foregroundColor(selectedTab == .popular ? DS.Colors.blueNeon : DS.Colors.darkBlue)
+                        .clipShape(Circle())
                 }
-                .frame(maxWidth: UIScreen.main.bounds.width / 3)
-
-                Button {
-                    selectedTab = .favorites
-                    appManager.isActiveDetailView = false
-                } label: {
-
-                    VStack {
-
-                        Text(selectedTab == .favorites ? "Favorites" : "Favorites")
-                            .font(.custom(DS.Fonts.sfMedium, size: 19))
-                            .foregroundColor(selectedTab == .favorites ? Color.white : DS.Colors.grayNotActive)
-                        
-                        Circle()
-                            .frame(width: 15, height: 15)
-                            .foregroundColor(selectedTab == .favorites ? DS.Colors.blueNeon : DS.Colors.darkBlue)
-                            .clipShape(Circle())
-                    }
-                }
-                .frame(maxWidth: UIScreen.main.bounds.width / 3)
-
-                Button {
-
-                    selectedTab = .allStations
-                    appManager.isActiveDetailView = false
-                } label: {
-                    VStack {
-
-                        Text(selectedTab == .allStations ? "All Stations" : "All Stations")
-                            .font(.custom(DS.Fonts.sfMedium, size: 19))
-                            .foregroundColor(selectedTab == .allStations ? Color.white : DS.Colors.grayNotActive)
-
-                        Circle()
-                            .frame(width: 15, height: 15)
-                            .foregroundColor(selectedTab == .allStations ? DS.Colors.blueNeon : DS.Colors.darkBlue)
-                            .clipShape(Circle())
-                    }
-                }
-                .frame(maxWidth: UIScreen.main.bounds.width / 3)
             }
+            .frame(maxWidth: UIScreen.main.bounds.width / 3)
 
-            .overlay {
-                HStack(spacing: 30) {
-                    BackButtonView()
-                    PlayButtonView()
-                    ForwardButtonView()
+            // Favorites Button
+            Button {
+                selectedTab = .favorites
+                appManager.isActiveDetailView = false
+            } label: {
+                VStack {
+                    Text(selectedTab == .favorites 
+                         ? Resources.Text.favorites
+                         : Resources.Text.favorites
+                    )
+                        .font(.custom(DS.Fonts.sfMedium, size: 19))
+                        .foregroundColor(selectedTab == .favorites ? Color.white : DS.Colors.grayNotActive)
+                    
+                    Circle()
+                        .frame(width: 15, height: 15)
+                        .foregroundColor(selectedTab == .favorites ? DS.Colors.blueNeon : DS.Colors.darkBlue)
+                        .clipShape(Circle())
                 }
-                .offset(CGSize(width: 4, height: -120))
             }
+            .frame(maxWidth: UIScreen.main.bounds.width / 3)
+
+            // All Stations Button
+            Button {
+                selectedTab = .allStations
+                appManager.isActiveDetailView = false
+            } label: {
+                VStack {
+                    Text(selectedTab == .allStations 
+                         ? Resources.Text.allStations
+                         : Resources.Text.allStations
+                    )
+                        .font(.custom(DS.Fonts.sfMedium, size: 19))
+                        .foregroundColor(selectedTab == .allStations ? Color.white : DS.Colors.grayNotActive)
+
+                    Circle()
+                        .frame(width: 15, height: 15)
+                        .foregroundColor(selectedTab == .allStations ? DS.Colors.blueNeon : DS.Colors.darkBlue)
+                        .clipShape(Circle())
+                }
+            }
+            .frame(maxWidth: UIScreen.main.bounds.width / 3)
+        }
+        .overlay {
+            HStack(spacing: 30) {
+                BackButtonView()
+                PlayButtonView()
+                ForwardButtonView()
+            }
+            .offset(CGSize(width: 4, height: -120))
+        }
         .frame(height: 80)
         .padding(.bottom, 3)
         .background(DS.Colors.darkBlue)
     }
 }
 
-
+// MARK: - Preview
 #Preview {
-    ContentView()
+    CustomTabBarView(selectedTab: .constant(.popular))
         .environmentObject(HomeViewModel())
 }

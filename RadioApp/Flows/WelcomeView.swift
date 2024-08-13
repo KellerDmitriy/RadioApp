@@ -9,7 +9,7 @@ import SwiftUI
 
 struct WelcomeView: View {
     @AppStorage("isOnboarding") var isOnboarding = false
-
+    @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
     var body: some View {
         ZStack {
             WelcomeBackgroundView()
@@ -19,12 +19,12 @@ struct WelcomeView: View {
                 
                 VStack(alignment: .leading) {
                     // MARK: Title Text
-                    Text(Resources.Text.letsGetStarted)
+                    Text(Resources.Text.letsGetStarted.localized(language))
                         .font(.custom(.sfBold, size: UIScreen.height * 1/16))
                         .padding(.bottom, UIScreen.height * 1/32)
 
                     // MARK: Explanation Text
-                    Text(Resources.Text.enjoyTheBestRadio)
+                    Text(Resources.Text.enjoyTheBestRadio.localized(language))
                         .font(.custom(.sfRegular, size: UIScreen.height * 1/48))
                         .frame(maxWidth: UIScreen.width * 1/3)
                 }
@@ -38,7 +38,7 @@ struct WelcomeView: View {
                     action: {
                         isOnboarding.toggle()
                     },
-                    title: Resources.Text.getStarted,
+                    title: Resources.Text.getStarted.localized(language),
                     buttonType: .onboarding)
             }
             .frame(maxWidth: UIScreen.width * 2/3)
