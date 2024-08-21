@@ -10,21 +10,21 @@ import SwiftUI
 
 // MARK: - CustomTabBarView
 struct CustomTabBarView: View {
-    @EnvironmentObject var appManager: HomeViewModel
+    @State var isActiveDetailView = false
     @Binding var selectedTab: Tab
-//    @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
+    @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
     // MARK: - Body
     var body: some View {
         HStack {
             // Popular Button
             Button {
                 selectedTab = .popular
-                appManager.isActiveDetailView = false
+//                appManager.isActiveDetailView = false
             } label: {
                 VStack {
                     Text(selectedTab == .popular 
-                         ? Resources.Text.popular
-                         : Resources.Text.popular
+                         ? Resources.Text.popular.localized(language)
+                         : Resources.Text.popular.localized(language)
                     )
                         .font(.custom(DS.Fonts.sfMedium, size: 19))
                         .foregroundColor(selectedTab == .popular ? Color.white : DS.Colors.grayNotActive)
@@ -40,12 +40,12 @@ struct CustomTabBarView: View {
             // Favorites Button
             Button {
                 selectedTab = .favorites
-                appManager.isActiveDetailView = false
+//                appManager.isActiveDetailView = false
             } label: {
                 VStack {
                     Text(selectedTab == .favorites 
-                         ? Resources.Text.favorites
-                         : Resources.Text.favorites
+                         ? Resources.Text.favorites.localized(language)
+                         : Resources.Text.favorites.localized(language)
                     )
                         .font(.custom(DS.Fonts.sfMedium, size: 19))
                         .foregroundColor(selectedTab == .favorites ? Color.white : DS.Colors.grayNotActive)
@@ -61,12 +61,12 @@ struct CustomTabBarView: View {
             // All Stations Button
             Button {
                 selectedTab = .allStations
-                appManager.isActiveDetailView = false
+//                appManager.isActiveDetailView = false
             } label: {
                 VStack {
                     Text(selectedTab == .allStations 
-                         ? Resources.Text.allStations
-                         : Resources.Text.allStations
+                         ? Resources.Text.allStations.localized(language)
+                         : Resources.Text.allStations.localized(language)
                     )
                         .font(.custom(DS.Fonts.sfMedium, size: 19))
                         .foregroundColor(selectedTab == .allStations ? Color.white : DS.Colors.grayNotActive)
@@ -96,5 +96,5 @@ struct CustomTabBarView: View {
 // MARK: - Preview
 #Preview {
     CustomTabBarView(selectedTab: .constant(.popular))
-        .environmentObject(HomeViewModel())
+//        .environmentObject(HomeViewModel())
 }

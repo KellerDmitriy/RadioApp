@@ -8,6 +8,12 @@
 import Foundation
 import FirebaseAuth
 
+// MARK: - GoogleSignInResultModel
+struct GoogleSignInResultModel {
+    let idToken: String
+    let accessToken: String
+}
+
 // MARK: - AuthDataResultModel
 struct AuthDataResultModel: Codable {
     let uid: String

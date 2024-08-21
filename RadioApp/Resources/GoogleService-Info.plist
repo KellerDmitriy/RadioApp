@@ -2,22 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CLIENT_ID</key>
-	<string>892375057257-jn9p2rsh9eacmpofol2if4mqbk4k4qgt.apps.googleusercontent.com</string>
-	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.892375057257-jn9p2rsh9eacmpofol2if4mqbk4k4qgt</string>
 	<key>API_KEY</key>
-	<string>AIzaSyA2NojQiRoCc1yPO77FTwUUAnqAqQRoAg8</string>
+	<string>AIzaSyARPeCmNl9lOXAajySYw6Fx2iPz916RWKo</string>
 	<key>GCM_SENDER_ID</key>
-	<string>892375057257</string>
+	<string>503902880075</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>ru.eliseev.dmitry.RadioApp</string>
+	<string>keller.RadioApp</string>
 	<key>PROJECT_ID</key>
-	<string>radioapp-7e7f9</string>
+	<string>radioapp-7f35d</string>
 	<key>STORAGE_BUCKET</key>
-	<string>radioapp-7e7f9.appspot.com</string>
+	<string>radioapp-7f35d.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:892375057257:ios:803569e5e53627ab3373f8</string>
+	<string>1:503902880075:ios:6a0a210542ab5a4de4a8ce</string>
 </dict>
 </plist>

@@ -3,10 +3,10 @@ import SwiftUI
 // MARK: - CustomTextField
 struct CustomTextField: View {
     // MARK: - Properties
-    @Binding var value: String
     var placeHolder: String
-    var titleBorder: String
     var isSecure: Bool = false
+    @Binding var text: String
+    @FocusState var isActive
     
     // MARK: - Drawing Constants
     private struct Drawing {
@@ -14,12 +14,12 @@ struct CustomTextField: View {
         static let leadingPadding: CGFloat = 16
         static let verticalPadding: CGFloat = 16
         static let horizontalPadding: CGFloat = 16
-        static let cornerRadius: CGFloat = 8
-        static let strokeWidth: CGFloat = 1.0
+        static let cornerRadius: CGFloat = 16
+        static let strokeWidth: CGFloat = 2.0
         static let strokeOpacity: CGFloat = 0.3
         static let titleFontSize: CGFloat = 18
-        static let titleOffsetX: CGFloat = -128
-        static let titleOffsetY: CGFloat = -28
+        static let titleOffsetX: CGFloat = -10
+        static let titleOffsetY: CGFloat = -10
         static let borderColor = DS.Colors.pinkNeon
         static let textColor = Color.white
         static let filledBorderColor = DS.Colors.blueLight
@@ -34,50 +34,45 @@ struct CustomTextField: View {
             if isSecure {
                 SecureField(
                     placeHolder,
-                    text: $value
+                    text: $text
                 )
                 .padding(.leading, Drawing.leadingPadding)
                 .padding(.vertical, Drawing.verticalPadding)
+                .focused($isActive)
+                
                 .frame(height: Drawing.height)
             } else {
                 TextField(
                     placeHolder,
-                    text: $value
+                    text: $text
                 )
                 .padding(.leading, Drawing.leadingPadding)
+                .focused($isActive)
+                
                 .padding(.vertical, Drawing.verticalPadding)
                 .frame(height: Drawing.height)
             }
         }
+        .autocapitalization(.none)
         .foregroundColor(Drawing.textColor)
         .disableAutocorrection(true)
         .overlay {
-            ZStack {
+            ZStack(alignment: .leading)  {
                 RoundedRectangle(cornerRadius: Drawing.cornerRadius)
                     .stroke(
-                        value.isEmpty ? Drawing.borderColor : Drawing.filledBorderColor,
+                        text.isEmpty ? Drawing.borderColor : Drawing.filledBorderColor,
                         lineWidth: Drawing.strokeWidth
                     )
                     .opacity(Drawing.strokeOpacity)
-                ZStack {
-                    Drawing.backgroundColor
-                        .frame(
-                            width: Drawing.backgroundWidth,
-                            height: Drawing.backgroundHeight
-                        )
-                        .cornerRadius(Drawing.cornerRadius)
-                        .offset(
-                            x: Drawing.titleOffsetX,
-                            y: Drawing.titleOffsetY
-                        )
-                    Text(titleBorder.capitalized)
-                        .foregroundColor(Drawing.textColor) // Используйте foregroundColor
-                        .font(.custom(.sfBold, size: Drawing.titleFontSize))
-                        .offset(
-                            x: Drawing.titleOffsetX,
-                            y: Drawing.titleOffsetY
-                        )
-                }
+                Text(placeHolder)
+                    .padding(.horizontal)
+                    .offset(y: (isActive || !text.isEmpty) ? -35 : 0)
+                    .foregroundStyle(isActive
+                                     ? Drawing.borderColor
+                                     : .gray
+                    )
+                    .animation(.spring, value: isActive)
+                
             }
         }
     }
@@ -86,9 +81,6 @@ struct CustomTextField: View {
 // MARK: - Preview
 #Preview {
     CustomTextField(
-        value: .constant("Value"),
-        placeHolder: "email",
-        titleBorder: "email",
-        isSecure: true
+        placeHolder: "email", isSecure: true, text: .constant("Value")
     )
 }

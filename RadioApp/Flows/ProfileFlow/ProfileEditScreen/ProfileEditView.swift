@@ -70,20 +70,14 @@ struct ProfileEditView: View {
                         
                         // MARK: - Editable Fields Section
                         CustomTextField(
-                            value: $viewModel.userName,
                             placeHolder: Resources.Text.enterName,
-                            titleBorder: Resources.Text.fullName
+                            text: $viewModel.userName
                         )
-                        .autocapitalization(.none)
                         .padding(.top, Drawing.fieldTopPadding)
                         
                         CustomTextField(
-                            value: $viewModel.userEmail,
-                            placeHolder: Resources.Text.enterEmail,
-                            titleBorder: Resources.Text.email
+                            placeHolder: Resources.Text.enterEmail, text: $viewModel.userEmail
                         )
-
-                        .autocapitalization(.none)
                         .keyboardType(.emailAddress)
                         .padding(.top, Drawing.fieldTopPadding)
                         

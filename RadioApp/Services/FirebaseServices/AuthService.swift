@@ -9,9 +9,7 @@ import Foundation
 import FirebaseAuth
 import Firebase
 
-
 // This service class will consist of login, sign up and logout auth
-
 enum AuthProviderOption: String {
     case email = "password"
     case google = "google.com"
@@ -87,6 +85,7 @@ extension AuthService {
         try await Auth.auth().sendPasswordReset(withEmail: email)
     }
     
+    
     func updatePassword(password: String) async throws {
         guard let user = Auth.auth().currentUser else {
             throw URLError(.badServerResponse)
@@ -103,4 +102,14 @@ extension AuthService {
         try await user.updateEmail(to: email)
     }
 
+    @discardableResult
+    func signInWithGoogle(tokens: GoogleSignInResultModel) async throws -> AuthDataResultModel {
+        let credential = GoogleAuthProvider.credential(withIDToken: tokens.idToken, accessToken: tokens.accessToken)
+        return try await signIn(credential: credential)
+    }
+    
+    func signIn(credential: AuthCredential) async throws -> AuthDataResultModel {
+        let authDataResult = try await Auth.auth().signIn(with: credential)
+        return AuthDataResultModel(user: authDataResult.user)
+    }
 }

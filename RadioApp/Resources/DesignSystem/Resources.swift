@@ -110,6 +110,7 @@ enum Resources {
     }
     
     enum Image {
+        static let googleLogo = "googleLogo"
         /// Profile
         static let stephen = "stephen"
         static let edit = "edit"

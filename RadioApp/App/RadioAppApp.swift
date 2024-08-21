@@ -26,10 +26,9 @@ struct RadioAppApp: App {
                         .preferredColorScheme(.dark)
                 } else if AuthService.shared.isAuthenticated() {
                     ContentView()
-//                        .navigationBarHidden(true) 
                         .preferredColorScheme(.dark)
                 } else {
-                    SignInView()
+                    AuthView()
                         .navigationBarHidden(true)
                         .preferredColorScheme(.dark)
                 }
