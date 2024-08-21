@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseAuth
 import Firebase
+import GoogleSignIn
 
 // This service class will consist of login, sign up and logout auth
 enum AuthProviderOption: String {
@@ -53,6 +54,7 @@ final class AuthService {
     }
         
     func signOut() throws {
+        GIDSignIn.sharedInstance.signOut()
         try Auth.auth().signOut()
     }
     
@@ -103,7 +105,24 @@ extension AuthService {
     }
 
     @discardableResult
-    func signInWithGoogle(tokens: GoogleSignInResultModel) async throws -> AuthDataResultModel {
+    func signInWithGoogle() async throws -> AuthDataResultModel {
+        
+        let scene = await UIApplication.shared.connectedScenes.first as? UIWindowScene
+        guard let rootViewController = await scene?.windows.first?.rootViewController
+        else {
+            fatalError("There is no root view controller!")
+        }
+        
+        let gidSignInResult = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
+        
+        guard let idToken = gidSignInResult.user.idToken?.tokenString else {
+            throw URLError(.badServerResponse)
+        }
+        
+        let accessToken = gidSignInResult.user.accessToken.tokenString
+        
+        let tokens = GoogleSignInResultModel(idToken: idToken, accessToken: accessToken)
+        
         let credential = GoogleAuthProvider.credential(withIDToken: tokens.idToken, accessToken: tokens.accessToken)
         return try await signIn(credential: credential)
     }
@@ -112,4 +131,5 @@ extension AuthService {
         let authDataResult = try await Auth.auth().signIn(with: credential)
         return AuthDataResultModel(user: authDataResult.user)
     }
+  
 }

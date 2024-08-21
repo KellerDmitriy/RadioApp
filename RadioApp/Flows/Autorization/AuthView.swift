@@ -15,6 +15,7 @@ struct AuthView: View {
     @StateObject var viewModel: AuthViewModel
     @State private var isSignUpActive = false
     
+
     // MARK: - Initializer
     init(
         authService: AuthService = .shared
@@ -161,7 +162,7 @@ struct AuthView: View {
             }
             .frame(maxWidth: .infinity)
             
-            Button(action: googleButtonTap) {
+            Button(asyncAction: googleButtonTap) {
                 Image(Resources.Image.googleLogo)
                     .resizableToFit()
                     .frame(width: 40)
@@ -214,8 +215,12 @@ struct AuthView: View {
         }
     }
     
-    private func googleButtonTap() {
-        
+    private func googleButtonTap() async  {
+        do {
+            try await viewModel.signInGoogle()
+        } catch {
+            viewModel.error = error
+        }
     }
     
     private func isPresentedAlert() -> Binding<Bool> {

@@ -9,13 +9,20 @@ import SwiftUI
 import AVFAudio
 import FirebaseCore
 import FirebaseAuth
+import GoogleSignIn
 
 @main
 struct RadioAppApp: App {
     //MARK: -
     @AppStorage("isOnboarding") var isOnboarding = false
-    // register app delegate for Firebase setup
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    
+    //MARK: - Init
+    init() {
+        FirebaseApp.configure()
+        if let clientID = FirebaseApp.app()?.options.clientID {
+            GIDSignIn.sharedInstance.configuration = GIDConfiguration(clientID: clientID)
+        }
+    }
     
     //MARK: - Body
     var body: some Scene {
@@ -28,9 +35,11 @@ struct RadioAppApp: App {
                     ContentView()
                         .preferredColorScheme(.dark)
                 } else {
-                    AuthView()
-                        .navigationBarHidden(true)
-                        .preferredColorScheme(.dark)
+                    AuthView().onOpenURL { url in
+                        GIDSignIn.sharedInstance.handle(url)
+                    }
+                    .navigationBarHidden(true)
+                    .preferredColorScheme(.dark)
                 }
             }
         }

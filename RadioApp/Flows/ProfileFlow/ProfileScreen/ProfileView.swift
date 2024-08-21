@@ -86,6 +86,7 @@ struct ProfileView: View {
                 Button("Ok", role: .destructive) {
                     viewModel.tapErrorOk()
                 }
+                
                 Button("Cancel", role: .cancel) {
                     viewModel.cancelErrorAlert()
                 }
