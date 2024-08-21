@@ -19,9 +19,6 @@ struct RadioAppApp: App {
     //MARK: - Init
     init() {
         FirebaseApp.configure()
-        if let clientID = FirebaseApp.app()?.options.clientID {
-            GIDSignIn.sharedInstance.configuration = GIDConfiguration(clientID: clientID)
-        }
     }
     
     //MARK: - Body

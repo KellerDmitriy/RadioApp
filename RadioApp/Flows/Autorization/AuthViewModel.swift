@@ -12,7 +12,6 @@ final class AuthViewModel: ObservableObject {
     var email = ""
     var password = ""
     var username = ""
-    
     var forgotEmail = ""
     
     @Published var isAuthenticated: Bool
@@ -26,16 +25,23 @@ final class AuthViewModel: ObservableObject {
         isAuthenticated = authService.isAuthenticated()
     }
     
-    func cancelErrorAlert() { error = nil }
+    func cancelErrorAlert() {
+        Task { @MainActor in
+            error = nil
+        }
+    }
     
     //    MARK: - AuthService Methods
     func signIn() async {
         do {
             try await authService.signInUser(email: email, password: password)
-            isAuthenticated = authService.isAuthenticated()
-            print("isAuthenticated set to \(isAuthenticated)")
+            await MainActor.run {
+                isAuthenticated = authService.isAuthenticated()
+            }
         } catch {
-            self.error = error
+            await MainActor.run {
+                self.error = error
+            }
         }
     }
     
@@ -53,16 +59,22 @@ final class AuthViewModel: ObservableObject {
         do {
             try await authService.resetPassword(email: forgotEmail)
         } catch {
-            self.error = error
+            await MainActor.run {
+                self.error = error
+            }
         }
     }
     
     func signInGoogle() async throws {
         do {
             try await authService.signInWithGoogle()
-            isAuthenticated = authService.isAuthenticated()
+            await MainActor.run {
+                isAuthenticated = authService.isAuthenticated()
+            }
         } catch {
-            self.error = error
+            await MainActor.run {
+                self.error = error
+            }
         }
     }
 }
