@@ -14,7 +14,7 @@ struct AuthView: View {
     
     @StateObject var viewModel: AuthViewModel
     @State private var isSignUpActive = false
-    
+    @State var shake = false
 
     // MARK: - Initializer
     init(
@@ -106,11 +106,13 @@ struct AuthView: View {
                 CustomTextField(
                     placeHolder: Resources.Text.enterName.localized(language), text: $viewModel.username
                 )
+                .shake($shake)
                 .padding(.top, 16)
                 
                 CustomTextField(
                     placeHolder: Resources.Text.email.localized(language), text: $viewModel.email
                 )
+                .shake($shake)
                 .keyboardType(.emailAddress)
                 .padding(.top, 16)
                 
@@ -119,12 +121,14 @@ struct AuthView: View {
                     isSecure: true,
                     text: $viewModel.password
                 )
+                .shake($shake)
                 .padding(.top, 16)
             } else {
                 CustomTextField(
                     placeHolder: Resources.Text.email.localized(language),
                     text: $viewModel.email
                 )
+                .shake($shake)
                 .keyboardType(.emailAddress)
                 .padding(.top, 16)
                 
@@ -133,6 +137,7 @@ struct AuthView: View {
                     isSecure: true,
                     text: $viewModel.password
                 )
+                .shake($shake)
                 .padding(.top, 16)
             }
         }
@@ -226,6 +231,7 @@ struct AuthView: View {
     private func isPresentedAlert() -> Binding<Bool> {
         Binding(get: { viewModel.error != nil },
                 set: { isPresenting in
+             shake = true
             if isPresenting { return }
         })
     }

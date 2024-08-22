@@ -17,7 +17,6 @@ final class HomeViewModel: ObservableObject {
     private let authService: AuthService
     private let networkService: NetworkService
     private let amplitudeService: AmplitudeService
-    private let coreDataService: CoreDataService
 
     var amplitude: CGFloat = 0.0
    
@@ -105,13 +104,11 @@ final class HomeViewModel: ObservableObject {
     init( 
         authService: AuthService = .shared,
         networkService: NetworkService = .shared,
-        amplitudeService: AmplitudeService = .shared,
-        coreDataService: CoreDataService = .shared
+        amplitudeService: AmplitudeService = .shared
     ) {
         self.authService = authService
         self.networkService = networkService
         self.amplitudeService = amplitudeService
-        self.coreDataService = coreDataService
         
         self.volume = CGFloat(session.outputVolume)
         print("init volume value - \(self.volume)")
@@ -203,28 +200,28 @@ final class HomeViewModel: ObservableObject {
         return nil
     }
     
-    func setStations(stationData: [StationData]) -> Bool{
-        print(stationData)
-        stations.removeAll()
-        if stationData.count > 0 {
-            for station in stationData {
-                let likeStation = StationModel(stationuuid: station.stationuuid ?? "", name: station.name ?? "", url: station.url ?? "", favicon: station.favicon ?? "", tags: station.tags ?? "", countrycode: station.countrycode ?? "", votes: station.votes)
-                stations.append(likeStation)
-            }
-            return true
-        } else {
-            return false
-        }
-    }
-    
-    func containsElementCoreData(stationData: [StationData], idStation: String) -> Bool{
-        for station in stationData {
-            if station.stationuuid == idStation {
-                return true
-            }
-        }
-        return false
-    }
+//    func setStations(stationData: [StationData]) -> Bool{
+//        print(stationData)
+//        stations.removeAll()
+//        if stationData.count > 0 {
+//            for station in stationData {
+//                let likeStation = StationModel(stationuuid: station.stationuuid ?? "", name: station.name ?? "", url: station.url ?? "", favicon: station.favicon ?? "", tags: station.tags ?? "", countrycode: station.countrycode ?? "", votes: station.votes)
+//                stations.append(likeStation)
+//            }
+//            return true
+//        } else {
+//            return false
+//        }
+//    }
+//    
+//    func containsElementCoreData(stationData: [StationData], idStation: String) -> Bool{
+//        for station in stationData {
+//            if station.stationuuid == idStation {
+//                return true
+//            }
+//        }
+//        return false
+//    }
     
 
 //    func fetchSearchStations() async throws {

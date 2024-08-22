@@ -12,7 +12,8 @@ struct ProfileInfoView: View {
     // MARK: - Properties
     var userName: String
     var userEmail: String
-    var profileImage: UIImage?
+    var profileImageURL: URL?
+    @State private var selectedImage: UIImage?
     
     // MARK: - Drawing Constants
     private struct DrawingConstants {
@@ -24,21 +25,36 @@ struct ProfileInfoView: View {
         static let strokeWidth: CGFloat = 1.0
         static let strokeOpacity: CGFloat = 0.2
         static let padding: CGFloat = 16
-        
     }
     
     // MARK: - Body
     var body: some View {
         HStack {
-            image(image: profileImage)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .clipShape(Circle())
-                .frame(
-                    width: DrawingConstants.avatarSize,
-                    height: DrawingConstants.avatarSize
-                )
+                AsyncImage(url: profileImageURL) { image in
+                    image
+                        .resizable()
+                        .scaledToFill()
+                        .clipShape(Circle())
+                        .frame(
+                            width: DrawingConstants.avatarSize,
+                            height: DrawingConstants.avatarSize
+                        )
+                } placeholder: {
+                    ProgressView()
+                        .frame(
+                            width: DrawingConstants.avatarSize,
+                            height: DrawingConstants.avatarSize
+                        )
+                }
                 .padding(.leading, DrawingConstants.avatarLeadingPadding)
+                .onAppear {
+                    if let profileImageURL {
+                        if let data = try? Data(contentsOf: profileImageURL),
+                           let uiImage = UIImage(data: data) {
+                            self.selectedImage = uiImage
+                        }
+                    }
+                }
             
             VStack(
                 alignment: .leading,
@@ -58,17 +74,15 @@ struct ProfileInfoView: View {
             Spacer()
             
             NavigationLink(destination: ProfileEditView(
-                userEmail: userEmail, 
+                userEmail: userEmail,
                 userName: userName,
-                profileImage: profileImage
+                profileImage: selectedImage)
             )
-            )
-            {
-                Image(Resources.Image.edit)
-                    .foregroundColor(DS.Colors.blueNeon)
-                    .padding(.trailing, DrawingConstants.padding)
-            }
-            
+               {
+                    Image(Resources.Image.edit)
+                        .foregroundColor(DS.Colors.blueNeon)
+                        .padding(.trailing, DrawingConstants.padding)
+                }
         }
         
         .padding()
@@ -83,14 +97,6 @@ struct ProfileInfoView: View {
                 .opacity(DrawingConstants.strokeOpacity)
         }
     }
-    
-    func image(image: UIImage?) -> Image {
-        if let profileImage = image {
-            return Image(uiImage: profileImage)
-        } else {
-            return Image(uiImage: UIImage(named: "stephen")!)
-        }
-    }
 }
 
 // MARK: - Preview
@@ -98,6 +104,6 @@ struct ProfileInfoView: View {
     ProfileInfoView(
         userName: "Stephen",
         userEmail: "stephen@ds",
-        profileImage: UIImage(named: "stephen")!
+        profileImageURL: URL(string: "")
     )
 }

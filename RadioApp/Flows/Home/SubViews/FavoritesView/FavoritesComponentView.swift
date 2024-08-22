@@ -12,7 +12,7 @@ import SwiftUI
 struct FavoritesComponentView: View {
     //MARK: - PROPERTIES
     @EnvironmentObject var appManager: HomeViewModel
-    @FetchRequest(sortDescriptors: []) var stationData: FetchedResults<StationData>
+   
     @Environment(\.managedObjectContext) var moc
     @Binding var selectedStationID: String
     @State private var isActive = false
@@ -86,20 +86,20 @@ struct FavoritesComponentView: View {
                 .stroke(selectedStationID == station.stationuuid ? DS.Colors.pinkNeon : DS.Colors.frame, lineWidth: 2)
         }
 }
-    func deleteItem(){
-        appManager.pauseAudioStream()
-        if let id = appManager.getIndexStations(idStation: station.stationuuid){
-            let station = stationData[id]
-            moc.delete(station)
-            try? moc.save()
-            _ = appManager.setStations(stationData: Array(stationData))
-            print(appManager.stations.count)
-            if appManager.stations.count > 0 {
-                appManager.playFirstStation()
-            } else {
-                appManager.stopAudioStream()
-            }
-        }
+    func deleteItem() {
+//        appManager.pauseAudioStream()
+//        if let id = appManager.getIndexStations(idStation: station.stationuuid){
+//            let station = stationData[id]
+//            moc.delete(station)
+//            try? moc.save()
+//            _ = appManager.setStations(stationData: Array(stationData))
+//            print(appManager.stations.count)
+//            if appManager.stations.count > 0 {
+//                appManager.playFirstStation()
+//            } else {
+//                appManager.stopAudioStream()
+//            }
+//        }
     }
 }
 

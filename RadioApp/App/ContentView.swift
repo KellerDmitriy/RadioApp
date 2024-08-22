@@ -19,15 +19,13 @@ struct ContentView: View {
     init(
         authService: AuthService = .shared,
         networkService: NetworkService = .shared,
-        amplitudeService: AmplitudeService = .shared,
-        coreDataService: CoreDataService = .shared
+        amplitudeService: AmplitudeService = .shared
     ) {
         self._appManager = StateObject(
             wrappedValue: HomeViewModel(
                 authService: authService,
                 networkService: networkService,
-                amplitudeService: amplitudeService,
-                coreDataService: coreDataService
+                amplitudeService: amplitudeService
             )
         )
     }

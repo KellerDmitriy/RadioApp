@@ -8,6 +8,7 @@
 import SwiftUI
 import GoogleSignIn
 
+@MainActor
 final class AuthViewModel: ObservableObject {
     var email = ""
     var password = ""
@@ -18,10 +19,12 @@ final class AuthViewModel: ObservableObject {
     @Published var error: Error?
     
     private let authService: AuthService
-
+    private let userService: UserService
+    
     // MARK: - Initializer
-    init(authService: AuthService = .shared) {
+    init(authService: AuthService = .shared, userService: UserService = .shared) {
         self.authService = authService
+        self.userService = userService
         isAuthenticated = authService.isAuthenticated()
     }
     
@@ -47,7 +50,9 @@ final class AuthViewModel: ObservableObject {
     
     func registerUser() async {
         do {
-            try await authService.createUser(name: username, email: email, password: password)
+            let authDataResult = try await authService.createUser(name: username, email: email, password: password)
+            let user = DBUser(auth: authDataResult)
+            try await userService.createNewUser(user: user)
         } catch {
             await MainActor.run {
                 self.error = error
@@ -58,6 +63,7 @@ final class AuthViewModel: ObservableObject {
     func resetPassword() async {
         do {
             try await authService.resetPassword(email: forgotEmail)
+            
         } catch {
             await MainActor.run {
                 self.error = error
@@ -67,7 +73,8 @@ final class AuthViewModel: ObservableObject {
     
     func signInGoogle() async throws {
         do {
-            try await authService.signInWithGoogle()
+           let authDataResult = try await authService.signInWithGoogle()
+            let user = DBUser(auth: authDataResult)
             await MainActor.run {
                 isAuthenticated = authService.isAuthenticated()
             }

@@ -10,7 +10,7 @@ import SwiftUI
 struct ProfileEditView: View {
     // MARK: - Properties
     @StateObject var viewModel: ProfileEditViewModel
-    
+    @State private var selectedProfileImage: UIImage? = nil
     @State private var showChangedView = false
     @State private var blurBackground = false
     @State private var isImagePickerPresented = false
@@ -85,7 +85,7 @@ struct ProfileEditView: View {
                         
                         CustomButton(
                             action: {
-                                saveImageURL()
+//                                saveImageURL()
                             },
                             title: Resources.Text.saveChanges,
                             buttonType: .profile
@@ -144,6 +144,11 @@ struct ProfileEditView: View {
             }
             .edgesIgnoringSafeArea(.all)
         }
+        .onChange(of: selectedProfileImage, perform: { newValue in
+            if let newValue {
+                saveImage(newValue)
+            }
+        })
     }
     
     // MARK: - Helper Functions
@@ -165,8 +170,9 @@ struct ProfileEditView: View {
     func deletePhoto() {
         viewModel.deleteProfileImage()
     }
-    func saveImageURL() {
-//        viewModel.saveProfileImage(T##image: UIImage##UIImage)
+    
+    func saveImage(_ image: UIImage) {
+        viewModel.saveProfileImage(image)
     }
 }
 

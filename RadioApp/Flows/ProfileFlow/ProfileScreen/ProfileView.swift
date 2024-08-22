@@ -22,7 +22,6 @@ struct ProfileView: View {
         self._viewModel = StateObject(
             wrappedValue: ProfileViewModel(
                 authService: authService,
-                firebaseStorage: firebaseService,
                 notificationsService: notificationsService
             )
         )
@@ -39,7 +38,7 @@ struct ProfileView: View {
                 ProfileInfoView(
                     userName: viewModel.userName,
                     userEmail: viewModel.userEmail,
-                    profileImage: UIImage(systemName: "person.fill")!
+                    profileImageURL: viewModel.profileImageURL
                 )
                 // MARK: - General Settings
                 SettingView(
@@ -68,6 +67,9 @@ struct ProfileView: View {
                     action: { viewModel.showLogoutAlert() },
                     title: Resources.Text.logOut.localized(language),
                     buttonType: .profile)
+            }
+            .task {
+                try? await viewModel.loadCurrentUser()
             }
             .padding()
             .foregroundColor(.white)

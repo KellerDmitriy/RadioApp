@@ -8,14 +8,13 @@
 import SwiftUI
 
 final class ProfileEditViewModel: ObservableObject {
-
     
     @Published private(set) var currentUser: DBUser? = nil
     @Published var error: ProfileFlowError?
     
-    var userEmail: String
-    var userName: String
-    var profileImage: UIImage?
+    @Published var userEmail: String
+    @Published var userName: String
+    @Published var profileImage: UIImage?
     
     private let userService: UserService
     private let authService: AuthService
@@ -51,22 +50,20 @@ final class ProfileEditViewModel: ObservableObject {
             print("SUCCESS!")
             print(path)
             let url = try await firebaseStorage.getUrlForImage(path: path)
-            try await userService.updateUserProfileImagePath(
+            try await userService.updateUserProfileImageURL(
                 userId: currentUser.userID,
-                path: path,
                 url: url.absoluteString
             )
         }
     }
     
     func deleteProfileImage() {
-        guard let currentUser, let path = currentUser.profileImagePath else { return }
+        guard let currentUser, let path = currentUser.profileImageURL else { return }
         
         Task {
             try await firebaseStorage.deleteImage(path: path)
-            try await userService.updateUserProfileImagePath(
+            try await userService.updateUserProfileImageURL(
                 userId: currentUser.userID,
-                path: nil,
                 url: nil
             )
         }

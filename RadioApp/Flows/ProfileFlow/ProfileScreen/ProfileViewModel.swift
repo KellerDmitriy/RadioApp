@@ -65,7 +65,6 @@ enum ProfileFlowError: LocalizedError {
 final class ProfileViewModel: ObservableObject {
     // MARK: - Stored Properties
     @Published var authProviders: [AuthProviderOption] = []
-    @Published var authUser: AuthDataResultModel? = nil
     
     @Published private(set) var currentUser: DBUser? = nil
     
@@ -74,27 +73,23 @@ final class ProfileViewModel: ObservableObject {
     
     var userName: String { currentUser?.name ?? "" }
     var userEmail: String { currentUser?.email ?? "" }
-    var profileImageURL: String {
-        currentUser?.photoURL
-        ?? "https://img.gazeta.ru/files3/198/17072198/lii-pic_32ratio_900x600-900x600-45168.jpg"
+    var profileImageURL: URL {
+        guard let urlString = currentUser?.profileImageURL else { return URL(fileURLWithPath: "") }
+        return URL(string: urlString)!
     }
     
     private let userService: UserService
     private let authService: AuthService
-    private let firebaseStorage: FirebaseStorageService
     private let notificationsService: NotificationsService
     
     // MARK: - Initializer
     init(
         userService: UserService = .shared,
         authService: AuthService = .shared,
-        firebaseStorage: FirebaseStorageService = .shared,
         notificationsService: NotificationsService = .shared) {
             self.userService = userService
             self.authService = authService
-            self.firebaseStorage = firebaseStorage
             self.notificationsService = notificationsService
-            loadCurrentUser()
         }
     
     // MARK: - Methods
@@ -113,21 +108,10 @@ final class ProfileViewModel: ObservableObject {
     
     
     //    MARK: - AuthService Methods
-    func loadAuthProviders() {
-        if let providers = try? authService.getProviders() {
-            authProviders = providers
-        }
-    }
     
-    func loadAuthUser() {
-        self.authUser = try? authService.getAuthenticatedUser()
-    }
-    
-    func loadCurrentUser() {
-        Task {
-            let authDataResult = try authService.getAuthenticatedUser()
-            self.currentUser = try await userService.getUser(userId: authDataResult.uid)
-        }
+    func loadCurrentUser() async throws {
+        let authDataResult = try authService.getAuthenticatedUser()
+        self.currentUser = try await userService.getUser(userId: authDataResult.uid)
     }
     
     func logOut() {

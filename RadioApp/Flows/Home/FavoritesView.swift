@@ -11,8 +11,7 @@ import CoreData
 struct FavoritesView: View {
     @EnvironmentObject var appManager: HomeViewModel
     @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
-    @FetchRequest(sortDescriptors: []) var stationData: FetchedResults<StationData>
-    @Environment(\.managedObjectContext) var moc
+
     
     var body: some View {
         VStack{
@@ -57,14 +56,14 @@ struct FavoritesView: View {
         }
         .onAppear{
             if !appManager.isActiveDetailView {
-                if appManager.setStations(stationData: Array(stationData)) {
-                    DispatchQueue.main.asyncAfter(deadline: .now()+1) {
-                        appManager.playFirstStation()
-                    }
-                    print(appManager.stations)
-                }
-            } else {
-                return
+//                if appManager.setStations(stationData: Array(stationData)) {
+//                    DispatchQueue.main.asyncAfter(deadline: .now()+1) {
+//                        appManager.playFirstStation()
+//                    }
+//                    print(appManager.stations)
+//                }
+//            } else {
+//                return
             }
         }
     }
@@ -74,14 +73,14 @@ struct FavoritesView: View {
         let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "StationData")
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         
-        do {
-            try moc.persistentStoreCoordinator?.execute(deleteRequest, with: moc)
-            print("данные удалены")
-        } catch let error as NSError {
-            print("Fetch failed. \(error.localizedDescription)")
-        }
-        try? moc.save()
-        _ = appManager.setStations(stationData: Array(stationData))
+//        do {
+//            try moc.persistentStoreCoordinator?.execute(deleteRequest, with: moc)
+//            print("данные удалены")
+//        } catch let error as NSError {
+//            print("Fetch failed. \(error.localizedDescription)")
+//        }
+//        try? moc.save()
+//        _ = appManager.setStations(stationData: Array(stationData))
     }
 }
 
