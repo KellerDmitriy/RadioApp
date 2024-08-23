@@ -10,11 +10,6 @@ import FirebaseAuth
 import Firebase
 import GoogleSignIn
 
-// This service class will consist of login, sign up and logout auth
-enum AuthProviderOption: String {
-    case email = "password"
-    case google = "google.com"
-}
 
 final class AuthService {
     // MARK: - Properties
@@ -35,23 +30,8 @@ final class AuthService {
         
         return AuthDataResultModel(user: user)
     }
-        
-    func getProviders() throws -> [AuthProviderOption] {
-        guard let providerData = Auth.auth().currentUser?.providerData else {
-            throw URLError(.badServerResponse)
-        }
-        
-        var providers: [AuthProviderOption] = []
-        for provider in providerData {
-            if let option = AuthProviderOption(rawValue: provider.providerID) {
-                providers.append(option)
-            } else {
-                assertionFailure("Provider option not found: \(provider.providerID)")
-            }
-        }
-        return providers
-    }
-        
+  
+    
     func signOut() throws {
         GIDSignIn.sharedInstance.signOut()
         try Auth.auth().signOut()
@@ -67,11 +47,9 @@ final class AuthService {
 }
 
 // MARK: SIGN IN EMAIL
-
 extension AuthService {
-    
     @discardableResult
-    func createUser(name: String, email: String, password: String) async throws -> AuthDataResultModel {
+    func createUser(email: String, password: String) async throws -> AuthDataResultModel {
         let authDataResult = try await Auth.auth().createUser(withEmail: email, password: password)
         return AuthDataResultModel(user: authDataResult.user)
     }
@@ -90,7 +68,6 @@ extension AuthService {
         guard let user = Auth.auth().currentUser else {
             throw URLError(.badServerResponse)
         }
-        
         try await user.sendEmailVerification(beforeUpdatingEmail: email)
     }
 

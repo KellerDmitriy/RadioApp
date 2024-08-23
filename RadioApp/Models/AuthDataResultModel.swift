@@ -17,8 +17,8 @@ struct GoogleSignInResultModel {
 // MARK: - AuthDataResultModel
 struct AuthDataResultModel: Codable {
     let uid: String
-    let userName: String?
-    let email: String?
+    var userName: String
+    let email: String
     let profileImageURL: String?
 
     enum CodingKeys: String, CodingKey {
@@ -30,38 +30,42 @@ struct AuthDataResultModel: Codable {
     
     init(user: User) {
         self.uid = user.uid
-        self.userName = user.displayName
-        self.email = user.email
+        self.userName = user.displayName ?? ""
+        self.email = user.email ?? ""
         self.profileImageURL = user.photoURL?.absoluteString
     }
 }
 
 struct DBUser: Codable {
     let userID: String
-    let name: String?
-    let email: String?
-    let profileImageURL: String?
+    let name: String
+    let email: String
+    let profileImagePath: String?
+    let profileImagePathUrl: String?
     var favorites: [StationModel] = []
     
     init(auth: AuthDataResultModel) {
         self.userID = auth.uid
         self.name = auth.userName
         self.email = auth.email
-        self.profileImageURL = auth.profileImageURL
+        self.profileImagePath = nil
+        self.profileImagePathUrl = nil
         self.favorites = []
     }
     
     init(
         userID: String,
-        name: String? = nil,
-        email: String? = nil,
-        profileImageURL: String? = nil,
+        name: String,
+        email: String,
+        profileImagePath: String?,
+        profileImagePathUrl: String?,
         favorites: [StationModel] = []
     ) {
         self.userID = userID
         self.name = name
         self.email = email
-        self.profileImageURL = profileImageURL
+        self.profileImagePath = profileImagePath
+        self.profileImagePathUrl = profileImagePathUrl
         self.favorites = favorites
     }
     
@@ -69,16 +73,18 @@ struct DBUser: Codable {
         case userID = "user_id"
         case name = "name"
         case email = "email"
-        case profileImageURL = "profile_image_url"
+        case profileImagePath = "profile_image_path"
+        case profileImagePathUrl = "profile_image_path_url"
         case favorites = "favorites_radio_stations"
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.userID = try container.decode(String.self, forKey: .userID)
-        self.name = try container.decodeIfPresent(String.self, forKey: .name)
-        self.email = try container.decodeIfPresent(String.self, forKey: .email)
-        self.profileImageURL = try container.decodeIfPresent(String.self, forKey: .profileImageURL)
+        self.name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
+        self.email = try container.decodeIfPresent(String.self, forKey: .email) ?? ""
+        self.profileImagePath = try container.decodeIfPresent(String.self, forKey: .profileImagePath)
+        self.profileImagePathUrl = try container.decodeIfPresent(String.self, forKey: .profileImagePathUrl)
         self.favorites = try container.decodeIfPresent([StationModel].self, forKey: .favorites) ?? []
     }
     
@@ -87,7 +93,8 @@ struct DBUser: Codable {
         try container.encode(self.userID, forKey: .userID)
         try container.encodeIfPresent(self.name, forKey: .name)
         try container.encodeIfPresent(self.email, forKey: .email)
-        try container.encodeIfPresent(self.profileImageURL, forKey: .profileImageURL)
+        try container.encodeIfPresent(self.profileImagePath, forKey: .profileImagePath)
+        try container.encodeIfPresent(self.profileImagePathUrl, forKey: .profileImagePathUrl)
         try container.encodeIfPresent(self.favorites, forKey: .favorites)
     }
 }

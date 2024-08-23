@@ -14,7 +14,6 @@ struct AuthView: View {
     
     @StateObject var viewModel: AuthViewModel
     @State private var isSignUpActive = false
-    @State var shake = false
 
     // MARK: - Initializer
     init(
@@ -30,7 +29,6 @@ struct AuthView: View {
     // MARK: - Body
     var body: some View {
         ZStack {
-            // Backgrounds
             AnimatedBackgroundView()
             AuthBackgroundView()
             
@@ -106,13 +104,13 @@ struct AuthView: View {
                 CustomTextField(
                     placeHolder: Resources.Text.enterName.localized(language), text: $viewModel.username
                 )
-                .shake($shake)
+                .shake(isPresentedAlert())
                 .padding(.top, 16)
                 
                 CustomTextField(
                     placeHolder: Resources.Text.email.localized(language), text: $viewModel.email
                 )
-                .shake($shake)
+                .shake(isPresentedAlert())
                 .keyboardType(.emailAddress)
                 .padding(.top, 16)
                 
@@ -121,14 +119,14 @@ struct AuthView: View {
                     isSecure: true,
                     text: $viewModel.password
                 )
-                .shake($shake)
+                .shake(isPresentedAlert())
                 .padding(.top, 16)
             } else {
                 CustomTextField(
                     placeHolder: Resources.Text.email.localized(language),
                     text: $viewModel.email
                 )
-                .shake($shake)
+                .shake(isPresentedAlert())
                 .keyboardType(.emailAddress)
                 .padding(.top, 16)
                 
@@ -137,7 +135,7 @@ struct AuthView: View {
                     isSecure: true,
                     text: $viewModel.password
                 )
-                .shake($shake)
+                .shake(isPresentedAlert())
                 .padding(.top, 16)
             }
         }
@@ -216,7 +214,9 @@ struct AuthView: View {
     private func registerUser() {
         Task {
             await viewModel.registerUser()
-            isSignUpActive.toggle()
+            if viewModel.error == nil {
+                isSignUpActive.toggle()
+            }
         }
     }
     
@@ -231,7 +231,6 @@ struct AuthView: View {
     private func isPresentedAlert() -> Binding<Bool> {
         Binding(get: { viewModel.error != nil },
                 set: { isPresenting in
-             shake = true
             if isPresenting { return }
         })
     }

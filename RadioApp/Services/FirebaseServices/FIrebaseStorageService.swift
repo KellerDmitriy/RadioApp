@@ -44,7 +44,7 @@ final class FirebaseStorageService {
     /// - Parameter path: The path to the image in Firebase Storage
     /// - Returns: The download URL of the image
     func getUrlForImage(path: String) async throws -> URL {
-        try await Storage.storage().reference(withPath: path).downloadURL()
+        try await getPathForImage(path: path).downloadURL()
     }
     
     /// Retrieves the data for a specific file stored in Firebase Storage
@@ -86,19 +86,6 @@ final class FirebaseStorageService {
             throw URLError(.badServerResponse)
         }
         return (returnedPath, returnedName)
-    }
-    
-    /// Converts a `UIImage` to JPEG data and saves it to Firebase Storage
-    /// - Parameters:
-    ///   - image: The `UIImage` to save
-    ///   - userID: The user's unique identifier
-    /// - Returns: The storage path and file name of the saved image
-    func saveImage(image: UIImage, userID: String) async throws -> (path: String, name: String) {
-        guard let data = image.jpegData(compressionQuality: 1) else {
-            throw URLError(.backgroundSessionWasDisconnected)
-        }
-        
-        return try await saveImage(data: data, userID: userID)
     }
     
     func deleteImage(path: String) async throws {

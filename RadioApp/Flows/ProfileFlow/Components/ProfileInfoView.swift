@@ -13,7 +13,6 @@ struct ProfileInfoView: View {
     var userName: String
     var userEmail: String
     var profileImageURL: URL?
-    @State private var selectedImage: UIImage?
     
     // MARK: - Drawing Constants
     private struct DrawingConstants {
@@ -40,21 +39,13 @@ struct ProfileInfoView: View {
                             height: DrawingConstants.avatarSize
                         )
                 } placeholder: {
-                    ProgressView()
+                    Image(systemName: Resources.Image.photoIcon)
                         .frame(
                             width: DrawingConstants.avatarSize,
                             height: DrawingConstants.avatarSize
                         )
                 }
                 .padding(.leading, DrawingConstants.avatarLeadingPadding)
-                .onAppear {
-                    if let profileImageURL {
-                        if let data = try? Data(contentsOf: profileImageURL),
-                           let uiImage = UIImage(data: data) {
-                            self.selectedImage = uiImage
-                        }
-                    }
-                }
             
             VStack(
                 alignment: .leading,
@@ -73,10 +64,7 @@ struct ProfileInfoView: View {
             
             Spacer()
             
-            NavigationLink(destination: ProfileEditView(
-                userEmail: userEmail,
-                userName: userName,
-                profileImage: selectedImage)
+            NavigationLink(destination: ProfileEditView()
             )
                {
                     Image(Resources.Image.edit)

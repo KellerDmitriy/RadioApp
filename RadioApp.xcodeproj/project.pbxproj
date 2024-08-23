@@ -97,6 +97,7 @@
 		E1E87BCE2C6893FB0070D855 /* FIrebaseStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E87BCD2C6893FB0070D855 /* FIrebaseStorageService.swift */; };
 		E1E87BD02C68B4250070D855 /* Button + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E87BCF2C68B4250070D855 /* Button + Extension.swift */; };
 		E1E87BD32C68BE850070D855 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E87BD22C68BE850070D855 /* AuthViewModel.swift */; };
+		E1FFE1AD2C77786E0091C66D /* ProfileFlowError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FFE1AC2C77786E0091C66D /* ProfileFlowError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -183,6 +184,7 @@
 		E1E87BCD2C6893FB0070D855 /* FIrebaseStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FIrebaseStorageService.swift; sourceTree = "<group>"; };
 		E1E87BCF2C68B4250070D855 /* Button + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Button + Extension.swift"; sourceTree = "<group>"; };
 		E1E87BD22C68BE850070D855 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		E1FFE1AC2C77786E0091C66D /* ProfileFlowError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileFlowError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -343,6 +345,7 @@
 				E1E87BCA2C6893200070D855 /* ProfileEditScreen */,
 				E1E497EC2C56DD410099440D /* SubViews */,
 				E1E498022C57EE4C0099440D /* Components */,
+				E1FFE1AC2C77786E0091C66D /* ProfileFlowError.swift */,
 			);
 			path = ProfileFlow;
 			sourceTree = "<group>";
@@ -718,6 +721,7 @@
 				E1C8A2B62C69EB9900DF542B /* FavoritesComponentView.swift in Sources */,
 				E16EBD572C5CB3F10010BF71 /* Color + Ext.swift in Sources */,
 				7A7A4B382C5B64DE00CD8794 /* AllStationsView.swift in Sources */,
+				E1FFE1AD2C77786E0091C66D /* ProfileFlowError.swift in Sources */,
 				E1E87BCC2C6893440070D855 /* ProfileEditViewModel.swift in Sources */,
 				2663C7952C56A01F002EFD0C /* ProfileView.swift in Sources */,
 				E1E87BB52C649F450070D855 /* NotificationsService.swift in Sources */,

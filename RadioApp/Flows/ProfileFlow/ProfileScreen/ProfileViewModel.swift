@@ -10,62 +10,9 @@ import Firebase
 import FirebaseAuth
 import FirebaseDatabase
 
-enum ProfileFlowError: LocalizedError {
-    // MARK: - Cases
-    case logout
-    case unknown(Error)
-    
-    // MARK: - Computed Properties
-    
-    /// Текущий язык, используемый в приложении
-    var language: Language {
-        LocalizationService.shared.language
-    }
-    
-    /// Описание причины ошибки
-    var failureReason: String? {
-        switch self {
-        case .logout:
-            return Resources.Text.logOut.localized(language)
-        case .unknown:
-            return "Unknown"
-        }
-    }
-    
-    /// Описание ошибки для пользователя
-    var errorDescription: String? {
-        switch self {
-        case .logout:
-            return Resources.Text.areYouWantLogOut.localized(language)
-        case .unknown(let error):
-            return error.localizedDescription
-        }
-    }
-    
-    /// Предложение по восстановлению после ошибки
-    var recoverySuggestion: String? {
-        return "recovery"
-    }
-    
-    /// Якорь справки, предоставляющий дополнительную информацию
-    var helpAnchor: String? {
-        return "help anchor"
-    }
-    
-    // MARK: - Static Methods
-    
-    /// Функция для маппинга ошибки в `ProfileFlowError`
-    /// - Parameter error: Ошибка для маппинга
-    /// - Returns: Маппированная ошибка `ProfileFlowError`
-    static func map(_ error: Error) -> ProfileFlowError {
-        return error as? ProfileFlowError ?? .unknown(error)
-    }
-}
-
+@MainActor
 final class ProfileViewModel: ObservableObject {
     // MARK: - Stored Properties
-    @Published var authProviders: [AuthProviderOption] = []
-    
     @Published private(set) var currentUser: DBUser? = nil
     
     @Published var error: ProfileFlowError?
@@ -74,7 +21,7 @@ final class ProfileViewModel: ObservableObject {
     var userName: String { currentUser?.name ?? "" }
     var userEmail: String { currentUser?.email ?? "" }
     var profileImageURL: URL {
-        guard let urlString = currentUser?.profileImageURL else { return URL(fileURLWithPath: "") }
+        guard let urlString = currentUser?.profileImagePathUrl else { return URL(fileURLWithPath: "") }
         return URL(string: urlString)!
     }
     
@@ -108,7 +55,6 @@ final class ProfileViewModel: ObservableObject {
     
     
     //    MARK: - AuthService Methods
-    
     func loadCurrentUser() async throws {
         let authDataResult = try authService.getAuthenticatedUser()
         self.currentUser = try await userService.getUser(userId: authDataResult.uid)

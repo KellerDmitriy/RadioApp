@@ -17,18 +17,13 @@ struct ProfileEditView: View {
     @State private var imagePickerSource: UIImagePickerController.SourceType = .camera
     
     init(
-        userEmail: String,
-        userName: String,
-        profileImage: UIImage?,
-
+        userService: UserService = .shared,
         authService: AuthService = .shared,
         firebaseService: FirebaseStorageService = .shared
     ) {
         self._viewModel = StateObject(
             wrappedValue: ProfileEditViewModel(
-                userEmail: userEmail,
-                userName: userName,
-                profileImage: profileImage,
+                userService: userService,
                 authService: authService,
                 firebaseStorage: firebaseService
             )
@@ -64,7 +59,7 @@ struct ProfileEditView: View {
                         ProfileHeaderView(
                             userName: $viewModel.userName,
                             userEmail: $viewModel.userEmail,
-                            profileImage: $viewModel.profileImage,
+                            profileImageURL: $viewModel.profileImage,
                             showChangedPhotoView: $showChangedView
                         )
                         
@@ -85,7 +80,12 @@ struct ProfileEditView: View {
                         
                         CustomButton(
                             action: {
-//                                saveImageURL()
+                                Task {
+                                    await viewModel.updateUserName()
+                                }
+                                if let selectedProfileImage = selectedProfileImage {
+                                    saveImage(selectedProfileImage)
+                                }
                             },
                             title: Resources.Text.saveChanges,
                             buttonType: .profile
@@ -140,15 +140,13 @@ struct ProfileEditView: View {
         }
         .sheet(isPresented: $isImagePickerPresented) {
             ImagePicker(sourceType: imagePickerSource) { image in
-                viewModel.profileImage = image
+                selectedProfileImage = image
             }
             .edgesIgnoringSafeArea(.all)
         }
-        .onChange(of: selectedProfileImage, perform: { newValue in
-            if let newValue {
-                saveImage(newValue)
-            }
-        })
+        .task {
+            try? await viewModel.loadCurrentUser()
+        }
     }
     
     // MARK: - Helper Functions
@@ -174,14 +172,19 @@ struct ProfileEditView: View {
     func saveImage(_ image: UIImage) {
         viewModel.saveProfileImage(image)
     }
+    
+    // MARK: - Helper Functions
+    private func image(_ image: UIImage?) -> Image {
+        if let profileImage = image {
+            return Image(uiImage: profileImage)
+        } else {
+            return Image(uiImage: UIImage(systemName: "person.fill")!)
+        }
+    }
+
 }
 
 // MARK: - Preview
-struct ProfileEditView_Previews: PreviewProvider {
-    static var previews: some View {
-        ProfileEditView(
-            userEmail: "stephen@ds", userName: "Stephen",
-            profileImage: (UIImage(named: "stephen")!)
-        )
-    }
+#Preview {
+    ProfileEditView()
 }

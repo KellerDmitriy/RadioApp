@@ -29,9 +29,20 @@ final class UserService {
         try await userDocument(userId: userId).getDocument(as: DBUser.self)
     }
     
-    func updateUserProfileImageURL(userId: String, url: String?) async throws {
-        let data: [String : Any] = [
-            DBUser.CodingKeys.profileImageURL.rawValue : url
+    func updateUserName(_ name: String, userID: String) async throws {
+        let data: [String : Any] = [DBUser.CodingKeys.name.rawValue : name]
+        try await userDocument(userId: userID).updateData(data)
+    }
+    
+    func updateUserEmail(_ email: String, userID: String) async throws {
+        let data: [String : Any] = [DBUser.CodingKeys.email.rawValue : email]
+        try await userDocument(userId: userID).updateData(data)
+    }
+    
+    func updateUserProfileImagePath(userId: String, path: String?, url: String?) async throws {
+        let data: [String:Any] = [
+            DBUser.CodingKeys.profileImagePath.rawValue : path,
+            DBUser.CodingKeys.profileImagePathUrl.rawValue : url,
         ]
 
         try await userDocument(userId: userId).updateData(data)
