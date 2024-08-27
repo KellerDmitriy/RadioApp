@@ -1,9 +1,10 @@
 //
-//  AmplitudeService.swift
+//  AmplSer.swift
 //  RadioApp
 //
-//  Created by Evgeniy K on 09.08.2024.
+//  Created by Келлер Дмитрий on 25.08.2024.
 //
+
 
 import Foundation
 import Combine

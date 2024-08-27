@@ -391,7 +391,7 @@ final class HomeViewModel: ObservableObject {
     
     
     //get Tag in String with ","
-    func getString(tags: String)->String? {
+    func getString(tags: String) -> String? {
         let tagsArr = tags.components(separatedBy: ",")
         if tagsArr.count > 0 {
             if tagsArr[0] == "" {

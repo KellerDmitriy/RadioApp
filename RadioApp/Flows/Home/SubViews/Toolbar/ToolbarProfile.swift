@@ -25,27 +25,28 @@ struct UserIcon: Shape {
 }
 
 struct ToolbarProfile: View {
-    @EnvironmentObject var appManager: HomeViewModel
+    @State var profileImageURL: URL?
+    
     var toolbarRoute: () -> ()
     
     var body: some View {
-           Button(action: {
-               toolbarRoute()
-           }) {
-               Image(uiImage: appManager.userProfileImage ?? .eliseev)
-                   .resizable()
-                   .scaledToFit()
-                   .frame(width: 60, height: 70)
-                   .mask {
-                       UserIcon()
-                           .frame(width: 60, height: 70)
-                   }
-           }
-       }
-   }
+        Button(action: {
+            toolbarRoute()
+        }) {
+            AsyncImage(url: profileImageURL) { image in
+                image
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 60, height: 70)
+                    .mask {
+                        UserIcon()
+                            .frame(width: 60, height: 70)
+                    }
+            } placeholder: {
+                UserIcon()
+                    .frame(width: 60, height: 70)
+            }
+        }
+    }
+}
 
-
-//#Preview {
-//    ToolbarProfile()
-//        .environmentObject(ViewModel())
-//}

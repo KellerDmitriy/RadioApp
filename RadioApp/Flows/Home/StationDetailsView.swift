@@ -7,9 +7,10 @@
 
 import SwiftUI
 
-struct StationDetailsView: View { 
-    @EnvironmentObject var appManager: HomeViewModel
+struct StationDetailsView: View {
     var station: StationModel
+    @Binding var volume: CGFloat
+    
     var body: some View {
         VStack {
             HStack {
@@ -31,22 +32,23 @@ struct StationDetailsView: View {
                 }
                 .clipShape(Rectangle())
                 .frame(maxWidth: 60, maxHeight: 60)
-                Text(appManager.getString(tags: self.station.tags)?.uppercased() ?? self.station.countrycode)
-                   // .font(.custom(.sfRegular, size: 16))
-                    .font(.custom(DS.Fonts.sfBold, size: appManager.getString(tags: self.station.tags) != nil ? 20 : 30))
+                Text(getString(tags: self.station.tags)?.uppercased() ?? self.station.countrycode)
+                    .font(.custom(DS.Fonts.sfBold, size: getString(tags: self.station.tags) != nil ? 20 : 30))
                     .foregroundStyle(.white)
                 Spacer()
             }
             Spacer()
-            HStack(spacing: 30) {
-                BackButtonView()
-                PlayButtonView()
-                ForwardButtonView()
-            }
-            .padding(.bottom, 80)
+//            HStack(spacing: 30) {
+//                BackButtonView()
+//                RadioPlayerView()
+//                ForwardButtonView()
+//            }
+//            .padding(.bottom, 80)
         }
         .overlay(content: {
-            VolumeView(rotation: true)
+            VolumeView(rotation: true, 
+                       volume: $volume
+            )
                 .frame(height: 300)
                 .offset(CGSize(width: 0.0, height: 350.0))
         })
@@ -63,11 +65,19 @@ struct StationDetailsView: View {
                     BackBarButton()
                 }
             }
-                
-            
-        .onDisappear{
-            appManager.isActiveDetailView = false
-
+    }
+    
+    //get Tag in String with ","
+    func getString(tags: String) -> String? {
+        let tagsArr = tags.components(separatedBy: ",")
+        if tagsArr.count > 0 {
+            if tagsArr[0] == "" {
+                return nil
+            } else {
+                return tagsArr[0]
+            }
+        } else {
+            return nil
         }
     }
 }
@@ -78,6 +88,5 @@ struct StationDetailsView: View {
 
 
 #Preview {
-    StationDetailsView(station: StationModel.testStation())
-        .environmentObject(HomeViewModel())
+    StationDetailsView(station: StationModel.testStation(), volume: .constant(5.0))
 }

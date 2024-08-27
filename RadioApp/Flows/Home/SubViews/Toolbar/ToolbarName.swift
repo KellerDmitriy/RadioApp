@@ -8,21 +8,17 @@
 import SwiftUI
 
 struct ToolbarName: View {
-    
-    @EnvironmentObject var appManager: HomeViewModel
+    @State var userName: String
     
     var body: some View {
         
         HStack {
             Image(.toolbarplay)
-            //.padding(.leading, 10)
-            
             Text("Hello")
                 .foregroundStyle(.white)
                 .font(.custom(DS.Fonts.sfMedium, size: 25))
             
-            //@Published var username = "Mark" - наблюдаемое свойство имени
-            Text("\(appManager.username)")
+            Text("\(userName)")
                 .foregroundStyle(DS.Colors.pinkNeon)
                 .font(.custom(DS.Fonts.sfMedium, size: 25))
             
@@ -34,7 +30,3 @@ struct ToolbarName: View {
     }
 }
 
-#Preview {
-    ContentView()
-        .environmentObject(HomeViewModel())
-}

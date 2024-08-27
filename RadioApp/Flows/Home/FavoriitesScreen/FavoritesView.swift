@@ -6,12 +6,27 @@
 //
 
 import SwiftUI
-import CoreData
+
 
 struct FavoritesView: View {
-    @EnvironmentObject var appManager: HomeViewModel
+    //MARK: - PROPERTIES
+    @StateObject var viewModel: FavoritesViewModel
+    
     @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
 
+    
+    init(
+        volume: CGFloat,
+        networkService: NetworkService = .shared,
+        playerService: PlayerService = .shared
+    ) {
+        self._viewModel = StateObject(
+            wrappedValue: FavoritesViewModel(
+                volume: volume, networkService: networkService,
+                playerService: playerService
+            )
+        )
+    }
     
     var body: some View {
         VStack{
@@ -29,16 +44,18 @@ struct FavoritesView: View {
             .padding(.top, 100)
             .background(DS.Colors.darkBlue)
             HStack{
-                VolumeView(rotation: false)
+                VolumeView(rotation: false, 
+                           volume: $viewModel.volume
+                )
                     .frame(width: 33 ,height: 250)
                     .padding(.leading, 15)
                 VStack {
                     ScrollView(.vertical, showsIndicators: false){
                         LazyVStack {
-                            ForEach(appManager.stations, id: \.stationuuid) {item in
+                            ForEach(viewModel.stations, id: \.stationuuid) {item in
                                 FavoritesComponentView(
-                                    selectedStationID: $appManager.selectedStation,
-                                    station: item
+                                    selectedStationID: $viewModel.selectedStation,
+                                    volume: $viewModel.volume, station: item
                                 )
                             }
                         }
@@ -49,29 +66,21 @@ struct FavoritesView: View {
             Spacer()
         }
         .background(DS.Colors.darkBlue)
-        .onDisappear{
-            if !appManager.isActiveDetailView {
-                appManager.stopAudioStream()
-            }
-        }
         .onAppear{
-            if !appManager.isActiveDetailView {
 //                if appManager.setStations(stationData: Array(stationData)) {
 //                    DispatchQueue.main.asyncAfter(deadline: .now()+1) {
 //                        appManager.playFirstStation()
 //                    }
 //                    print(appManager.stations)
 //                }
-//            } else {
-//                return
-            }
+
         }
     }
     
     // delete all records
-    func deleteRecords() {
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "StationData")
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+//    func deleteRecords() {
+//        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "StationData")
+//        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         
 //        do {
 //            try moc.persistentStoreCoordinator?.execute(deleteRequest, with: moc)
@@ -81,14 +90,11 @@ struct FavoritesView: View {
 //        }
 //        try? moc.save()
 //        _ = appManager.setStations(stationData: Array(stationData))
-    }
+//    }
 }
 
-//MARK: - PREVIEW
-struct FavoritesView_Previews: PreviewProvider {
-    static let previewAppManager = HomeViewModel()
-    static var previews: some View {
-        FavoritesView()
-            .environmentObject(previewAppManager)
-    }
+
+// MARK: - Preview
+#Preview {
+    FavoritesView(volume: 5.0)
 }

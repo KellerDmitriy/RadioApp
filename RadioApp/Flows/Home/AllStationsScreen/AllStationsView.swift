@@ -8,9 +8,25 @@
 import SwiftUI
 
 struct AllStationsView: View {
-    @EnvironmentObject var appManager: HomeViewModel
+    @StateObject var viewModel: AllStationViewModel
+    
     @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
+  
     @State private var isSearching: Bool = false
+    
+    init(
+        volume: CGFloat,
+        networkService: NetworkService = .shared,
+        playerService: PlayerService = .shared
+    ) {
+        self._viewModel = StateObject(
+            wrappedValue: AllStationViewModel(
+                volume: volume, networkService: networkService,
+                playerService: playerService
+            )
+        )
+    }
+    
     var body: some View {
         VStack{
             HStack {
@@ -22,24 +38,28 @@ struct AllStationsView: View {
             .padding(.leading, 60)
             .padding(.top, 100)
             // search view
-            SearchBarView(isSearching: $isSearching)
+            SearchBarView(
+                searchText: $viewModel.searchText,
+                isSearching: $isSearching
+            )
                 .frame(height: 56)
             Spacer()
             HStack{
-                VolumeView(rotation: false)
+                VolumeView(rotation: false, 
+                           volume: $viewModel.volume
+                )
                     .frame(width: 33 ,height: 250)
                     .padding(.leading, 15)
                 VStack {
                     ScrollView(.vertical, showsIndicators: false) {
                         LazyVStack(pinnedViews: .sectionHeaders) {
-                            ForEach(appManager.stations, id: \.stationuuid) { station in
+                            ForEach(viewModel.stations, id: \.stationuuid) { station in
                                 NavigationLink {
-                                    StationDetailsView(station: station)
+                                    StationDetailsView(station: station, volume: $viewModel.volume)
                                     
                                 } label: {
-                                    StationView(selectedStationID: $appManager.selectedStation, station: station)
+                                    StationView(selectedStationID: $viewModel.selectedStation, station: station, volume: $viewModel.volume)
                                 }
-                                
                             }
                         }
                         .background(DS.Colors.darkBlue)
@@ -52,30 +72,16 @@ struct AllStationsView: View {
         }
         .background(DS.Colors.darkBlue)
         .task {
-            if !appManager.isActiveDetailView {
-                do {
-                    try await appManager.fetchAllStations()
-                } catch {
-                    print(error)
-                }
-                appManager.playFirstStation()
-            } else {
-                return
-            }
-        }
-        .onDisappear{
-            if !appManager.isActiveDetailView{
-                appManager.stopAudioStream()
+            do {
+                try await viewModel.fetchAllStations()
+            } catch {
+                print(error)
             }
         }
     }
 }
 
-//MARK: - PREVIEW
-struct AllStationsView_Previews: PreviewProvider {
-    static let previewAppManager = HomeViewModel()
-    static var previews: some View {
-        AllStationsView()
-            .environmentObject(previewAppManager)
-    }
+// MARK: - Preview
+#Preview {
+    AllStationsView(volume: 5.0)
 }

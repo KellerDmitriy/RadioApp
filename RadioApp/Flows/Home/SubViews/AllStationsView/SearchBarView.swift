@@ -9,8 +9,8 @@ import SwiftUI
 
 struct SearchBarView: View {
     @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
-    @EnvironmentObject var appManager: HomeViewModel
-    @State var searchText: String = ""
+   
+    @Binding var searchText: String
     @Binding var isSearching: Bool
 
     var body: some View {
@@ -25,18 +25,13 @@ struct SearchBarView: View {
                     .scaledToFill()
                     .frame(width: 18, height: 18)
 
-                CustomTextField(placeholder: Text(Resources.Text.searchRadio.localized(language)).foregroundColor(.white), text: $appManager.searchText)
+                CustomTextField(placeholder: Text(Resources.Text.searchRadio.localized(language)).foregroundColor(.white), 
+                    text: $searchText)
                     .font(.custom(DS.Fonts.sfRegular, size: 14))
                     .foregroundColor(.white)
 
                 Button {
                     Task {
-                        if isSearching {
-                            try await appManager.fetchAllStations()
-                            appManager.searchText = searchText
-                        } else {
-                            try await appManager.fetchSearchStations()
-                        }
                         isSearching.toggle()
                     }
                 } label: {
@@ -45,7 +40,7 @@ struct SearchBarView: View {
             }
             .padding(.horizontal)
         }
-       // .frame(maxWidth: .infinity, maxHeight: 56)
+     
         .padding(.horizontal, 8)
         .padding(.vertical, 0)
     }
@@ -69,6 +64,6 @@ struct SearchBarView: View {
 }
 
 #Preview {
-    SearchBarView(isSearching: .constant(false))
-        .environmentObject(HomeViewModel())
+    SearchBarView(searchText: .constant(""), isSearching: .constant(false))
+
 }

@@ -60,12 +60,17 @@ final class NotificationsService {
     }
     
     private func getRandomNotificationBody() -> String {
-            let notifications = [
-                Resources.Text.notificationBody.localized(language),
-                Resources.Text.notificationBody2.localized(language),
-                Resources.Text.notificationBody3.localized(language),
-                Resources.Text.notificationBody4.localized(language)
-            ]
+        let notifications = [
+            Resources.Text.notificationBody.localized(language),
+            Resources.Text.notificationBody2.localized(language),
+            Resources.Text.notificationBody3.localized(language),
+            Resources.Text.notificationBody4.localized(language)
+        ]
         return notifications.randomElement() ?? Resources.Text.notificationBody1
-        }
+    }
+    
+    func cancelNotification() {
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+    }
 }

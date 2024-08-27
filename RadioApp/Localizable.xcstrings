@@ -741,9 +741,6 @@
     "Hello" : {
 
     },
-    "Hello, World!" : {
-
-    },
     "Here's a friendly reminder to smile today! 😄" : {
       "extractionState" : "manual",
       "localizations" : {

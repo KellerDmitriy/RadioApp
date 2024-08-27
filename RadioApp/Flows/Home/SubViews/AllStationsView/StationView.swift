@@ -9,9 +9,10 @@ import SwiftUI
 
 struct StationView: View {
 
-    @EnvironmentObject var appManager: HomeViewModel
     @Binding var selectedStationID: String
     var station: StationModel
+    @Binding var volume: CGFloat
+
     @State private var isActive = false
     var body: some View {
 
@@ -28,8 +29,8 @@ struct StationView: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 10) {
                             
-                            Text(appManager.getString(tags: self.station.tags)?.uppercased() ?? self.station.countrycode)
-                                .font(.custom(DS.Fonts.sfBold, size: appManager.getString(tags: self.station.tags) != nil ? 20 : 30))
+                            Text(getString(tags: self.station.tags)?.uppercased() ?? self.station.countrycode)
+                                .font(.custom(DS.Fonts.sfBold, size: getString(tags: self.station.tags) != nil ? 20 : 30))
                                 .foregroundStyle(selectedStationID == station.stationuuid ? .white : DS.Colors.frame)
                             
                             Text(station.name)
@@ -81,22 +82,25 @@ struct StationView: View {
         }
         .frame(width: 293, height: 120)
         .background(NavigationLink(
-                        destination: StationDetailsView(station: station),
+            destination: StationDetailsView(
+                station: station,
+                volume: $volume
+            ),
                         isActive: $isActive) {
                         EmptyView()
                     })
-        .onTapGesture {
-            selectedStationID = station.stationuuid
-            appManager.playAudio(url: station.url)
-        }
-        .onLongPressGesture() {
-            if selectedStationID == station.stationuuid {
-                print("long tap")
-                isActive.toggle()
-                appManager.isActiveDetailView = true
-            }
-        }
-        .clipShape(.rect(cornerRadius: 20))
+//        .onTapGesture {
+//            selectedStationID = station.stationuuid
+//            appManager.playAudio(url: station.url)
+//        }
+//        .onLongPressGesture() {
+//            if selectedStationID == station.stationuuid {
+//                print("long tap")
+//                isActive.toggle()
+//                appManager.isActiveDetailView = true
+//            }
+//        }
+//        .clipShape(.rect(cornerRadius: 20))
         .overlay {
             RoundedRectangle(cornerRadius: 20)
                 .stroke(selectedStationID == station.stationuuid ? DS.Colors.pinkNeon : DS.Colors.frame, lineWidth: 2)
@@ -104,13 +108,26 @@ struct StationView: View {
         .padding(.trailing, 20)
         .padding(.vertical, 5)
     }
+    //get Tag in String with ","
+    func getString(tags: String) -> String? {
+        let tagsArr = tags.components(separatedBy: ",")
+        if tagsArr.count > 0 {
+            if tagsArr[0] == "" {
+                return nil
+            } else {
+                return tagsArr[0]
+            }
+        } else {
+            return nil
+        }
+    }
 }
 
 //MARK: - PREVIEW
 struct StationView_Previews: PreviewProvider {
     static let previewAppManager = HomeViewModel()
     static var previews: some View {
-        StationView(selectedStationID: .constant(""), station: .testStation())
+        StationView(selectedStationID: .constant(""), station: .testStation(), volume: .constant(5.0))
             .environmentObject(previewAppManager)
     }
 }

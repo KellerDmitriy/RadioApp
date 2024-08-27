@@ -1,5 +1,5 @@
 //
-//  BackButtonView.swift
+//  ForwardButtonView.swift
 //  RadioApp
 //
 //  Created by Dmitriy Eliseev on 31.07.2024.
@@ -7,16 +7,17 @@
 
 import SwiftUI
 
-struct BackButtonView: View {
-    @EnvironmentObject var appManager: HomeViewModel
+struct ForwardButtonView: View {
+    //MARK: - PROPERTIES
+    var action:() -> ()
+    //MARK: - BODY
     var body: some View {
         Button{
-            appManager.backTrackAudioStream()
+            action()
         } label: {
             Image(.play)
                 .resizable()
                 .frame(width: 17, height: 17)
-                .rotationEffect(Angle(degrees: 180))
         }
         .frame(width: 48, height: 48)
         .background {
@@ -24,8 +25,10 @@ struct BackButtonView: View {
                 .fill(DS.Colors.turquoise)
         }
     }
+    
 }
 
+//MARK: - PREVIEW
 #Preview {
-    BackButtonView()
+    ForwardButtonView(action: {})
 }

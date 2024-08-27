@@ -9,23 +9,24 @@ import SwiftUI
 
 // MARK: - ContentView
 struct ContentView: View {
-    
     // MARK: - Properties
-    @StateObject var appManager: HomeViewModel
+    @StateObject var viewModel: ContentViewModel
+    
     @State private var selectedTab: Tab = .popular
     @State private var isProfileViewActive = false
     
-    // MARK: - Initializer
     init(
         authService: AuthService = .shared,
-        networkService: NetworkService = .shared,
-        amplitudeService: AmplitudeService = .shared
+        userService: UserService = .shared,
+        playerService: PlayerService = .shared,
+        networkService: NetworkService = .shared
     ) {
-        self._appManager = StateObject(
-            wrappedValue: HomeViewModel(
+        self._viewModel = StateObject(
+            wrappedValue: ContentViewModel(
                 authService: authService,
                 networkService: networkService,
-                amplitudeService: amplitudeService
+                userService: userService,
+                playerService: playerService
             )
         )
     }
@@ -33,44 +34,43 @@ struct ContentView: View {
     // MARK: - Body
     var body: some View {
         VStack {
-            // Main Content
             Spacer()
             switch selectedTab {
             case .popular:
-                PopularView()
-                    .environmentObject(appManager)
-                
+                PopularView(volume: viewModel.volume)
+                   
             case .favorites:
-                FavoritesView()
-                    .environmentObject(appManager)
+                FavoritesView(volume: viewModel.volume)
                 
             case .allStations:
-                AllStationsView()
-                    .environmentObject(appManager)
+                AllStationsView(volume: viewModel.volume)
             }
             
             // Custom Tab Bar
             CustomTabBarView(selectedTab: $selectedTab)
-                .environmentObject(appManager)
             Spacer()
             
         }
+        .task {
+            try? await viewModel.loadCurrentUser()
+        }
+        
         .toolbar {
             // Toolbar Items
             ToolbarItem(placement: .topBarLeading) {
-                ToolbarName()
+                ToolbarName(userName: viewModel.userName)
             }
             ToolbarItem(placement: .topBarTrailing) {
-                ToolbarProfile(toolbarRoute: {
+                ToolbarProfile(
+                    profileImageURL: viewModel.profileImageURL,
+                    toolbarRoute: {
                     withAnimation(.easeInOut) {
                         isProfileViewActive.toggle()
                     }
                 })
             }
         }
-        .environmentObject(appManager)
         .background(
-        
             NavigationLink(destination: ProfileView(),
                            isActive: $isProfileViewActive,
                            label: { EmptyView() })

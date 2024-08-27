@@ -9,9 +9,12 @@ import SwiftUI
 
 struct StationPopularView: View {
     //MARK: - PROPERTIES
-    @EnvironmentObject var appManager: HomeViewModel
-    @Binding var selectedStationID: String
     @State private var isActive = false
+    
+    @Binding var selectedStationID: String
+    @Binding var volume: CGFloat
+    @Binding var isPlay: Bool
+    
     var station: StationModel
     //MARK: - BODY
     var body: some View {
@@ -29,7 +32,7 @@ struct StationPopularView: View {
                 VStack{
                     HStack{
                         if selectedStationID == station.stationuuid {
-                            Image(systemName: appManager.isPlay ? "play.fill" : "pause.fill")
+                            Image(systemName: isPlay ? "play.fill" : "pause.fill")
                                 .resizable()
                                 .foregroundStyle(.white)
                                 .frame(width: 25)
@@ -68,41 +71,54 @@ struct StationPopularView: View {
             .frame(maxWidth: 139, maxHeight: 139)
             //логика нажатия
             .background(NavigationLink(
-                destination: StationDetailsView(station: self.station),
+                destination: StationDetailsView(station: self.station, volume: $volume),
                             isActive: $isActive) {
                             EmptyView()
                         })
             .onTapGesture {
                 selectedStationID = station.stationuuid
-                appManager.playAudio(url: station.url)
+//                appManager.playAudio(url: station.url)
             }
             .onLongPressGesture() {
                 if selectedStationID == station.stationuuid {
                     print("long tap")
                     isActive.toggle()
-                    appManager.isActiveDetailView = true
+//                    appManager.isActiveDetailView = true
                 }
             }
             .overlay {
-                Text(appManager.getString(tags: self.station.tags)?.uppercased() ?? self.station.countrycode)
+                Text(getString(tags: self.station.tags)?.uppercased() ?? self.station.countrycode)
                     .lineLimit(2)
                     .truncationMode(.tail)
                     .fixedSize(horizontal: false, vertical: true)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(selectedStationID == station.stationuuid ? .white : DS.Colors.frame)
-                    .font(.custom(DS.Fonts.sfBold, size: appManager.getString(tags: self.station.tags) != nil ? 20 : 30))
+                    .font(.custom(DS.Fonts.sfBold, size: getString(tags: self.station.tags) != nil ? 20 : 30))
                     .offset(CGSize(width: 0.0, height: -15.0))
             }
+    }
+    
+    func getString(tags: String) -> String? {
+        let tagsArr = tags.components(separatedBy: ",")
+        if tagsArr.count > 0 {
+            if tagsArr[0] == "" {
+                return nil
+            } else {
+                return tagsArr[0]
+            }
+        } else {
+            return nil
+        }
     }
     
 }
 
 
 //MARK: - PREVIEW
-struct StationPopularView_Previews: PreviewProvider {
-    static let previewAppManager = HomeViewModel()
-    static var previews: some View {
-        StationPopularView(selectedStationID: .constant(""), station: .testStation())
-            .environmentObject(previewAppManager)
-    }
+#Preview {
+    StationPopularView(
+        selectedStationID: .constant(""),
+        volume: .constant(5.5),
+        isPlay: .constant(true),
+        station: StationModel.testStation())
 }

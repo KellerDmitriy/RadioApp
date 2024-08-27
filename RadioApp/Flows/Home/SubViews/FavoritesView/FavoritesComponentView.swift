@@ -15,6 +15,7 @@ struct FavoritesComponentView: View {
    
     @Environment(\.managedObjectContext) var moc
     @Binding var selectedStationID: String
+    @Binding var volume: CGFloat
     @State private var isActive = false
     //@State private var isActive = false
     var station: StationModel
@@ -65,7 +66,7 @@ struct FavoritesComponentView: View {
     
         .frame(width: 293, height: 120)
         .background(NavigationLink(
-            destination: StationDetailsView(station: station),
+            destination: StationDetailsView(station: station, volume: $volume),
             isActive: $isActive) {
                 EmptyView()
             })
