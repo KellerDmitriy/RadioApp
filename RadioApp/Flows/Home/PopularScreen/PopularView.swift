@@ -38,13 +38,10 @@ struct PopularView: View {
                     .foregroundStyle(.white)
                 Spacer()
             }
-            .padding(.leading, 60)
+            .padding(.leading)
             .padding(.top, 100)
             .background(DS.Colors.darkBlue)
-            HStack {
-                VolumeView(rotation: false, volume: $viewModel.volume)
-                    .frame(width: 33 ,height: 250)
-                    .padding(.leading, 15)
+
                 VStack {
                     ScrollView(.vertical, showsIndicators: false){
                         LazyVGrid(columns: [GridItem(.adaptive(minimum: 139))], spacing: 15) {
@@ -61,7 +58,7 @@ struct PopularView: View {
                                 }
                             }
                         }
-                    }
+                    
                 }
                 Spacer()
             }

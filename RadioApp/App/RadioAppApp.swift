@@ -29,7 +29,7 @@ struct RadioAppApp: App {
                     WelcomeView()
                         .preferredColorScheme(.dark)
                 } else if AuthService.shared.isAuthenticated() {
-                    MainView()
+                   HomeView()
                         .preferredColorScheme(.dark)
                 } else {
                     AuthView().onOpenURL { url in

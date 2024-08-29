@@ -11,7 +11,7 @@ struct AllStationsView: View {
     @StateObject var viewModel: AllStationViewModel
     
     @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
-  
+    
     @State private var isSearching: Bool = false
     
     init(
@@ -35,39 +35,31 @@ struct AllStationsView: View {
                     .foregroundStyle(.white)
                 Spacer()
             }
-            .padding(.leading, 60)
+            .padding(.leading)
             .padding(.top, 100)
             // search view
             SearchBarView(
                 searchText: $viewModel.searchText,
                 isSearching: $isSearching
             )
-                .frame(height: 56)
+            .frame(height: 56)
             Spacer()
-            HStack{
-                VolumeView(rotation: false, 
-                           volume: $viewModel.volume
-                )
-                    .frame(width: 33 ,height: 250)
-                    .padding(.leading, 15)
-                VStack {
-                    ScrollView(.vertical, showsIndicators: false) {
-                        LazyVStack(pinnedViews: .sectionHeaders) {
-                            ForEach(viewModel.stations, id: \.stationuuid) { station in
-                                NavigationLink {
-                                    StationDetailsView(station: station, volume: $viewModel.volume
-                                    )
-                                    
-                                } label: {
-                                    StationView(station: station, selectedStationID: $viewModel.selectedStation, volume: $viewModel.volume)
-                                }
+            VStack {
+                ScrollView(.vertical, showsIndicators: false) {
+                    LazyVStack(pinnedViews: .sectionHeaders) {
+                        ForEach(viewModel.stations, id: \.stationuuid) { station in
+                            NavigationLink {
+                                StationDetailsView(station: station, volume: $viewModel.volume
+                                )
+                                
+                            } label: {
+                                StationView(station: station, selectedStationID: $viewModel.selectedStation, volume: $viewModel.volume)
                             }
                         }
-                        .background(DS.Colors.darkBlue)
-                        .navigationViewStyle(.stack)
                     }
+                    .background(DS.Colors.darkBlue)
+                    .navigationViewStyle(.stack)
                 }
-                Spacer()
             }
             Spacer()
         }

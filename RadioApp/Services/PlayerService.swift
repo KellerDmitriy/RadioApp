@@ -105,7 +105,7 @@ final class PlayerService {
         progressObserver = session.observe(\.outputVolume) { [self] (session, value) in
             DispatchQueue.main.async {
                 self.volume = CGFloat(session.outputVolume)
-                print("current volume value - \(self.volume)")
+               
             }
         }
      

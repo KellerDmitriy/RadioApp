@@ -45,7 +45,7 @@ struct VolumeView: View {
                 }
             }
             .frame(width: 10)
-            
+        
             // MARK: - Speaker Icon
             Image(systemName: volume == 0 ? "speaker.slash" : "speaker.wave.2")
                 .resizable()
@@ -57,6 +57,7 @@ struct VolumeView: View {
         
         // MARK: - Main View Rotation
         .rotationEffect(rotation ? Angle(degrees: (90)) : Angle(degrees: 0))
+        .background(DS.Colors.darkBlue)
     }
 }
 
