@@ -120,12 +120,8 @@ struct FavoritesComponentView: View {
 
 
 //MARK: - PREVIEW
-//struct FaviritesComponentView_Previews: PreviewProvider {
-//    static let previewAppManager = ViewModel()
-//    static var previews: some View {
-//        FavoritesComponentView(selectedStationID: .constant(""), station: .testStation())
-//            .environmentObject(previewAppManager)
-//    }
-//}
+#Preview {
+    FavoritesView(isPlayMusic: true, volume: 1.0)
+}
 
 

@@ -7,7 +7,9 @@
 
 import Foundation
 
+@MainActor
 final class PopularViewModel: ObservableObject {
+    // MARK: - Stored Properties
     private let networkService: NetworkService
     private let playerService: PlayerService
     
@@ -17,15 +19,18 @@ final class PopularViewModel: ObservableObject {
     var selectedStation = ""
     var isActiveDetailView = false
     
-    @Published var isPlay = false
+    @Published var isPlayMusic: Bool
     @Published var volume: CGFloat
     @Published var error: Error? = nil
     
+    // MARK: - Initializer
     init(
+        isPlayMusic: Bool,
         volume: CGFloat,
         networkService: NetworkService = .shared,
         playerService: PlayerService = .shared
     ) {
+        self.isPlayMusic = isPlayMusic
         self.volume = volume
         self.networkService = networkService
         self.playerService = playerService
@@ -33,16 +38,14 @@ final class PopularViewModel: ObservableObject {
     
     func fetchTopStations() async throws {
         do {
-            var fetchedStations: [StationModel]
-            fetchedStations = try await networkService.getTopStations(numberLimit: numberLimit)
-            stations = fetchedStations
+            stations = try await networkService.getTopStations(numberLimit: numberLimit)
         } catch {
             self.error = error
         }
     }
     
     func playFirstStation() {
-        if stations.count > 0 {
+       if isPlayMusic {
             selectedStation = stations[0].stationuuid
             playAudio(stations[0].url)
         }

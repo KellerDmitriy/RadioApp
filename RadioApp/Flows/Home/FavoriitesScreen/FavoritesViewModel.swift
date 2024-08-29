@@ -19,13 +19,15 @@ final class FavoritesViewModel: ObservableObject {
     var isActiveDetailView = false
     
     @Published var volume: CGFloat
-
+    @Published var isPlayMusic: Bool
     
     init(
+        isPlayMusic: Bool,
         volume: CGFloat,
         networkService: NetworkService = .shared,
         playerService: PlayerService = .shared
     ) {
+        self.isPlayMusic = isPlayMusic
         self.volume = volume
         self.networkService = networkService
         self.playerService = playerService

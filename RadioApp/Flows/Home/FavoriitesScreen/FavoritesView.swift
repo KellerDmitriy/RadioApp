@@ -15,12 +15,14 @@ struct FavoritesView: View {
     @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
     
     init(
+        isPlayMusic: Bool,
         volume: CGFloat,
         networkService: NetworkService = .shared,
         playerService: PlayerService = .shared
     ) {
         self._viewModel = StateObject(
             wrappedValue: FavoritesViewModel(
+                isPlayMusic: isPlayMusic,
                 volume: volume,
                 networkService: networkService,
                 playerService: playerService
@@ -97,5 +99,5 @@ struct FavoritesView: View {
 
 // MARK: - Preview
 #Preview {
-    FavoritesView(volume: 5.0)
+    FavoritesView(isPlayMusic: true, volume: 5.0)
 }

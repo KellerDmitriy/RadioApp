@@ -1,5 +1,5 @@
 //
-//  ContentViewModel.swift
+//  MainViewModel.swift
 //  RadioApp
 //
 //  Created by Келлер Дмитрий on 27.08.2024.
@@ -9,7 +9,7 @@ import Foundation
 import AVFAudio
 
 @MainActor
-final class ContentViewModel: ObservableObject {
+final class MainViewModel: ObservableObject {
     // MARK: - Stored Properties
     @Published private(set) var currentUser: DBUser? = nil
     @Published var volume: CGFloat = 0.0
@@ -30,7 +30,7 @@ final class ContentViewModel: ObservableObject {
     private let playerService: PlayerService
     private let authService: AuthService
     
-    
+    // MARK: - Initializer
     init(
         authService: AuthService = .shared,
         networkService: NetworkService = .shared,
@@ -43,6 +43,7 @@ final class ContentViewModel: ObservableObject {
         self.playerService = playerService
     }
     
+    // MARK: - Methods
     func loadCurrentUser() async throws {
         do {
             let authDataResult = try authService.getAuthenticatedUser()

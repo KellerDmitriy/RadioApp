@@ -19,16 +19,20 @@ final class PlayerService {
 
     private var currentURL: String?
     
-    @Published var volume = AVAudioSession.sharedInstance().outputVolume {
-        didSet {
-            player?.volume = volume
-        }
-    }
-   
+    @Published var volume: CGFloat = 0.0
+    
+    // Audio session object
     let session = AVAudioSession.sharedInstance()
+    // Observer
+    var progressObserver: NSKeyValueObservation!
+
 
     // MARK: - Initialization
-    private init() {}
+    private init() {
+        
+        self.volume = CGFloat(session.outputVolume)
+        setVolme()
+    }
 
     // MARK: - Audio Playback Methods
     func playAudio(url: String) {
@@ -51,7 +55,7 @@ final class PlayerService {
         
         playerItem = AVPlayerItem(url: musicURL)
         player = AVPlayer(playerItem: playerItem)
-        player?.volume = volume
+        player?.volume = Float(volume)
         player?.play()
         currentURL = episode.url
     }
@@ -91,4 +95,19 @@ final class PlayerService {
     //    return player?.timeControlStatus == .playing ? true : false
     //}
 
+    func setVolme() {
+        do {
+            try session.setCategory(AVAudioSession.Category.ambient)
+            try session.setActive(true, options: .notifyOthersOnDeactivation)
+        } catch let err {
+            print(err.localizedDescription)
+        }
+        progressObserver = session.observe(\.outputVolume) { [self] (session, value) in
+            DispatchQueue.main.async {
+                self.volume = CGFloat(session.outputVolume)
+                print("current volume value - \(self.volume)")
+            }
+        }
+     
+    }
 }

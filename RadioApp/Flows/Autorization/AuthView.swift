@@ -174,7 +174,7 @@ struct AuthView: View {
     }
     
     private var signInButton: some View {
-        NavigationLink(destination: ContentView(), isActive: $viewModel.isAuthenticated) {
+        NavigationLink(destination: MainView(), isActive: $viewModel.isAuthenticated) {
             CustomButton(
                 action: isSignUpActive
                 ? registerUser

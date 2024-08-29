@@ -1,18 +1,19 @@
 //
-//  ContentView.swift
+//  MainView.swift
 //  RadioApp
 //
 //  Created by Evgeniy K on 31.07.2024.
 //
 import SwiftUI
 
-struct ContentView: View {
+struct MainView: View {
     // MARK: - Properties
-    @StateObject var viewModel: ContentViewModel
+    @StateObject var viewModel: MainViewModel
     
     @State private var selectedTab: Tab = .popular
     @State private var isProfileViewActive = false
     
+    // MARK: - Initializer
     init(
         authService: AuthService = .shared,
         userService: UserService = .shared,
@@ -20,7 +21,7 @@ struct ContentView: View {
         networkService: NetworkService = .shared
     ) {
         self._viewModel = StateObject(
-            wrappedValue: ContentViewModel(
+            wrappedValue: MainViewModel(
                 authService: authService,
                 networkService: networkService,
                 userService: userService,
@@ -34,25 +35,27 @@ struct ContentView: View {
         ZStack(alignment: .bottom) {
             switch selectedTab {
             case .popular:
-                PopularView(volume: viewModel.volume)
-                   
+                PopularView(
+                    isPlayMusic: viewModel.isPlay,
+                    volume: viewModel.volume
+                )
+               
             case .favorites:
-                FavoritesView(volume: viewModel.volume)
+                FavoritesView(
+                    isPlayMusic: viewModel.isPlay,
+                    volume: viewModel.volume
+                )
                 
             case .allStations:
                 AllStationsView(volume: viewModel.volume)
             }
             
-          
-            
+            CustomTabBarView(selectedTab: $selectedTab)
             RadioPlayerView(isPlay: $viewModel.isPlay)
                 .overlay(PlayButtonAnimation(animation: $viewModel.isPlay))
                 .frame(height: 110)
                 .padding(.bottom, 80)
-            CustomTabBarView(selectedTab: $selectedTab)
-                
-        
-            
+
             NavigationLink(destination: ProfileView(),
                            isActive: $isProfileViewActive,
                            label: { EmptyView() })
@@ -72,6 +75,7 @@ struct ContentView: View {
                 ToolbarProfile(
                     profileImageURL: viewModel.profileImageURL,
                     toolbarRoute: {
+                      
                         withAnimation(.easeInOut) {
                             isProfileViewActive.toggle()
                         }
@@ -79,7 +83,7 @@ struct ContentView: View {
                 )
             }
         }
-
+      
         .ignoresSafeArea()
         .navigationBarBackButtonHidden(true)
     }
@@ -87,5 +91,5 @@ struct ContentView: View {
 
 // MARK: - Preview
 #Preview {
-    ContentView()
+    MainView()
 }

@@ -16,6 +16,7 @@ struct StationPopularView: View {
     @Binding var isPlay: Bool
     
     var station: StationModel
+    
     //MARK: - BODY
     var body: some View {
             ZStack{

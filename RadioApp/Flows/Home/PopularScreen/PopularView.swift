@@ -14,12 +14,14 @@ struct PopularView: View {
     @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
     
     init(
+        isPlayMusic: Bool,
         volume: CGFloat,
         networkService: NetworkService = .shared,
         playerService: PlayerService = .shared
     ) {
         self._viewModel = StateObject(
             wrappedValue: PopularViewModel(
+                isPlayMusic: isPlayMusic,
                 volume: volume,
                 networkService: networkService,
                 playerService: playerService
@@ -52,7 +54,7 @@ struct PopularView: View {
                                     StationPopularView(
                                     selectedStationID: $viewModel.selectedStation,
                                     volume: $viewModel.volume,
-                                    isPlay: $viewModel.isPlay,
+                                    isPlay: $viewModel.isPlayMusic,
                                     station: item
                                     )
                                         .frame(width: 139, height: 139)
@@ -70,6 +72,7 @@ struct PopularView: View {
         .task {
             Task {
                 try await viewModel.fetchTopStations()
+                print(viewModel.isPlayMusic)
             }
 //            viewModel.playFirstStation()
         }
@@ -79,7 +82,7 @@ struct PopularView: View {
 
 // MARK: - Preview
 #Preview {
-    PopularView(volume: 5.0)
+    PopularView(isPlayMusic: true, volume: 5.0)
 }
 
 
