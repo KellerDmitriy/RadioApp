@@ -8,18 +8,14 @@
 import SwiftUI
 
 struct ToolbarName: View {
-    @State var userName: String
+    let userName: String
     
     var body: some View {
         
         HStack {
             Image(.toolbarplay)
-            Text("Hello")
+            Text("Hello \(userName)")
                 .foregroundStyle(.white)
-                .font(.custom(DS.Fonts.sfMedium, size: 25))
-            
-            Text("\(userName)")
-                .foregroundStyle(DS.Colors.pinkNeon)
                 .font(.custom(DS.Fonts.sfMedium, size: 25))
             
             Spacer()

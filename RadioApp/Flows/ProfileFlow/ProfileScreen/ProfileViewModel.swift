@@ -14,12 +14,15 @@ import FirebaseDatabase
 final class ProfileViewModel: ObservableObject {
     // MARK: - Stored Properties
     @Published private(set) var currentUser: DBUser? = nil
-    
     @Published var error: ProfileFlowError?
     @AppStorage("isOnboarding") var isOnboarding = true
     
-    var userName: String { currentUser?.name ?? "" }
-    var userEmail: String { currentUser?.email ?? "" }
+    var userName: String {
+        currentUser?.name ?? ""
+    }
+    var userEmail: String {
+        currentUser?.email ?? ""
+    }
     var profileImageURL: URL {
         guard let urlString = currentUser?.profileImagePathUrl else { return URL(fileURLWithPath: "") }
         return URL(string: urlString)!

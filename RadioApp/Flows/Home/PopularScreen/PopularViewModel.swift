@@ -16,8 +16,10 @@ final class PopularViewModel: ObservableObject {
     var stations = [StationModel]()
     var selectedStation = ""
     var isActiveDetailView = false
+    
     @Published var isPlay = false
     @Published var volume: CGFloat
+    @Published var error: Error? = nil
     
     init(
         volume: CGFloat,
@@ -30,14 +32,17 @@ final class PopularViewModel: ObservableObject {
     }
     
     func fetchTopStations() async throws {
-        var fetchedStations: [StationModel]
-        fetchedStations = try await networkService.getTopStations(numberLimit: numberLimit)
-        stations = fetchedStations
+        do {
+            var fetchedStations: [StationModel]
+            fetchedStations = try await networkService.getTopStations(numberLimit: numberLimit)
+            stations = fetchedStations
+        } catch {
+            self.error = error
+        }
     }
     
     func playFirstStation() {
         if stations.count > 0 {
-            print(stations.count)
             selectedStation = stations[0].stationuuid
             playAudio(stations[0].url)
         }

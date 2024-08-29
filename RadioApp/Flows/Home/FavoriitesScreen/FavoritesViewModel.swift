@@ -17,7 +17,9 @@ final class FavoritesViewModel: ObservableObject {
     var stations = [StationModel]()
     var selectedStation = ""
     var isActiveDetailView = false
+    
     @Published var volume: CGFloat
+
     
     init(
         volume: CGFloat,

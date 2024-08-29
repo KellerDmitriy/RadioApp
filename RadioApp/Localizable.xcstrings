@@ -4,9 +4,6 @@
     "" : {
 
     },
-    "%@" : {
-
-    },
     "%@%%" : {
 
     },
@@ -738,7 +735,7 @@
         }
       }
     },
-    "Hello" : {
+    "Hello %@" : {
 
     },
     "Here's a friendly reminder to smile today! 😄" : {

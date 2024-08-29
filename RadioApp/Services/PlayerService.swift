@@ -10,27 +10,27 @@ import AVFoundation
 import Combine
 
 final class PlayerService {
-
     // MARK: - Constants
     static let shared = PlayerService()
 
     // MARK: - Properties
-
     private var player: AVPlayer?
     private var playerItem: AVPlayerItem?
 
     private var currentURL: String?
-    private var amplitude: CGFloat?
-
-    var volume = AVAudioSession.sharedInstance().outputVolume
+    
+    @Published var volume = AVAudioSession.sharedInstance().outputVolume {
+        didSet {
+            player?.volume = volume
+        }
+    }
+   
     let session = AVAudioSession.sharedInstance()
 
     // MARK: - Initialization
-
     private init() {}
 
     // MARK: - Audio Playback Methods
-
     func playAudio(url: String) {
         guard let url = URL.init(string: url) else { return }
         do {

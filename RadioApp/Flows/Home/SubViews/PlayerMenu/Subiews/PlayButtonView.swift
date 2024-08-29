@@ -8,22 +8,20 @@
 import SwiftUI
 
 struct PlayButtonView: View {
-    
-    var isPlay = false
+    @Binding var isPlay: Bool
     var action: () -> ()
     
     var body: some View {
         Button {
             action()
-            
+            isPlay.toggle()
         } label: {
             Image(systemName: isPlay ? "play.fill" : "pause.fill")
                 .resizable()
                 .foregroundStyle(.white)
                 .frame(width: 37, height: 37)
-            
         }
-        .frame(width: 89, height: 89)
+        .frame(width: 70, height: 70)
         .background {
             PlayButtonShape()
                 .fill(DS.Colors.pinkNeon)
@@ -31,23 +29,24 @@ struct PlayButtonView: View {
         .background {
             PlayButtonShape()
                 .fill(DS.Colors.darkBlue)
-                .frame(width: 106, height: 106)
+                .frame(width: 75, height: 75)
         }
         .background {
             PlayButtonShape()
                 .fill(DS.Colors.blueNeon)
-                .frame(width: 111, height: 111)
+                .frame(width: 83, height: 83)
         }
         .background {
             PlayButtonShape()
                 .fill(DS.Colors.darkBlue)
-                .frame(width: 122, height: 122)
+                .frame(width: 90, height: 90)
         }
         .background {
             PlayButtonShape()
                 .fill(DS.Colors.pinkNeon)
-                .frame(width: 127, height: 127)
+                .frame(width: 100, height: 100)
         }
+       
     }
 }
 

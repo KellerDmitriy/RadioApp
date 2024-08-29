@@ -10,6 +10,7 @@ import SwiftUI
 struct StationDetailsView: View {
     var station: StationModel
     @Binding var volume: CGFloat
+
     
     var body: some View {
         VStack {

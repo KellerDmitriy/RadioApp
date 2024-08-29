@@ -11,14 +11,11 @@ import SwiftUI
 
 struct FavoritesComponentView: View {
     //MARK: - PROPERTIES
-    @EnvironmentObject var appManager: HomeViewModel
-   
-    @Environment(\.managedObjectContext) var moc
     @Binding var selectedStationID: String
     @Binding var volume: CGFloat
     @State private var isActive = false
-    //@State private var isActive = false
     var station: StationModel
+    
     //MARK: - BODY
     var body: some View {
         ZStack {
@@ -26,8 +23,8 @@ struct FavoritesComponentView: View {
                 .fill(selectedStationID == station.stationuuid ? DS.Colors.pinkNeon : .clear)
             HStack{
                 VStack(alignment: .leading, spacing: 10) {
-                    Text(appManager.getString(tags: self.station.tags)?.uppercased() ?? self.station.countrycode)
-                        .font(.custom(DS.Fonts.sfBold, size: appManager.getString(tags: self.station.tags) != nil ? 20 : 30))
+                    Text(getString(tags: self.station.tags)?.uppercased() ?? self.station.countrycode)
+                        .font(.custom(DS.Fonts.sfBold, size: getString(tags: self.station.tags) != nil ? 20 : 30))
                         .foregroundStyle(selectedStationID == station.stationuuid ? .blue : DS.Colors.frame)
                     HStack() {
                         Spacer()
@@ -66,19 +63,22 @@ struct FavoritesComponentView: View {
     
         .frame(width: 293, height: 120)
         .background(NavigationLink(
-            destination: StationDetailsView(station: station, volume: $volume),
+            destination: StationDetailsView(
+                station: station,
+                volume: $volume
+            ),
             isActive: $isActive) {
                 EmptyView()
             })
         .onTapGesture {
             selectedStationID = station.stationuuid
-            appManager.playAudio(url: station.url)
+//            appManager.playAudio(url: station.url)
         }
         .onLongPressGesture() {
             if selectedStationID == station.stationuuid {
                 print("long tap")
                 isActive.toggle()
-                appManager.isActiveDetailView = true
+//                appManager.isActiveDetailView = true
             }
         }
         .clipShape(.rect(cornerRadius: 20))
@@ -101,6 +101,20 @@ struct FavoritesComponentView: View {
 //                appManager.stopAudioStream()
 //            }
 //        }
+
+    }
+    
+    func getString(tags: String) -> String? {
+        let tagsArr = tags.components(separatedBy: ",")
+        if tagsArr.count > 0 {
+            if tagsArr[0] == "" {
+                return nil
+            } else {
+                return tagsArr[0]
+            }
+        } else {
+            return nil
+        }
     }
 }
 

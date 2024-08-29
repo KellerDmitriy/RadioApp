@@ -9,11 +9,12 @@ import SwiftUI
 
 struct StationView: View {
 
-    @Binding var selectedStationID: String
+    @State private var isActive = false
     var station: StationModel
+    @Binding var selectedStationID: String
     @Binding var volume: CGFloat
 
-    @State private var isActive = false
+    
     var body: some View {
 
         ZStack {
@@ -124,10 +125,7 @@ struct StationView: View {
 }
 
 //MARK: - PREVIEW
-struct StationView_Previews: PreviewProvider {
-    static let previewAppManager = HomeViewModel()
-    static var previews: some View {
-        StationView(selectedStationID: .constant(""), station: .testStation(), volume: .constant(5.0))
-            .environmentObject(previewAppManager)
-    }
+#Preview {
+    StationView(station: StationModel.testStation(), selectedStationID: .constant(""), volume: .constant(5.0))
 }
+

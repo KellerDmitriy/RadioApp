@@ -7,19 +7,17 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct EqualizerView: View {
 
-    @EnvironmentObject var appManager: HomeViewModel
     @State private var phaseShift: Double = 0.0
-
+    let amplitude = CGFloat.random(in: 0...1)
+    
     var body: some View {
             GeometryReader { geometry in
                 HStack(spacing: 10) {
                     ForEach(1 ..< 33, id: \.self) { column in
                         let randomFactor = CGFloat.random(in: 0.5...1.5)
-                        let amplitudeModifier = appManager.amplitude * randomFactor * CGFloat(column) * 0.5
+                        let amplitudeModifier = amplitude * randomFactor * CGFloat(column) * 0.5
                         let circleCount = max(1, min(40, Int(amplitudeModifier)))
                         
                         let xPosition = Double(column) / 6.0
@@ -54,5 +52,4 @@ struct EqualizerView: View {
 
 #Preview {
     EqualizerView()
-        .environmentObject(HomeViewModel())
 }

@@ -52,5 +52,5 @@ struct VolumeView: View {
 
 //MARK: - PREVIEW
 #Preview {
-    VolumeView(rotation: true, volume: .constant(10.0))
+    VolumeView(rotation: false, volume: .constant(10.0))
 }

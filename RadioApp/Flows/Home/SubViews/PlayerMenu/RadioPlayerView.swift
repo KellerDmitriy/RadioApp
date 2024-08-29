@@ -8,18 +8,26 @@
 import SwiftUI
 
 struct RadioPlayerView: View {
-    @EnvironmentObject var appManager: HomeViewModel
-    @State var isPlay = false
+    @Binding var isPlay: Bool
     
     var body: some View {
-        HStack {
-            BackButtonView(action: backButtonTap)
-            PlayButtonView(isPlay: isPlay, action: playButtonTap)
-            ForwardButtonView(action: forwardButtonTap)
+        ZStack {
+           DS.Colors.darkBlue
+                .ignoresSafeArea()
+            HStack {
+                Spacer()
+                BackButtonView(action: backButtonTap)
+                Spacer()
+                PlayButtonView(isPlay: $isPlay, action: playButtonTap)
+                Spacer()
+                ForwardButtonView(action: forwardButtonTap)
+                Spacer()
+            }
+          
         }
     }
     
-    
+
     func backButtonTap() {
         
     }
@@ -35,5 +43,5 @@ struct RadioPlayerView: View {
 }
 
 #Preview {
-    RadioPlayerView()
+    RadioPlayerView(isPlay: .constant(true))
 }

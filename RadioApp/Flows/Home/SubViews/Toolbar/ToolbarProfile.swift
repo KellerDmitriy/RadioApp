@@ -25,7 +25,7 @@ struct UserIcon: Shape {
 }
 
 struct ToolbarProfile: View {
-    @State var profileImageURL: URL?
+    let profileImageURL: URL?
     
     var toolbarRoute: () -> ()
     

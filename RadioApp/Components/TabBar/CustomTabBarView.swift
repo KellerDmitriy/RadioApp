@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 // MARK: - CustomTabBarView
 struct CustomTabBarView: View {
     @Binding var selectedTab: Tab
@@ -75,13 +74,6 @@ struct CustomTabBarView: View {
             }
             .frame(maxWidth: UIScreen.main.bounds.width / 3)
         }
-//        .overlay {
-//            HStack(spacing: 30) {
-//                RadioPlayerView()
-//                ForwardButtonView()
-//            }
-//            .offset(CGSize(width: 4, height: -120))
-//        }
         .frame(height: 80)
         .padding(.bottom, 3)
         .background(DS.Colors.darkBlue)

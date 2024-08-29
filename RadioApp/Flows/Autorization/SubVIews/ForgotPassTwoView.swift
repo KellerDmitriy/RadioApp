@@ -8,7 +8,18 @@
 import SwiftUI
 
 struct ForgotPassTwoView: View {
-    @EnvironmentObject var appManager: HomeViewModel
+    @StateObject var viewModel: AuthViewModel
+    
+    // MARK: - Initializer
+    init(
+        authService: AuthService = .shared
+    ) {
+        self._viewModel = StateObject(
+            wrappedValue: AuthViewModel(
+                authService: authService
+            )
+        )
+    }
     
     var body: some View {
         ZStack {
@@ -24,10 +35,10 @@ struct ForgotPassTwoView: View {
                     .font(.custom(.sfBold, size: UIScreen.height * 1/16))
                     .padding(.bottom, UIScreen.height * 1/32)
                 
-                SecureField(Resources.Text.password, text: $appManager.password)
+                SecureField(Resources.Text.password, text: $viewModel.password)
                     .font(.title)
                 
-                SecureField(Resources.Text.confirmPassword, text: $appManager.password)
+                SecureField(Resources.Text.confirmPassword, text: $viewModel.password)
                     .font(.title)
                                 
                 CustomButton(action: {}, title: Resources.Text.changePassword, buttonType: .onboarding) // TODO: изменить тип кнопки и добавить действие
@@ -39,11 +50,4 @@ struct ForgotPassTwoView: View {
     }
 }
 
-struct ForgotPassTwoView_Previews: PreviewProvider {
-    static let previewAppManager = HomeViewModel()
-    
-    static var previews: some View {
-        ForgotPassTwoView()
-            .environmentObject(previewAppManager)
-    }
-}
+

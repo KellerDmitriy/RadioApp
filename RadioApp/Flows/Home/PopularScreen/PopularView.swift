@@ -20,7 +20,8 @@ struct PopularView: View {
     ) {
         self._viewModel = StateObject(
             wrappedValue: PopularViewModel(
-                volume: volume, networkService: networkService,
+                volume: volume,
+                networkService: networkService,
                 playerService: playerService
             )
         )
@@ -38,9 +39,9 @@ struct PopularView: View {
             .padding(.leading, 60)
             .padding(.top, 100)
             .background(DS.Colors.darkBlue)
-            HStack{
+            HStack {
                 VolumeView(rotation: false, volume: $viewModel.volume)
-                    .frame(width: 33 ,height: 150)
+                    .frame(width: 33 ,height: 250)
                     .padding(.leading, 15)
                 VStack {
                     ScrollView(.vertical, showsIndicators: false){
@@ -62,17 +63,15 @@ struct PopularView: View {
                 }
                 Spacer()
             }
+        
             Spacer()
         }
         .background(DS.Colors.darkBlue)
         .task {
-            do {
+            Task {
                 try await viewModel.fetchTopStations()
-            } catch let err {
-                // handle error
-                print(err.localizedDescription)
             }
-            viewModel.playFirstStation()
+//            viewModel.playFirstStation()
         }
     }
 }

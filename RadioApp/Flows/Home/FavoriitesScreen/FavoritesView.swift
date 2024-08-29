@@ -13,7 +13,6 @@ struct FavoritesView: View {
     @StateObject var viewModel: FavoritesViewModel
     
     @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
-
     
     init(
         volume: CGFloat,
@@ -22,7 +21,8 @@ struct FavoritesView: View {
     ) {
         self._viewModel = StateObject(
             wrappedValue: FavoritesViewModel(
-                volume: volume, networkService: networkService,
+                volume: volume,
+                networkService: networkService,
                 playerService: playerService
             )
         )
@@ -55,7 +55,8 @@ struct FavoritesView: View {
                             ForEach(viewModel.stations, id: \.stationuuid) {item in
                                 FavoritesComponentView(
                                     selectedStationID: $viewModel.selectedStation,
-                                    volume: $viewModel.volume, station: item
+                                    volume: $viewModel.volume,
+                                    station: item
                                 )
                             }
                         }

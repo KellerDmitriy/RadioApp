@@ -8,13 +8,22 @@
 import Foundation
 import AVFAudio
 
+@MainActor
 final class ContentViewModel: ObservableObject {
     // MARK: - Stored Properties
     @Published private(set) var currentUser: DBUser? = nil
-    @Published var userName: String = ""
-    @Published var profileImageURL: URL?
+    @Published var volume: CGFloat = 0.0
+    @Published var isPlay = false
+    @Published var error: Error?
     
-    var volume: CGFloat = CGFloat(AVAudioSession.sharedInstance().outputVolume)
+    var userName: String {
+        currentUser?.name ?? ""
+    }
+
+    var profileImageURL: URL {
+        guard let urlString = currentUser?.profileImagePathUrl else { return URL(fileURLWithPath: "") }
+        return URL(string: urlString)!
+    }
     
     private let networkService: NetworkService
     private let userService: UserService
@@ -35,11 +44,15 @@ final class ContentViewModel: ObservableObject {
     }
     
     func loadCurrentUser() async throws {
-        let authDataResult = try authService.getAuthenticatedUser()
-        self.currentUser = try await userService.getUser(userId: authDataResult.uid)
-        if let currentUser = currentUser {
-            self.userName = currentUser.name
-            self.profileImageURL = URL(string: currentUser.profileImagePathUrl ?? "")
+        do {
+            let authDataResult = try authService.getAuthenticatedUser()
+            self.currentUser = try await userService.getUser(userId: authDataResult.uid)
+        } catch {
+            self.error = error
         }
+    }
+    
+    func getVolume() {
+        volume = CGFloat(playerService.volume)
     }
 }

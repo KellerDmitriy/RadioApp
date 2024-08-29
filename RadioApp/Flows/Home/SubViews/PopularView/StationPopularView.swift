@@ -10,7 +10,7 @@ import SwiftUI
 struct StationPopularView: View {
     //MARK: - PROPERTIES
     @State private var isActive = false
-    
+
     @Binding var selectedStationID: String
     @Binding var volume: CGFloat
     @Binding var isPlay: Bool
@@ -71,7 +71,10 @@ struct StationPopularView: View {
             .frame(maxWidth: 139, maxHeight: 139)
             //логика нажатия
             .background(NavigationLink(
-                destination: StationDetailsView(station: self.station, volume: $volume),
+                destination: StationDetailsView(
+                    station: self.station,
+                    volume: $volume
+                ),
                             isActive: $isActive) {
                             EmptyView()
                         })

@@ -55,10 +55,11 @@ struct AllStationsView: View {
                         LazyVStack(pinnedViews: .sectionHeaders) {
                             ForEach(viewModel.stations, id: \.stationuuid) { station in
                                 NavigationLink {
-                                    StationDetailsView(station: station, volume: $viewModel.volume)
+                                    StationDetailsView(station: station, volume: $viewModel.volume
+                                    )
                                     
                                 } label: {
-                                    StationView(selectedStationID: $viewModel.selectedStation, station: station, volume: $viewModel.volume)
+                                    StationView(station: station, selectedStationID: $viewModel.selectedStation, volume: $viewModel.volume)
                                 }
                             }
                         }

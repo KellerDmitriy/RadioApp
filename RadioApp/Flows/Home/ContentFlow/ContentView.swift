@@ -4,10 +4,8 @@
 //
 //  Created by Evgeniy K on 31.07.2024.
 //
-
 import SwiftUI
 
-// MARK: - ContentView
 struct ContentView: View {
     // MARK: - Properties
     @StateObject var viewModel: ContentViewModel
@@ -33,8 +31,7 @@ struct ContentView: View {
     
     // MARK: - Body
     var body: some View {
-        VStack {
-            Spacer()
+        ZStack(alignment: .bottom) {
             switch selectedTab {
             case .popular:
                 PopularView(volume: viewModel.volume)
@@ -46,35 +43,43 @@ struct ContentView: View {
                 AllStationsView(volume: viewModel.volume)
             }
             
-            // Custom Tab Bar
-            CustomTabBarView(selectedTab: $selectedTab)
-            Spacer()
+          
             
+            RadioPlayerView(isPlay: $viewModel.isPlay)
+                .overlay(PlayButtonAnimation(animation: $viewModel.isPlay))
+                .frame(height: 110)
+                .padding(.bottom, 80)
+            CustomTabBarView(selectedTab: $selectedTab)
+                
+        
+            
+            NavigationLink(destination: ProfileView(),
+                           isActive: $isProfileViewActive,
+                           label: { EmptyView() })
         }
         .task {
             try? await viewModel.loadCurrentUser()
+            viewModel.getVolume()
+            print(viewModel.volume)
         }
         
         .toolbar {
-            // Toolbar Items
             ToolbarItem(placement: .topBarLeading) {
                 ToolbarName(userName: viewModel.userName)
+               
             }
             ToolbarItem(placement: .topBarTrailing) {
                 ToolbarProfile(
                     profileImageURL: viewModel.profileImageURL,
                     toolbarRoute: {
-                    withAnimation(.easeInOut) {
-                        isProfileViewActive.toggle()
+                        withAnimation(.easeInOut) {
+                            isProfileViewActive.toggle()
+                        }
                     }
-                })
+                )
             }
         }
-        .background(
-            NavigationLink(destination: ProfileView(),
-                           isActive: $isProfileViewActive,
-                           label: { EmptyView() })
-        )
+
         .ignoresSafeArea()
         .navigationBarBackButtonHidden(true)
     }
