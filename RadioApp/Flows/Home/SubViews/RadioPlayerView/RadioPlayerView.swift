@@ -8,40 +8,46 @@
 import SwiftUI
 
 struct RadioPlayerView: View {
-    @Binding var isPlay: Bool
+    @ObservedObject var playerService: PlayerService
     
     var body: some View {
         ZStack {
-           DS.Colors.darkBlue
+            DS.Colors.darkBlue
                 .ignoresSafeArea()
             HStack {
                 Spacer()
                 BackButtonView(action: backButtonTap)
                 Spacer()
-                PlayButtonView(isPlay: $isPlay, action: playButtonTap)
+                PlayButtonView(isPlay: $playerService.isPlayMusic, action: playButtonTap)
+                 
                 Spacer()
-                ForwardButtonView(action: forwardButtonTap)
+                NextButtonView(action: nextButtonTap)
                 Spacer()
             }
-          
+            
         }
     }
     
-
+    
     func backButtonTap() {
-        
+//        playerService.backTrackAudioStream(isPlay: isPlay)
     }
     
     func playButtonTap() {
-        
+        if playerService.isPlayMusic {
+            playerService.pauseAudioStream()
+        } else {
+            playerService.playAudioStream()
+        }
     }
     
-    func forwardButtonTap() {
-        
+    func nextButtonTap() {
+//        playerService.nextTrackAudioStream(isPlay: isPlay)
     }
     
 }
 
 #Preview {
-    RadioPlayerView(isPlay: .constant(true))
+    RadioPlayerView(playerService: PlayerService())
+        .environmentObject(PlayerService())
 }

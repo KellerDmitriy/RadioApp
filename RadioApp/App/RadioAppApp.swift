@@ -15,7 +15,6 @@ import GoogleSignIn
 struct RadioAppApp: App {
     //MARK: -
     @AppStorage("isOnboarding") var isOnboarding = false
-    
     //MARK: - Init
     init() {
         FirebaseApp.configure()
@@ -29,7 +28,7 @@ struct RadioAppApp: App {
                     WelcomeView()
                         .preferredColorScheme(.dark)
                 } else if AuthService.shared.isAuthenticated() {
-                   HomeView()
+                    HomeContentView()
                         .preferredColorScheme(.dark)
                 } else {
                     AuthView().onOpenURL { url in

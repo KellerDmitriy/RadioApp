@@ -11,21 +11,16 @@ import SwiftUI
 struct FavoritesView: View {
     //MARK: - PROPERTIES
     @StateObject var viewModel: FavoritesViewModel
+    @EnvironmentObject var playerService: PlayerService
     
     @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
     
     init(
-        isPlayMusic: Bool,
-        volume: CGFloat,
-        networkService: NetworkService = .shared,
-        playerService: PlayerService = .shared
+        networkService: NetworkService = .shared
     ) {
         self._viewModel = StateObject(
             wrappedValue: FavoritesViewModel(
-                isPlayMusic: isPlayMusic,
-                volume: volume,
-                networkService: networkService,
-                playerService: playerService
+                networkService: networkService
             )
         )
     }
@@ -48,7 +43,6 @@ struct FavoritesView: View {
                         ForEach(viewModel.stations, id: \.stationuuid) {item in
                             FavoritesComponentView(
                                 selectedStationID: $viewModel.selectedStation,
-                                volume: $viewModel.volume,
                                 station: item
                             )
                         }
@@ -90,5 +84,5 @@ struct FavoritesView: View {
 
 // MARK: - Preview
 #Preview {
-    FavoritesView(isPlayMusic: true, volume: 5.0)
+    FavoritesView()
 }

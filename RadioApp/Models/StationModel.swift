@@ -16,8 +16,6 @@ struct StationModel: Codable, Hashable {
     let tags: String
     let countrycode: String
     var votes: Int32
-    
-
 }
 
 // MARK: - Preview data

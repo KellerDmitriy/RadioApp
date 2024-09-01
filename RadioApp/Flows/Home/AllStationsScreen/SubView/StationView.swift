@@ -8,13 +8,11 @@
 import SwiftUI
 
 struct StationView: View {
-
+    @EnvironmentObject var playerService: PlayerService
     @State private var isActive = false
     var station: StationModel
     @Binding var selectedStationID: String
-    @Binding var volume: CGFloat
 
-    
     var body: some View {
 
         ZStack {
@@ -83,13 +81,11 @@ struct StationView: View {
         }
         .frame(width: 293, height: 120)
         .background(NavigationLink(
-            destination: StationDetailsView(
-                station: station,
-                volume: $volume
-            ),
-                        isActive: $isActive) {
-                        EmptyView()
-                    })
+            destination: StationDetailsView(station: self.station)
+                .environmentObject(playerService),
+            isActive: $isActive) { EmptyView()
+            }
+        )
 //        .onTapGesture {
 //            selectedStationID = station.stationuuid
 //            appManager.playAudio(url: station.url)
@@ -126,6 +122,6 @@ struct StationView: View {
 
 //MARK: - PREVIEW
 #Preview {
-    StationView(station: StationModel.testStation(), selectedStationID: .constant(""), volume: .constant(5.0))
+    StationView(station: StationModel.testStation(), selectedStationID: .constant(""))
 }
 

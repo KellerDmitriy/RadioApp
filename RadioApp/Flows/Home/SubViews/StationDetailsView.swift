@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct StationDetailsView: View {
+    @EnvironmentObject var playerService: PlayerService
+    
     var station: StationModel
-    @Binding var volume: CGFloat
-
     
     var body: some View {
         VStack {
@@ -33,39 +33,37 @@ struct StationDetailsView: View {
                 }
                 .clipShape(Rectangle())
                 .frame(maxWidth: 60, maxHeight: 60)
+                
                 Text(getString(tags: self.station.tags)?.uppercased() ?? self.station.countrycode)
                     .font(.custom(DS.Fonts.sfBold, size: getString(tags: self.station.tags) != nil ? 20 : 30))
                     .foregroundStyle(.white)
+                
+            
+                EqualizerView(playerService.amplitude)
+                    .padding(.top, 20)
+                    .frame(height: 350)
+              
                 Spacer()
+                RadioPlayerView(playerService: playerService)
+                    .environmentObject(playerService)
+                    .frame(height: 110)
+          
+                VolumeSliderView(volume: $playerService.volume, rotation: true)
+                    .padding(.top, 20)
+                    .frame(height: 300)
+
             }
-            Spacer()
-//            HStack(spacing: 30) {
-//                BackButtonView()
-//                RadioPlayerView()
-//                ForwardButtonView()
-//            }
-//            .padding(.bottom, 80)
         }
-        .overlay(content: {
-            VolumeView(rotation: true, 
-                       volume: $volume
-            )
-                .frame(height: 300)
-                .offset(CGSize(width: 0.0, height: 350.0))
-        })
-        .overlay(content: {
-            EqualizerView()
-                .offset(CGSize(width: 0.0, height: 170))
-        })
+        
         .background(DS.Colors.darkBlue)
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Playing now")
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                    BackBarButton()
-                }
+                BackBarButton()
             }
+        }
     }
     
     //get Tag in String with ","
@@ -83,11 +81,7 @@ struct StationDetailsView: View {
     }
 }
 
-
-
-
-
-
 #Preview {
-    StationDetailsView(station: StationModel.testStation(), volume: .constant(5.0))
+    StationDetailsView(station: StationModel.testStation())
+        .environmentObject(PlayerService())
 }

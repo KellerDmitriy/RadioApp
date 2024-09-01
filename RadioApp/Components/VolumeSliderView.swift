@@ -1,5 +1,5 @@
 //
-//  VolumeView.swift
+//  VolumeSliderView.swift
 //  RadioApp
 //
 //  Created by Dmitriy Eliseev on 28.07.2024.
@@ -8,10 +8,11 @@
 import SwiftUI
 
 // MARK: - View
-struct VolumeView: View {
+struct VolumeSliderView: View {
     // MARK: - Properties
-    var rotation: Bool
     @Binding var volume: CGFloat
+    
+    @State var rotation = false
     
     // MARK: - Body
     var body: some View {
@@ -20,8 +21,12 @@ struct VolumeView: View {
             Text("\((Int(volume * 100)).formatted())%")
                 .font(.system(size: 12))
                 .foregroundStyle(.white)
-                .rotationEffect(rotation ? -Angle(degrees: (90)) : Angle(degrees: 0))
-                .offset(CGSize(width: 0, height: rotation ? -12.0 : 0.0))
+                .rotationEffect(
+                    rotation == true
+                    ? -Angle(degrees: (90))
+                    : Angle(degrees: 0)
+                )
+                .offset(CGSize(width: 0, height: rotation == true ? -12.0 : 0.0))
             
             GeometryReader { screen in
                 // MARK: - Volume Indicator Stack
@@ -47,21 +52,30 @@ struct VolumeView: View {
             .frame(width: 10)
         
             // MARK: - Speaker Icon
-            Image(systemName: volume == 0 ? "speaker.slash" : "speaker.wave.2")
+            Image(systemName: 
+                    volume == 0
+                  ? "speaker.slash"
+                  : "speaker.wave.2"
+            )
                 .resizable()
-                .offset(CGSize(width: rotation ? 0 : 5.0, height: rotation ? 0 : 5.0))
+                .offset(CGSize(
+                    width: rotation == true ? 0 : 5.0,
+                    height: rotation == true ? 0 : 5.0)
+                )
                 .frame(width: 18, height: 18)
                 .foregroundStyle(DS.Colors.frame)
-                .rotationEffect(rotation ? -Angle(degrees: (90)) : Angle(degrees: 0))
+                .rotationEffect(rotation == true ? -Angle(degrees: (90)) : Angle(degrees: 0))
         }
         
         // MARK: - Main View Rotation
-        .rotationEffect(rotation ? Angle(degrees: (90)) : Angle(degrees: 0))
-        .background(DS.Colors.darkBlue)
+        .rotationEffect(rotation == true ? Angle(degrees: (90)) : Angle(degrees: 0))
     }
+    
 }
+
 
 //MARK: - PREVIEW
 #Preview {
-    VolumeView(rotation: false, volume: .constant(10.0))
+    VolumeSliderView(volume: .constant(5.0))
+      
 }

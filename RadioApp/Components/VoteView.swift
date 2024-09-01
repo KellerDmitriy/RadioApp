@@ -14,7 +14,7 @@ struct VoteView: View {
     var idStation: String
     //MARK: - BODY
     var body: some View {
-        Text("VoteView")
+        Text("🤡")
 //        Button {
 //            if !appManager.saveIDLikes(id: idStation) {
 //                appManager.islike = false

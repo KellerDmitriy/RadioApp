@@ -1,5 +1,5 @@
 //
-//  HomeView.swift
+//  HomeContentView.swift
 //  RadioApp
 //
 //  Created by Келлер Дмитрий on 29.08.2024.
@@ -7,10 +7,11 @@
 
 import SwiftUI
 
-struct HomeView: View {
+struct HomeContentView: View {
     // MARK: - Properties
-    @StateObject var viewModel: HomeViewModel
+    @StateObject var playerService: PlayerService
     
+    @StateObject var viewModel: HomeViewModel
     @State private var selectedTab: Tab = .popular
     @State private var isProfileViewActive = false
     
@@ -18,15 +19,17 @@ struct HomeView: View {
     init(
         authService: AuthService = .shared,
         userService: UserService = .shared,
-        playerService: PlayerService = .shared,
         networkService: NetworkService = .shared
     ) {
+        self._playerService = StateObject(
+            wrappedValue: PlayerService()
+        )
+        
         self._viewModel = StateObject(
             wrappedValue: HomeViewModel(
                 authService: authService,
                 networkService: networkService,
-                userService: userService,
-                playerService: playerService
+                userService: userService
             )
         )
     }
@@ -34,43 +37,42 @@ struct HomeView: View {
     // MARK: - Body
     var body: some View {
         ZStack(alignment: .bottom) {
-            HStack() {
-                VolumeView(rotation: false, volume: $viewModel.volume)
-                    .frame(width: 20 ,height: 300)
-                 
+            HStack {
+                VStack {
+                    VolumeSliderView(volume: $playerService.volume)
+                        .frame(width: 20 ,height: 300)
+                }
                 switch selectedTab {
                 case .popular:
-                    PopularView(
-                        isPlayMusic: viewModel.isPlay,
-                        volume: viewModel.volume
-                    )
+                    PopularView()
+                        .environmentObject(playerService)
                 case .favorites:
-                    FavoritesView(
-                        isPlayMusic: viewModel.isPlay,
-                        volume: viewModel.volume
-                    )
+                    FavoritesView()
+                        .environmentObject(playerService)
                 case .allStations:
-                    AllStationsView(volume: viewModel.volume)
-                        
+                    AllStationsView()
+                        .environmentObject(playerService)
                 }
             }
             
             .padding(.horizontal, 12)
             .background(DS.Colors.darkBlue)
+            
             CustomTabBarView(selectedTab: $selectedTab)
-            RadioPlayerView(isPlay: $viewModel.isPlay)
-                .overlay(PlayButtonAnimation(animation: $viewModel.isPlay))
+            RadioPlayerView(playerService: playerService)
+                .environmentObject(playerService)
+            
                 .frame(height: 110)
                 .padding(.bottom, 80)
             
-            NavigationLink(destination: ProfileView(),
+         
+            NavigationLink(destination:
+                            ProfileView(viewModel.currentUser ?? DBUser.getTestDBUser()),
                            isActive: $isProfileViewActive,
                            label: { EmptyView() })
         }
         .task {
             try? await viewModel.loadCurrentUser()
-            viewModel.getVolume()
-            print(viewModel.volume)
         }
         
         .toolbar {
@@ -85,6 +87,7 @@ struct HomeView: View {
                         
                         withAnimation(.easeInOut) {
                             isProfileViewActive.toggle()
+                      
                         }
                     }
                 )
@@ -97,5 +100,5 @@ struct HomeView: View {
 }
 // MARK: - Preview
 #Preview {
-    HomeView()
+    HomeContentView()
 }

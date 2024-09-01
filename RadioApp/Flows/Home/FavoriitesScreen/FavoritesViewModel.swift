@@ -10,7 +10,6 @@ import Foundation
 final class FavoritesViewModel: ObservableObject {
     
     private let networkService: NetworkService
-    private let playerService: PlayerService
     
     private let numberLimit = 20
     
@@ -18,19 +17,11 @@ final class FavoritesViewModel: ObservableObject {
     var selectedStation = ""
     var isActiveDetailView = false
     
-    @Published var volume: CGFloat
-    @Published var isPlayMusic: Bool
     
     init(
-        isPlayMusic: Bool,
-        volume: CGFloat,
-        networkService: NetworkService = .shared,
-        playerService: PlayerService = .shared
+        networkService: NetworkService = .shared
     ) {
-        self.isPlayMusic = isPlayMusic
-        self.volume = volume
         self.networkService = networkService
-        self.playerService = playerService
     }
     
     func fetchTopStations() async throws {
@@ -38,17 +29,5 @@ final class FavoritesViewModel: ObservableObject {
         fetchedStations = try await networkService.getTopStations(numberLimit: numberLimit)
         stations = fetchedStations
     }
-    
-    func playFirstStation() {
-        if stations.count > 0 {
-            print(stations.count)
-            selectedStation = stations[0].stationuuid
-            playAudio(stations[0].url)
-        }
-    }
-    
-    func playAudio(_ url: String) {
-        playerService.playAudio(url: url)
-    }
-    
+
 }

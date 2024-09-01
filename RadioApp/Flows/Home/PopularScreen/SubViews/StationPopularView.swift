@@ -9,13 +9,13 @@ import SwiftUI
 
 struct StationPopularView: View {
     //MARK: - PROPERTIES
+    @EnvironmentObject var playerService: PlayerService
+    
     @State private var isActive = false
 
     @Binding var selectedStationID: String
-    @Binding var volume: CGFloat
-    @Binding var isPlay: Bool
     
-    var station: StationModel
+    @State var station: StationModel
     
     //MARK: - BODY
     var body: some View {
@@ -33,10 +33,14 @@ struct StationPopularView: View {
                 VStack{
                     HStack{
                         if selectedStationID == station.stationuuid {
-                            Image(systemName: isPlay ? "play.fill" : "pause.fill")
+                            Image(systemName: !playerService.isPlayMusic
+                                  ? "play.fill"
+                                  : "pause.fill"
+                            )
                                 .resizable()
                                 .foregroundStyle(.white)
                                 .frame(width: 25)
+                           
                         }
                         Spacer()
                         //отобразить последние 100 голосов
@@ -69,27 +73,7 @@ struct StationPopularView: View {
                 .frame(maxWidth: 139, maxHeight: 139)
                 .padding(.bottom, 10)
             }
-            .frame(maxWidth: 139, maxHeight: 139)
-            //логика нажатия
-            .background(NavigationLink(
-                destination: StationDetailsView(
-                    station: self.station,
-                    volume: $volume
-                ),
-                            isActive: $isActive) {
-                            EmptyView()
-                        })
-            .onTapGesture {
-                selectedStationID = station.stationuuid
-//                appManager.playAudio(url: station.url)
-            }
-            .onLongPressGesture() {
-                if selectedStationID == station.stationuuid {
-                    print("long tap")
-                    isActive.toggle()
-//                    appManager.isActiveDetailView = true
-                }
-            }
+            
             .overlay {
                 Text(getString(tags: self.station.tags)?.uppercased() ?? self.station.countrycode)
                     .lineLimit(2)
@@ -122,7 +106,6 @@ struct StationPopularView: View {
 #Preview {
     StationPopularView(
         selectedStationID: .constant(""),
-        volume: .constant(5.5),
-        isPlay: .constant(true),
         station: StationModel.testStation())
+        .environmentObject(PlayerService())
 }

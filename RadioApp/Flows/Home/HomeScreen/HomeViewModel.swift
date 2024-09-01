@@ -11,9 +11,8 @@ import AVFAudio
 @MainActor
 final class HomeViewModel: ObservableObject {
     // MARK: - Stored Properties
-      @Published private(set) var currentUser: DBUser? = nil
-      @Published var volume: CGFloat = 0.0
-      @Published var isPlay = false
+      @Published private(set) var currentUser: DBUser? 
+
       @Published var error: Error?
       
       var userName: String {
@@ -27,20 +26,17 @@ final class HomeViewModel: ObservableObject {
       
       private let networkService: NetworkService
       private let userService: UserService
-      private let playerService: PlayerService
       private let authService: AuthService
       
       // MARK: - Initializer
       init(
           authService: AuthService = .shared,
           networkService: NetworkService = .shared,
-          userService: UserService = .shared,
-          playerService: PlayerService = .shared
+          userService: UserService = .shared
       ) {
           self.authService = authService
           self.networkService = networkService
           self.userService = userService
-          self.playerService = playerService
       }
       
       // MARK: - Methods
@@ -52,9 +48,4 @@ final class HomeViewModel: ObservableObject {
               self.error = error
           }
       }
-      
-      func getVolume() {
-          volume = CGFloat(playerService.volume)
-      }
-
 }

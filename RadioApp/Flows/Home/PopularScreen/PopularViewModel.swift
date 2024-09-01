@@ -11,29 +11,44 @@ import Foundation
 final class PopularViewModel: ObservableObject {
     // MARK: - Stored Properties
     private let networkService: NetworkService
-    private let playerService: PlayerService
     
     private let numberLimit = 20
     
-    var stations = [StationModel]()
-    var selectedStation = ""
-    var isActiveDetailView = false
+    @Published var stations = [StationModel]()
     
-    @Published var isPlayMusic: Bool
-    @Published var volume: CGFloat
+    @Published var currentStation: StationModel?
+  
+    // MARK: - Computed Properties
+    
+       var selectedStationID: String {
+           get {
+               return currentStation?.stationuuid ?? ""
+           }
+           set {
+               if let newStation = stations.first(where: { $0.stationuuid == newValue }) {
+                   currentStation = newStation
+               }
+           }
+       }
+    
+    var selectedStationURL: String {
+        get {
+            return currentStation?.url ?? ""
+        }
+        set {
+            if let newStation = stations.first(where: { $0.url == newValue }) {
+                currentStation = newStation
+            }
+        }
+    }
+    
     @Published var error: Error? = nil
     
     // MARK: - Initializer
     init(
-        isPlayMusic: Bool,
-        volume: CGFloat,
-        networkService: NetworkService = .shared,
-        playerService: PlayerService = .shared
+        networkService: NetworkService = .shared
     ) {
-        self.isPlayMusic = isPlayMusic
-        self.volume = volume
         self.networkService = networkService
-        self.playerService = playerService
     }
     
     func fetchTopStations() async throws {
@@ -42,16 +57,5 @@ final class PopularViewModel: ObservableObject {
         } catch {
             self.error = error
         }
-    }
-    
-    func playFirstStation() {
-       if isPlayMusic {
-            selectedStation = stations[0].stationuuid
-            playAudio(stations[0].url)
-        }
-    }
-    
-    func playAudio(_ url: String) {
-        playerService.playAudio(url: url)
     }
 }

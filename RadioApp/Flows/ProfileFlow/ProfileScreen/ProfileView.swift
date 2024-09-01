@@ -15,12 +15,14 @@ struct ProfileView: View {
     @StateObject var viewModel: ProfileViewModel
     
     init(
+        _ currentUser: DBUser,
         authService: AuthService = .shared,
         firebaseService: FirebaseStorageService = .shared,
         notificationsService: NotificationsService = .shared
     ) {
         self._viewModel = StateObject(
             wrappedValue: ProfileViewModel(
+                currentUser: currentUser,
                 authService: authService,
                 notificationsService: notificationsService
             )
@@ -68,9 +70,7 @@ struct ProfileView: View {
                     title: Resources.Text.logOut.localized(language),
                     buttonType: .profile)
             }
-            .task {
-                try? await viewModel.loadCurrentUser()
-            }
+            
             .padding()
             .foregroundColor(.white)
             
@@ -116,5 +116,6 @@ struct ProfileView: View {
 
 // MARK: - Preview
 #Preview {
-    ProfileView()
+    ProfileView(DBUser(userID: "", name: "String", email: "Petrov", profileImagePath: "", profileImagePathUrl: "")
+    )
 }

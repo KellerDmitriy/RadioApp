@@ -15,7 +15,7 @@ struct ProfileInfoView: View {
     var profileImageURL: URL?
     
     // MARK: - Drawing Constants
-    private struct DrawingConstants {
+    private struct Drawing {
         static let avatarSize: CGFloat = 54
         static let avatarLeadingPadding: CGFloat = 16
         static let textSpacing: CGFloat = 8
@@ -35,21 +35,21 @@ struct ProfileInfoView: View {
                         .scaledToFill()
                         .clipShape(Circle())
                         .frame(
-                            width: DrawingConstants.avatarSize,
-                            height: DrawingConstants.avatarSize
+                            width: Drawing.avatarSize,
+                            height: Drawing.avatarSize
                         )
                 } placeholder: {
                     Image(systemName: Resources.Image.photoIcon)
                         .frame(
-                            width: DrawingConstants.avatarSize,
-                            height: DrawingConstants.avatarSize
+                            width: Drawing.avatarSize,
+                            height: Drawing.avatarSize
                         )
                 }
-                .padding(.leading, DrawingConstants.avatarLeadingPadding)
+                .padding(.leading, Drawing.avatarLeadingPadding)
             
             VStack(
                 alignment: .leading,
-                spacing: DrawingConstants.textSpacing
+                spacing: Drawing.textSpacing
             ) {
                 Text(userName)
                     .font(Font.custom(.sfMedium, size: 16))
@@ -60,7 +60,7 @@ struct ProfileInfoView: View {
                     .foregroundColor(Color.gray)
             }
             
-            .padding(.leading, DrawingConstants.textLeadingPadding)
+            .padding(.leading, Drawing.textLeadingPadding)
             
             Spacer()
             
@@ -69,20 +69,20 @@ struct ProfileInfoView: View {
                {
                     Image(Resources.Image.edit)
                         .foregroundColor(DS.Colors.blueNeon)
-                        .padding(.trailing, DrawingConstants.padding)
+                        .padding(.trailing, Drawing.padding)
                 }
         }
         
         .padding()
         .background(.clear)
-        .cornerRadius(DrawingConstants.cornerRadius)
+        .cornerRadius(Drawing.cornerRadius)
         .overlay {
-            RoundedRectangle(cornerRadius: DrawingConstants.cornerRadius)
+            RoundedRectangle(cornerRadius: Drawing.cornerRadius)
                 .stroke(
                     Color.gray,
-                    lineWidth: DrawingConstants.strokeWidth
+                    lineWidth: Drawing.strokeWidth
                 )
-                .opacity(DrawingConstants.strokeOpacity)
+                .opacity(Drawing.strokeOpacity)
         }
     }
 }

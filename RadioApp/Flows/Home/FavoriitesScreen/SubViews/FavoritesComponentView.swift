@@ -11,8 +11,9 @@ import SwiftUI
 
 struct FavoritesComponentView: View {
     //MARK: - PROPERTIES
+    @EnvironmentObject var playerService: PlayerService
+    
     @Binding var selectedStationID: String
-    @Binding var volume: CGFloat
     @State private var isActive = false
     var station: StationModel
     
@@ -63,13 +64,11 @@ struct FavoritesComponentView: View {
     
         .frame(width: 293, height: 120)
         .background(NavigationLink(
-            destination: StationDetailsView(
-                station: station,
-                volume: $volume
-            ),
-            isActive: $isActive) {
-                EmptyView()
-            })
+            destination: StationDetailsView(station: self.station)
+                .environmentObject(playerService),
+            isActive: $isActive) { EmptyView()
+            }
+        )
         .onTapGesture {
             selectedStationID = station.stationuuid
 //            appManager.playAudio(url: station.url)
@@ -121,7 +120,7 @@ struct FavoritesComponentView: View {
 
 //MARK: - PREVIEW
 #Preview {
-    FavoritesView(isPlayMusic: true, volume: 1.0)
+    FavoritesView()
 }
 
 

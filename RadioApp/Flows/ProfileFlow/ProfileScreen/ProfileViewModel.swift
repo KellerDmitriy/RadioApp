@@ -13,31 +13,30 @@ import FirebaseDatabase
 @MainActor
 final class ProfileViewModel: ObservableObject {
     // MARK: - Stored Properties
-    @Published private(set) var currentUser: DBUser? = nil
+    @Published private(set) var currentUser: DBUser
     @Published var error: ProfileFlowError?
     @AppStorage("isOnboarding") var isOnboarding = true
     
     var userName: String {
-        currentUser?.name ?? ""
+        currentUser.name
     }
     var userEmail: String {
-        currentUser?.email ?? ""
+        currentUser.email
     }
     var profileImageURL: URL {
-        guard let urlString = currentUser?.profileImagePathUrl else { return URL(fileURLWithPath: "") }
+        guard let urlString = currentUser.profileImagePathUrl else { return URL(fileURLWithPath: "") }
         return URL(string: urlString)!
     }
     
-    private let userService: UserService
     private let authService: AuthService
     private let notificationsService: NotificationsService
     
     // MARK: - Initializer
     init(
-        userService: UserService = .shared,
+        currentUser: DBUser,
         authService: AuthService = .shared,
         notificationsService: NotificationsService = .shared) {
-            self.userService = userService
+            self.currentUser = currentUser
             self.authService = authService
             self.notificationsService = notificationsService
         }
@@ -53,15 +52,10 @@ final class ProfileViewModel: ObservableObject {
         default: return
         }
     }
-    
-    // MARK: - Storage Methods
+
     
     
     //    MARK: - AuthService Methods
-    func loadCurrentUser() async throws {
-        let authDataResult = try authService.getAuthenticatedUser()
-        self.currentUser = try await userService.getUser(userId: authDataResult.uid)
-    }
     
     func logOut() {
         do {

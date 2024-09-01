@@ -10,28 +10,25 @@ import SwiftUI
 struct PopularView: View {
     //MARK: - PROPERTIES
     @StateObject var viewModel: PopularViewModel
-
+    @EnvironmentObject var playerService: PlayerService
+    
     @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
     
+    @State private var isDetailViewActive = false
+    
     init(
-        isPlayMusic: Bool,
-        volume: CGFloat,
-        networkService: NetworkService = .shared,
-        playerService: PlayerService = .shared
+        networkService: NetworkService = .shared
     ) {
         self._viewModel = StateObject(
             wrappedValue: PopularViewModel(
-                isPlayMusic: isPlayMusic,
-                volume: volume,
-                networkService: networkService,
-                playerService: playerService
+                networkService: networkService
             )
         )
     }
     
     //MARK: - BODY
     var body: some View {
-        VStack{
+        VStack {
             HStack {
                 Text(Resources.Text.popular.localized(language))
                     .font(.custom(DS.Fonts.sfRegular, size: 30))
@@ -41,45 +38,55 @@ struct PopularView: View {
             .padding(.leading)
             .padding(.top, 100)
             .background(DS.Colors.darkBlue)
-
-                VStack {
-                    ScrollView(.vertical, showsIndicators: false){
-                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 139))], spacing: 15) {
+            
+            VStack {
+                ScrollView(.vertical, showsIndicators: false) {
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 139))], spacing: 15) {
+                        
+                        ForEach(viewModel.stations.indices,  id: \.self) { index in
                             
-                            ForEach(viewModel.stations, id: \.stationuuid) { item in
-                                ZStack {
-                                    StationPopularView(
-                                    selectedStationID: $viewModel.selectedStation,
-                                    volume: $viewModel.volume,
-                                    isPlay: $viewModel.isPlayMusic,
-                                    station: item
-                                    )
-                                        .frame(width: 139, height: 139)
-                                }
+                            ZStack {
+                                StationPopularView(
+                                    selectedStationID: $viewModel.selectedStationID,
+                                    station: viewModel.stations[index]
+                                )
+                                
+                            }
+                            .onTapGesture {
+                                viewModel.currentStation = viewModel.stations[index]
+                                playerService.playAudio(url: viewModel.selectedStationURL)
+                            }
+                            .onLongPressGesture {
+                                isDetailViewActive = true
                             }
                         }
-                    
+                    }
                 }
-                Spacer()
             }
+        }
+        Spacer()
         
-            Spacer()
-        }
-        .background(DS.Colors.darkBlue)
-        .task {
-            Task {
-                try await viewModel.fetchTopStations()
-                print(viewModel.isPlayMusic)
+            .background(NavigationLink(
+                destination: StationDetailsView(station: viewModel.currentStation ?? StationModel.testStation())
+                    .environmentObject(playerService),
+                isActive: $isDetailViewActive) { EmptyView()
+                }
+            )
+            .background(DS.Colors.darkBlue)
+            .task {
+                Task {
+                    try await viewModel.fetchTopStations()
+                }
             }
-//            viewModel.playFirstStation()
-        }
     }
 }
 
 
+
 // MARK: - Preview
 #Preview {
-    PopularView(isPlayMusic: true, volume: 5.0)
+    PopularView()
+        .environmentObject(PlayerService())
 }
 
 

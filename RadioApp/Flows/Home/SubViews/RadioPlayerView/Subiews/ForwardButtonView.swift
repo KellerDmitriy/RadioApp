@@ -1,5 +1,5 @@
 //
-//  ForwardButtonView.swift
+//  NextButtonView.swift
 //  RadioApp
 //
 //  Created by Dmitriy Eliseev on 31.07.2024.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ForwardButtonView: View {
+struct NextButtonView: View {
     //MARK: - PROPERTIES
     var action:() -> ()
     //MARK: - BODY
@@ -30,5 +30,5 @@ struct ForwardButtonView: View {
 
 //MARK: - PREVIEW
 #Preview {
-    ForwardButtonView(action: {})
+    NextButtonView(action: {})
 }

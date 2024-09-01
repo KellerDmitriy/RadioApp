@@ -14,9 +14,8 @@ struct PlayButtonView: View {
     var body: some View {
         Button {
             action()
-            isPlay.toggle()
         } label: {
-            Image(systemName: isPlay ? "play.fill" : "pause.fill")
+            Image(systemName: !isPlay ? "play.fill" : "pause.fill")
                 .resizable()
                 .foregroundStyle(.white)
                 .frame(width: 37, height: 37)
@@ -46,7 +45,7 @@ struct PlayButtonView: View {
                 .fill(DS.Colors.pinkNeon)
                 .frame(width: 100, height: 100)
         }
-       
+        .overlay(PlayButtonAnimation(animation: $isPlay))
     }
 }
 

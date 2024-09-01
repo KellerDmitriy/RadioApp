@@ -53,6 +53,16 @@ struct DBUser: Codable {
         self.favorites = []
     }
     
+    static func getTestDBUser() -> DBUser {
+       return DBUser(
+            userID: "",
+            name: "",
+            email: "",
+            profileImagePath: "",
+            profileImagePathUrl: ""
+          )
+    }
+    
     init(
         userID: String,
         name: String,

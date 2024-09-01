@@ -10,7 +10,6 @@ import Foundation
 final class AllStationViewModel: ObservableObject {
     
     private let networkService: NetworkService
-    private let playerService: PlayerService
     
     private let numberLimit = 20
     
@@ -19,16 +18,11 @@ final class AllStationViewModel: ObservableObject {
     var searchText = ""
     var isActiveDetailView = false
     
-    @Published var volume: CGFloat
-    
+
     init(
-        volume: CGFloat,
-        networkService: NetworkService = .shared,
-        playerService: PlayerService = .shared
+        networkService: NetworkService = .shared
     ) {
-        self.volume = volume
         self.networkService = networkService
-        self.playerService = playerService
     }
     
     func fetchTopStations() async throws {
@@ -43,7 +37,4 @@ final class AllStationViewModel: ObservableObject {
         stations = fetchedAllStations
     }
     
-    func playAudio(_ url: String) {
-        playerService.playAudio(url: url)
-    }
 }

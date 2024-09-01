@@ -9,20 +9,18 @@ import SwiftUI
 
 struct AllStationsView: View {
     @StateObject var viewModel: AllStationViewModel
+    @EnvironmentObject var playerService: PlayerService
     
     @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
     
     @State private var isSearching: Bool = false
     
     init(
-        volume: CGFloat,
-        networkService: NetworkService = .shared,
-        playerService: PlayerService = .shared
+        networkService: NetworkService = .shared
     ) {
         self._viewModel = StateObject(
             wrappedValue: AllStationViewModel(
-                volume: volume, networkService: networkService,
-                playerService: playerService
+                 networkService: networkService
             )
         )
     }
@@ -49,11 +47,11 @@ struct AllStationsView: View {
                     LazyVStack(pinnedViews: .sectionHeaders) {
                         ForEach(viewModel.stations, id: \.stationuuid) { station in
                             NavigationLink {
-                                StationDetailsView(station: station, volume: $viewModel.volume
-                                )
-                                
+                                StationDetailsView(station: station)
+                                    .environmentObject(playerService)
                             } label: {
-                                StationView(station: station, selectedStationID: $viewModel.selectedStation, volume: $viewModel.volume)
+                                StationView(station: station, selectedStationID: $viewModel.selectedStation)
+                                    .environmentObject(playerService)
                             }
                         }
                     }
@@ -76,5 +74,5 @@ struct AllStationsView: View {
 
 // MARK: - Preview
 #Preview {
-    AllStationsView(volume: 5.0)
+    AllStationsView()
 }
