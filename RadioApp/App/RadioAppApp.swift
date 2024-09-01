@@ -9,22 +9,35 @@ import SwiftUI
 import AVFAudio
 import FirebaseCore
 import FirebaseAuth
-import CoreData
-
+import GoogleSignIn
 
 @main
 struct RadioAppApp: App {
     //MARK: -
-    @StateObject var appManager = ViewModel()
-    // register app delegate for Firebase setup
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    //MARK: -
+    @AppStorage("isOnboarding") var isOnboarding = false
+    //MARK: - Init
+    init() {
+        FirebaseApp.configure()
+    }
     
+    //MARK: - Body
     var body: some Scene {
         WindowGroup {
-            TransitView(appManager: appManager)
-                .preferredColorScheme(.dark)
-                .environment(\.managedObjectContext, appManager.container.viewContext)
+            NavigationView {
+                if !isOnboarding {
+                    WelcomeView()
+                        .preferredColorScheme(.dark)
+                } else if AuthService.shared.isAuthenticated() {
+                    HomeContentView()
+                        .preferredColorScheme(.dark)
+                } else {
+                    AuthView().onOpenURL { url in
+                        GIDSignIn.sharedInstance.handle(url)
+                    }
+                    .navigationBarHidden(true)
+                    .preferredColorScheme(.dark)
+                }
+            }
         }
     }
 }

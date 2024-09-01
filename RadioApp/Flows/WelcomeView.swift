@@ -8,9 +8,8 @@
 import SwiftUI
 
 struct WelcomeView: View {
-    var appManager: ViewModel
     @AppStorage("isOnboarding") var isOnboarding = false
-
+    @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
     var body: some View {
         ZStack {
             WelcomeBackgroundView()
@@ -20,12 +19,12 @@ struct WelcomeView: View {
                 
                 VStack(alignment: .leading) {
                     // MARK: Title Text
-                    Text(Resources.Text.letsGetStarted)
+                    Text(Resources.Text.letsGetStarted.localized(language))
                         .font(.custom(.sfBold, size: UIScreen.height * 1/16))
                         .padding(.bottom, UIScreen.height * 1/32)
 
                     // MARK: Explanation Text
-                    Text(Resources.Text.enjoyTheBestRadio)
+                    Text(Resources.Text.enjoyTheBestRadio.localized(language))
                         .font(.custom(.sfRegular, size: UIScreen.height * 1/48))
                         .frame(maxWidth: UIScreen.width * 1/3)
                 }
@@ -38,15 +37,13 @@ struct WelcomeView: View {
                 CustomButton(
                     action: {
                         isOnboarding.toggle()
-                        appManager.tagSelection = "view3"
                     },
-                    title: Resources.Text.getStarted,
+                    title: Resources.Text.getStarted.localized(language),
                     buttonType: .onboarding)
             }
             .frame(maxWidth: UIScreen.width * 2/3)
             .padding(.bottom, UIScreen.width * 1/6)
         }
-        .navigationViewStyle(.stack)
     }
 }
 
@@ -55,11 +52,6 @@ extension UIScreen {
     static let height = UIScreen.main.bounds.size.height
 }
 
-//struct WelcomeView_Previews: PreviewProvider {
-//    static let previewAppManager = ViewModel()
-//    
-//    static var previews: some View {
-//        WelcomeView()
-//            .environmentObject(previewAppManager)
-//    }
-//}
+#Preview {
+    WelcomeView()
+}

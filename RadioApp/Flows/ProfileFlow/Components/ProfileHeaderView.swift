@@ -11,7 +11,8 @@ struct ProfileHeaderView: View {
     // MARK: - Properties
     @Binding var userName: String
     @Binding var userEmail: String
-    @Binding var profileImage: UIImage?
+    @Binding var profileImageURL: URL?
+    
     @Binding var showChangedPhotoView: Bool
     
     // MARK: - Drawing Constants
@@ -33,11 +34,22 @@ struct ProfileHeaderView: View {
                 showChangedPhotoView.toggle()
             } label: {
                 ZStack {
-                    image(profileImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .clipShape(Circle())
-                        .frame(width: Drawing.avatarSize, height: Drawing.avatarSize)
+                    AsyncImage(url: profileImageURL) { image in
+                        image
+                            .resizable()
+                            .scaledToFill()
+                            .clipShape(Circle())
+                            .frame(
+                                width: Drawing.avatarSize,
+                                height: Drawing.avatarSize
+                            )
+                    } placeholder: {
+                        Image(systemName: Resources.Image.photoIcon)
+                            .frame(
+                                width: Drawing.avatarSize,
+                                height: Drawing.avatarSize
+                            )
+                    }
                     Image(Resources.Image.editProfileAvatar)
                         .offset(x: Drawing.iconOffset, y: Drawing.iconOffset)
                         .frame(width: Drawing.editIconSize, height: Drawing.editIconSize)
@@ -56,15 +68,6 @@ struct ProfileHeaderView: View {
         }
         .padding()
     }
-    
-    // MARK: - Helper Functions
-    func image(_ image: UIImage?) -> Image {
-        if let profileImage = image {
-            return Image(uiImage: profileImage)
-        } else {
-            return Image(uiImage: UIImage(systemName: "person.fill")!)
-        }
-    }
 }
 
 // MARK: - Preview
@@ -73,7 +76,7 @@ struct ProfileHeaderView_Previews: PreviewProvider {
         ProfileHeaderView(
             userName: .constant("Stephen"),
             userEmail: .constant("stephen@ds"),
-            profileImage: .constant(UIImage(named: "stephen")),
+            profileImageURL: .constant(URL(string: "")),
             showChangedPhotoView: .constant(false)
         )
     }

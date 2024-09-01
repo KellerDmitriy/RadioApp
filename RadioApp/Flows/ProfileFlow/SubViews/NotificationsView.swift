@@ -11,7 +11,8 @@ import UserNotifications
 struct NotificationsView: View {
     // MARK: - Properties
     @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
-    @AppStorage("hasRequestedNotifications") private var isToggleOn: Bool = NotificationsService.shared.hasRequestedNotifications
+    @AppStorage("hasRequestedNotifications") private var isToggleOn: Bool = false
+    @AppStorage("isToggleRepeat") private var isToggleRepeat: Bool = false
     
     var notificationAction: () -> Void
     
@@ -84,7 +85,9 @@ struct NotificationsView: View {
                 Text("")
             }
             .onChange(of: isToggleOn) { newValue in
-                handleNotificationToggleChange(newValue)
+                if newValue {
+                    notificationAction() 
+                }
             }
             .toggleStyle(SwitchToggleStyle(tint: DS.Colors.blueNeon))
         }
@@ -100,26 +103,36 @@ struct NotificationsView: View {
                 .opacity(Drawing.dividerOpacity)
             
             HStack {
-                Text(Resources.Text.selectTimeAndDays.localized(language))
+                Text(Resources.Text.repeat.localized(language))
                     .font(Font.custom(.sfMedium, size: Drawing.textSize))
                     .foregroundColor(.white)
-                Spacer()
+                Toggle(isOn: $isToggleRepeat) {
+                    Text("")
+                }
+                .onChange(of: isToggleRepeat) { newValue in
+                    handleNotificationToggleChange(newValue)
+                }
+                .toggleStyle(SwitchToggleStyle(tint: DS.Colors.blueNeon))
             }
             .padding(.horizontal, Drawing.horizontalPadding)
             .padding(.top, Drawing.iconPadding)
             
+            Divider()
+                .background(Color.gray)
+                .padding(.horizontal, Drawing.horizontalPadding)
+                .opacity(Drawing.dividerOpacity)
+            
+            Text(Resources.Text.selectTimeAndDays.localized(language))
+                .font(Font.custom(.sfMedium, size: Drawing.textSize))
+                .foregroundColor(.white)
             TimeAndDaysPicker()
                 .padding(.horizontal, Drawing.horizontalPadding)
                 .padding(.bottom, Drawing.verticalPadding)
         }
     }
     
-    // MARK: - Private Methods
     private func handleNotificationToggleChange(_ isOn: Bool) {
-        if isOn {
-            NotificationsService.shared.sendTestNotification()
-        }
-        notificationAction()
+        // Здесь можно добавить логику обработки изменения состояния переключателя isToggleRepeat
     }
 }
 

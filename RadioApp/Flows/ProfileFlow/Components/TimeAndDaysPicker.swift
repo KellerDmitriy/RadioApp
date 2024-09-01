@@ -20,8 +20,7 @@ struct TimeAndDaysPicker: View {
             DatePicker(Resources.Text.selectTime.localized(LocalizationService.shared.language), selection: $selectedTime, displayedComponents: .hourAndMinute)
                 .datePickerStyle(GraphicalDatePickerStyle())
                 .labelsHidden()
-                .padding()
-            
+                .padding(.horizontal, 120)
             // MARK: - Days Picker
             HStack {
                 ForEach(daysOfWeek, id: \.self) { day in
@@ -33,8 +32,10 @@ struct TimeAndDaysPicker: View {
                         }
                     }) {
                         Text(day)
-//                            .padding()
-                            .background(selectedDays.contains(day) ? Color.blue : Color.gray)
+            
+                            .background(selectedDays.contains(day)
+                                        ? DS.Colors.blueNeon
+                                        : Color.gray)
                             .cornerRadius(8)
                             .foregroundColor(.white)
                     }
@@ -43,4 +44,9 @@ struct TimeAndDaysPicker: View {
             .padding()
         }
     }
+}
+
+// MARK: - Preview
+#Preview {
+    TimeAndDaysPicker()
 }

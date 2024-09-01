@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct SplineViewShape: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()

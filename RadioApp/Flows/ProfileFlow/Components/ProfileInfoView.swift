@@ -12,12 +12,10 @@ struct ProfileInfoView: View {
     // MARK: - Properties
     var userName: String
     var userEmail: String
-    @State var profileImage: UIImage?
-    
-    var saveChangesAction: (String, String, UIImage?) -> Void
+    var profileImageURL: URL?
     
     // MARK: - Drawing Constants
-    private struct DrawingConstants {
+    private struct Drawing {
         static let avatarSize: CGFloat = 54
         static let avatarLeadingPadding: CGFloat = 16
         static let textSpacing: CGFloat = 8
@@ -26,25 +24,32 @@ struct ProfileInfoView: View {
         static let strokeWidth: CGFloat = 1.0
         static let strokeOpacity: CGFloat = 0.2
         static let padding: CGFloat = 16
-        
     }
     
     // MARK: - Body
     var body: some View {
         HStack {
-            image(image: profileImage)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .clipShape(Circle())
-                .frame(
-                    width: DrawingConstants.avatarSize,
-                    height: DrawingConstants.avatarSize
-                )
-                .padding(.leading, DrawingConstants.avatarLeadingPadding)
+                AsyncImage(url: profileImageURL) { image in
+                    image
+                        .resizable()
+                        .scaledToFill()
+                        .clipShape(Circle())
+                        .frame(
+                            width: Drawing.avatarSize,
+                            height: Drawing.avatarSize
+                        )
+                } placeholder: {
+                    Image(systemName: Resources.Image.photoIcon)
+                        .frame(
+                            width: Drawing.avatarSize,
+                            height: Drawing.avatarSize
+                        )
+                }
+                .padding(.leading, Drawing.avatarLeadingPadding)
             
             VStack(
                 alignment: .leading,
-                spacing: DrawingConstants.textSpacing
+                spacing: Drawing.textSpacing
             ) {
                 Text(userName)
                     .font(Font.custom(.sfMedium, size: 16))
@@ -55,43 +60,29 @@ struct ProfileInfoView: View {
                     .foregroundColor(Color.gray)
             }
             
-            .padding(.leading, DrawingConstants.textLeadingPadding)
+            .padding(.leading, Drawing.textLeadingPadding)
             
             Spacer()
             
-            NavigationLink(destination: ProfileEditView(
-                saveChangesAction: saveChangesAction,
-                userName: userName,
-                userEmail: userEmail,
-                profileImage: $profileImage
+            NavigationLink(destination: ProfileEditView()
             )
-            )
-            {
-                Image(Resources.Image.edit)
-                    .foregroundColor(DS.Colors.blueNeon)
-                    .padding(.trailing, DrawingConstants.padding)
-            }
-            
+               {
+                    Image(Resources.Image.edit)
+                        .foregroundColor(DS.Colors.blueNeon)
+                        .padding(.trailing, Drawing.padding)
+                }
         }
         
         .padding()
         .background(.clear)
-        .cornerRadius(DrawingConstants.cornerRadius)
+        .cornerRadius(Drawing.cornerRadius)
         .overlay {
-            RoundedRectangle(cornerRadius: DrawingConstants.cornerRadius)
+            RoundedRectangle(cornerRadius: Drawing.cornerRadius)
                 .stroke(
                     Color.gray,
-                    lineWidth: DrawingConstants.strokeWidth
+                    lineWidth: Drawing.strokeWidth
                 )
-                .opacity(DrawingConstants.strokeOpacity)
-        }
-    }
-    
-    func image(image: UIImage?) -> Image {
-        if let profileImage = image {
-            return Image(uiImage: profileImage)
-        } else {
-            return Image(uiImage: UIImage(named: "stephen")!)
+                .opacity(Drawing.strokeOpacity)
         }
     }
 }
@@ -101,7 +92,6 @@ struct ProfileInfoView: View {
     ProfileInfoView(
         userName: "Stephen",
         userEmail: "stephen@ds",
-        profileImage: UIImage(named: "stephen")!, 
-        saveChangesAction: {_,_,_ in }
+        profileImageURL: URL(string: "")
     )
 }
