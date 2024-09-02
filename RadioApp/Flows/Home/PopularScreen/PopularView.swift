@@ -74,6 +74,14 @@ struct PopularView: View {
                 playerService.playAudio()
             }
         }
+        .alert(isPresented: isPresentedAlert()) {
+            Alert(
+                title: Text(Resources.Text.error.localized(language)),
+                message: Text(viewModel.error?.localizedDescription ?? ""),
+                dismissButton: .default(Text(Resources.Text.ok.localized(language)),
+                                        action: viewModel.cancelErrorAlert)
+            )
+        }
         
         NavigationLink(
             destination: StationDetailsView()
@@ -81,6 +89,13 @@ struct PopularView: View {
             isActive: $isDetailViewActive) {
                 EmptyView()
             }
+    }
+    
+    private func isPresentedAlert() -> Binding<Bool> {
+        Binding(get: { viewModel.error != nil },
+                set: { isPresenting in
+            if isPresenting { return }
+        })
     }
 }
 

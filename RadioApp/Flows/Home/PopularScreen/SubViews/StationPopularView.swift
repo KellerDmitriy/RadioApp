@@ -85,19 +85,11 @@ struct StationPopularView: View {
             }
     }
     
+    // MARK: - Functions
     func getString(tags: String) -> String? {
         let tagsArr = tags.components(separatedBy: ",")
-        if tagsArr.count > 0 {
-            if tagsArr[0] == "" {
-                return nil
-            } else {
-                return tagsArr[0]
-            }
-        } else {
-            return nil
-        }
+        return tagsArr.first(where: { !$0.isEmpty })
     }
-    
 }
 
 

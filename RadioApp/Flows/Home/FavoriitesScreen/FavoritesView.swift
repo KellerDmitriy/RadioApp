@@ -40,45 +40,24 @@ struct FavoritesView: View {
             VStack {
                 ScrollView(.vertical, showsIndicators: false){
                     LazyVStack {
-                        ForEach(viewModel.stations, id: \.stationuuid) {item in
+                        ForEach(viewModel.stations, id: \.stationuuid) { item in
                             FavoritesComponentView(
-                                selectedStationID: $viewModel.selectedStation,
+                                isActive: true,
                                 station: item
                             )
                         }
                     }
                 }
             }
-            
-            
             Spacer()
         }
         .background(DS.Colors.darkBlue)
-        .onAppear{
-            //                if appManager.setStations(stationData: Array(stationData)) {
-            //                    DispatchQueue.main.asyncAfter(deadline: .now()+1) {
-            //                        appManager.playFirstStation()
-            //                    }
-            //                    print(appManager.stations)
-            //                }
+        .onAppear {
+         
             
         }
     }
-    
-    // delete all records
-    //    func deleteRecords() {
-    //        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "StationData")
-    //        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-    
-    //        do {
-    //            try moc.persistentStoreCoordinator?.execute(deleteRequest, with: moc)
-    //            print("данные удалены")
-    //        } catch let error as NSError {
-    //            print("Fetch failed. \(error.localizedDescription)")
-    //        }
-    //        try? moc.save()
-    //        _ = appManager.setStations(stationData: Array(stationData))
-    //    }
+
 }
 
 

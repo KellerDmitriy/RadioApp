@@ -50,8 +50,8 @@ struct AllStationsView: View {
                                 StationDetailsView()
                                     .environmentObject(playerService)
                             } label: {
-                                StationView(station: station, selectedStationID: $viewModel.selectedStation)
-                                    .environmentObject(playerService)
+                                StationView(isActive: true, station: station)
+                                    
                             }
                         }
                     }

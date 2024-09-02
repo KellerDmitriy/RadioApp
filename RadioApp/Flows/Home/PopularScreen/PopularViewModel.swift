@@ -33,4 +33,11 @@ final class PopularViewModel: ObservableObject {
             self.error = error
         }
     }
+    
+    func cancelErrorAlert() {
+        Task { @MainActor in
+            error = nil
+        }
+    }
+    
 }
