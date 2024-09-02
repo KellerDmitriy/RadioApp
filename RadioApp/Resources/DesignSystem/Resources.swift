@@ -47,7 +47,8 @@ enum Resources {
         static let confirmPassword = "Confirm password"
         static let confirmPasswordPlaceholder = "Your password"
         static let changePassword = "Change password"
-        
+        /// Detail
+        static let playingNow = "Playing now"
         
         /// Profile
         static let messagesNotifications = "Messages Notifications"

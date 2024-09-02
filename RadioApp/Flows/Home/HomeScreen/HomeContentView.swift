@@ -40,7 +40,7 @@ struct HomeContentView: View {
             HStack {
                 VStack {
                     VolumeSliderView(volume: $playerService.volume)
-                        .frame(width: 20 ,height: 300)
+                        .frame(width: 20, height: 300)
                 }
                 switch selectedTab {
                 case .popular:
@@ -59,9 +59,8 @@ struct HomeContentView: View {
             .background(DS.Colors.darkBlue)
             
             CustomTabBarView(selectedTab: $selectedTab)
-            RadioPlayerView(playerService: playerService)
-                .environmentObject(playerService)
             
+            RadioPlayerView(playerService: playerService)
                 .frame(height: 110)
                 .padding(.bottom, 80)
             
@@ -74,7 +73,7 @@ struct HomeContentView: View {
         .task {
             try? await viewModel.loadCurrentUser()
         }
-        
+        .onDisappear(perform: destroyPlayerService)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 ToolbarName(userName: viewModel.userName)
@@ -96,6 +95,10 @@ struct HomeContentView: View {
         
         .ignoresSafeArea()
         .navigationBarBackButtonHidden(true)
+    }
+    
+    private func destroyPlayerService() {
+        playerService.deinit()
     }
 }
 // MARK: - Preview

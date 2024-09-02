@@ -16,6 +16,7 @@ struct PopularView: View {
     
     @State private var isDetailViewActive = false
     
+    // MARK: - Initializer
     init(
         networkService: NetworkService = .shared
     ) {
@@ -35,53 +36,53 @@ struct PopularView: View {
                     .foregroundStyle(.white)
                 Spacer()
             }
-            .padding(.leading)
             .padding(.top, 100)
             .background(DS.Colors.darkBlue)
             
-            VStack {
-                ScrollView(.vertical, showsIndicators: false) {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 139))], spacing: 15) {
-                        
-                        ForEach(viewModel.stations.indices,  id: \.self) { index in
-                            
-                            ZStack {
+            ScrollView(.vertical, showsIndicators: false) {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 139))], spacing: 15) {
+                    ForEach(viewModel.stations.indices,  id: \.self) { index in
+                        ZStack {
+                            if playerService.currentStation.stationuuid == viewModel.stations[index].stationuuid {
                                 StationPopularView(
-                                    selectedStationID: $viewModel.selectedStationID,
+                                    isActive: true,
                                     station: viewModel.stations[index]
                                 )
-                                
-                            }
-                            .onTapGesture {
-                                viewModel.currentStation = viewModel.stations[index]
-                                playerService.playAudio(url: viewModel.selectedStationURL)
-                            }
-                            .onLongPressGesture {
-                                isDetailViewActive = true
+                                .onLongPressGesture {
+                                    isDetailViewActive = true
+                                }
+                            } else {
+                                StationPopularView(
+                                    isActive: false,
+                                    station: viewModel.stations[index]
+                                )
+                                .onTapGesture {
+                                    playerService.indexRadio = index
+                                    playerService.playAudio()
+                                }
                             }
                         }
                     }
                 }
             }
         }
-        Spacer()
+        .background(DS.Colors.darkBlue)
+        .task {
+            Task {
+                try await viewModel.fetchTopStations()
+                playerService.addStationForPlayer(viewModel.stations)
+                playerService.playAudio()
+            }
+        }
         
-            .background(NavigationLink(
-                destination: StationDetailsView(station: viewModel.currentStation ?? StationModel.testStation())
-                    .environmentObject(playerService),
-                isActive: $isDetailViewActive) { EmptyView()
-                }
-            )
-            .background(DS.Colors.darkBlue)
-            .task {
-                Task {
-                    try await viewModel.fetchTopStations()
-                }
+        NavigationLink(
+            destination: StationDetailsView()
+                .environmentObject(playerService),
+            isActive: $isDetailViewActive) {
+                EmptyView()
             }
     }
 }
-
-
 
 // MARK: - Preview
 #Preview {
