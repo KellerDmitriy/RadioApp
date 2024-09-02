@@ -16,20 +16,28 @@ final class PlayerService: ObservableObject {
     private var playerItem: AVPlayerItem?
     private var timer: AnyCancellable?
     private let updateInterval: TimeInterval = 0.08
-    
-    private var currentURL: String?
-
-    var selectedStation = ""
-    
-    @Published var volume: CGFloat = 0.0
-    @Published var amplitude: CGFloat = 0.0
-    @Published var isPlayMusic = false
-    
     // Audio session object
     let session = AVAudioSession.sharedInstance()
     // Observer
     var progressObserver: NSKeyValueObservation!
     
+    @Published var stations = [StationModel]()
+    @Published var indexRadio = 0
+    
+    @Published var volume: CGFloat = 0.0
+    @Published var amplitude: CGFloat = 0.0
+    @Published var isPlayMusic = false
+    
+    var currentStation: StationModel {
+        get { stations[indexRadio] }
+        set {
+            self.indexRadio = stations.firstIndex(of: newValue) ?? 0
+        }
+    }
+    
+    private var currentURL: String {
+        currentStation.url
+    }
     
     // MARK: - Initialization
     init() {
@@ -37,17 +45,26 @@ final class PlayerService: ObservableObject {
         setVolume()
     }
     
-    deinit {}
+    func `deinit`() {
+        stopUpdatingAmplitude()
+        stopAudioStream()
+        unsubscribe()
+        player?.removeObserver(self as! NSObject, forKeyPath: #keyPath(AVPlayer.status))
+    }
+    
+    // MARK: - Add RadioStation in Player
+    func addStationForPlayer(_ stations: [StationModel]) {
+        self.stations.append(contentsOf: stations)
+        indexRadio = min(indexRadio, stations.count - 1)
+    }
     
     // MARK: - Audio Playback Methods
-    func playAudio(url: String) {
-        guard let url = URL.init(string: url) else { return }
+    func playAudio() {
+        guard let url = URL.init(string: currentURL) else { return }
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback)
-            
             player = AVPlayer(url: url)
             playAudioStream()
-            
         } catch let err {
             print(err.localizedDescription)
         }
@@ -72,69 +89,23 @@ final class PlayerService: ObservableObject {
     func stopAudioStream() {
         isPlayMusic = false
         player = nil
-        selectedStation = ""
     }
     
-//    func nextTrackAudioStream(isPlay: Bool) {
-//        var indexStation: Int?
-//        for (index, station) in stations.enumerated() {
-//            if selectedStation == station.stationuuid{
-//                indexStation = index
-//            }
-//        }
-//        if indexStation == nil && stations.count > 0{
-//            selectedStation = stations[0].stationuuid
-//            playAudio(url: stations[0].url)
-//            return
-//        }
-//        guard var newIndex = indexStation else { return }
-//        newIndex += 1
-//        if isPlay && newIndex < stations.count{
-//            pauseAudioStream()
-//        }
-//        if newIndex < stations.count {
-//            selectedStation = stations[newIndex].stationuuid
-//            playAudio(url: stations[newIndex].url)
-//        } else {
-//            return
-//        }
-//    }
-//    
-//    
-//    
-//    func backTrackAudioStream(isPlay: Bool) {
-//        var indexStation: Int?
-//        for (index, station) in stations.enumerated() {
-//            if selectedStation == station.stationuuid {
-//                indexStation = index
-//            }
-//        }
-//        if indexStation == nil && stations.count > 0{
-//            selectedStation = stations[stations.count-1].stationuuid
-//            playAudio(url: stations[stations.count-1].url)
-//            return
-//        }
-//        guard var newIndex = indexStation else { return }
-//        newIndex -= 1
-//        if isPlay && newIndex >= 0 {
-//            pauseAudioStream()
-//        }
-//        if newIndex >= 0 {
-//            selectedStation = stations[newIndex].stationuuid
-//            playAudio(url: stations[newIndex].url)
-//        } else {
-//            return
-//        }
-//    }
-    
-    
-    
-    func playFirstStation(selectedStation: String) {
-            playAudio(url: selectedStation)
+    func nextStationStream() {
+        indexRadio = (indexRadio + 1) % stations.count
+        currentStation = stations[indexRadio]
+        playAudio()
     }
+    
+    func backTrackAudioStream() {
+        indexRadio = (indexRadio - 1 + stations.count) % stations.count
+        currentStation = stations[indexRadio]
+        playAudio()
+    }
+    
     
     //    MARK: - Volume
-    func setVolume() {
+    private func setVolume() {
         do {
             try session.setCategory(AVAudioSession.Category.ambient)
             try session.setActive(true, options: .notifyOthersOnDeactivation)
@@ -150,12 +121,12 @@ final class PlayerService: ObservableObject {
     }
     
     
-    func unsubscribe() {
+    private func unsubscribe() {
         self.progressObserver.invalidate()
     }
     
     //    MARK: -Amplitude
-    func startUpdatingAmplitude() {
+    private func startUpdatingAmplitude() {
         timer = Timer.publish(every: updateInterval, on: .main, in: .common)
             .autoconnect()
             .sink { _ in
@@ -165,7 +136,7 @@ final class PlayerService: ObservableObject {
             }
     }
     
-    func stopUpdatingAmplitude() {
+    private func stopUpdatingAmplitude() {
         timer?.cancel()
     }
 }

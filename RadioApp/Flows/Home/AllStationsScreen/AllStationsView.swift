@@ -47,7 +47,7 @@ struct AllStationsView: View {
                     LazyVStack(pinnedViews: .sectionHeaders) {
                         ForEach(viewModel.stations, id: \.stationuuid) { station in
                             NavigationLink {
-                                StationDetailsView(station: station)
+                                StationDetailsView()
                                     .environmentObject(playerService)
                             } label: {
                                 StationView(station: station, selectedStationID: $viewModel.selectedStation)

@@ -19,7 +19,6 @@ struct RadioPlayerView: View {
                 BackButtonView(action: backButtonTap)
                 Spacer()
                 PlayButtonView(isPlay: $playerService.isPlayMusic, action: playButtonTap)
-                 
                 Spacer()
                 NextButtonView(action: nextButtonTap)
                 Spacer()
@@ -30,24 +29,23 @@ struct RadioPlayerView: View {
     
     
     func backButtonTap() {
-//        playerService.backTrackAudioStream(isPlay: isPlay)
+        playerService.backTrackAudioStream()
     }
     
     func playButtonTap() {
         if playerService.isPlayMusic {
             playerService.pauseAudioStream()
         } else {
-            playerService.playAudioStream()
+            playerService.playAudio()
         }
     }
     
     func nextButtonTap() {
-//        playerService.nextTrackAudioStream(isPlay: isPlay)
+        playerService.nextStationStream()
     }
     
 }
 
 #Preview {
     RadioPlayerView(playerService: PlayerService())
-        .environmentObject(PlayerService())
 }

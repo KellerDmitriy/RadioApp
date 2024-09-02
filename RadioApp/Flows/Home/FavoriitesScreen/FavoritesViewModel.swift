@@ -14,8 +14,7 @@ final class FavoritesViewModel: ObservableObject {
     private let numberLimit = 20
     
     var stations = [StationModel]()
-    var selectedStation = ""
-    var isActiveDetailView = false
+
     
     
     init(

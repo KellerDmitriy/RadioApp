@@ -81,7 +81,7 @@ struct StationView: View {
         }
         .frame(width: 293, height: 120)
         .background(NavigationLink(
-            destination: StationDetailsView(station: self.station)
+            destination: StationDetailsView()
                 .environmentObject(playerService),
             isActive: $isActive) { EmptyView()
             }

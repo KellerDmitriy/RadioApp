@@ -12,37 +12,12 @@ final class PopularViewModel: ObservableObject {
     // MARK: - Stored Properties
     private let networkService: NetworkService
     
-    private let numberLimit = 20
+    private let numberLimit = 30
     
     @Published var stations = [StationModel]()
-    
-    @Published var currentStation: StationModel?
   
-    // MARK: - Computed Properties
-    
-       var selectedStationID: String {
-           get {
-               return currentStation?.stationuuid ?? ""
-           }
-           set {
-               if let newStation = stations.first(where: { $0.stationuuid == newValue }) {
-                   currentStation = newStation
-               }
-           }
-       }
-    
-    var selectedStationURL: String {
-        get {
-            return currentStation?.url ?? ""
-        }
-        set {
-            if let newStation = stations.first(where: { $0.url == newValue }) {
-                currentStation = newStation
-            }
-        }
-    }
-    
     @Published var error: Error? = nil
+    
     
     // MARK: - Initializer
     init(
