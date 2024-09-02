@@ -70,13 +70,7 @@ final class PlayerService: ObservableObject {
         }
     }
     
-    func playAudioStream() {
-        if player != nil {
-            player?.play()
-            isPlayMusic = true
-            startUpdatingAmplitude()
-        }
-    }
+
     
     func pauseAudioStream() {
         if player != nil {
@@ -103,6 +97,13 @@ final class PlayerService: ObservableObject {
         playAudio()
     }
     
+    private func playAudioStream() {
+        if player != nil {
+            player?.play()
+            isPlayMusic = true
+            startUpdatingAmplitude()
+        }
+    }
     
     //    MARK: - Volume
     private func setVolume() {

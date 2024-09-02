@@ -22,7 +22,7 @@ final class UserService {
     
     // MARK: - Public Methods
     func createNewUser(user: DBUser) async throws {
-        try userDocument(userId: user.userID).setData(from: user, merge: false)
+        try userDocument(userId: user.id).setData(from: user, merge: false)
     }
     
     func getUser(userId: String) async throws -> DBUser {
