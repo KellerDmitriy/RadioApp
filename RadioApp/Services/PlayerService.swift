@@ -9,10 +9,6 @@ import Foundation
 import AVFoundation
 import Combine
 
-import Foundation
-import AVFoundation
-import Combine
-
 final class PlayerService: ObservableObject {
     
     // MARK: - Properties
@@ -59,7 +55,7 @@ final class PlayerService: ObservableObject {
         setVolumeObserver()
     }
     
-    deinit {
+    func removeAllObserver() {
         stopUpdatingAmplitude()
         stopAudioStream()
         unsubscribeVolumeObserver()

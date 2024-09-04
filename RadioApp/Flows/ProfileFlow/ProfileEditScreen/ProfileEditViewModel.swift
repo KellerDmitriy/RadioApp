@@ -64,7 +64,6 @@ final class ProfileEditViewModel: ObservableObject {
         guard let currentUser = currentUser else { return }
         
         Task {
-       
             guard let imageData = image.jpegData(compressionQuality: 1.0) else { return }
             
             do {
@@ -77,6 +76,7 @@ final class ProfileEditViewModel: ObservableObject {
                     path: path,
                     url: url.absoluteString
                 )
+                try await loadCurrentUser()
             } catch {
                 self.error = ProfileFlowError.map(error)
             }

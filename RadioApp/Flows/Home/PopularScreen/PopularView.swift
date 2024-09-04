@@ -18,13 +18,13 @@ struct PopularView: View {
     
     // MARK: - Initializer
     init(
-        user: DBUser,
+        userId: String,
         userService: UserService = .shared,
         networkService: NetworkService = .shared
     ) {
         self._viewModel = StateObject(
             wrappedValue: PopularViewModel(
-                user: user,
+                userId: userId,
                 userService: userService,
                 networkService: networkService
             )
@@ -48,19 +48,29 @@ struct PopularView: View {
                     ForEach(viewModel.stations.indices,  id: \.self) { index in
                         ZStack {
                             if playerService.currentStation.id == viewModel.stations[index].id {
-                                StationPopularView(
+                                PopularStationView(
                                     isActive: true,
-                                    station: viewModel.stations[index]
-                                )
-                                .onLongPressGesture {
-                                    isDetailViewActive = true
-                                }
-                            } else {
-                                StationPopularView(
-                                    isActive: false,
-                                    station: viewModel.stations[index]
+                                    isVote: viewModel.isVote,
+                                    station: viewModel.stations[index], 
+                                    voteAction: { viewModel.addUserFavorite() }
                                 )
                                 .onTapGesture {
+                                    viewModel.currentStation = viewModel.stations[index]
+                                    print(viewModel.currentStation)
+                                }
+                                .onLongPressGesture {
+                                    isDetailViewActive = true
+                                    print(viewModel.currentStation)
+                                }
+                            } else {
+                                PopularStationView(
+                                    isActive: false,
+                                    isVote: viewModel.isVote,
+                                    station: viewModel.stations[index], 
+                                    voteAction: { viewModel.addUserFavorite() }
+                                )
+                                .onTapGesture {
+                                    print(viewModel.currentStation)
                                     playerService.indexRadio = index
                                     playerService.playAudio()
                                 }
@@ -79,6 +89,7 @@ struct PopularView: View {
                     playerService.playAudio()
                 }
             }
+            print("Vcv- \(viewModel.userId)")
         }
         .alert(isPresented: isPresentedAlert()) {
             Alert(
@@ -90,7 +101,7 @@ struct PopularView: View {
         }
         
         NavigationLink(
-            destination: StationDetailsView()
+            destination: DetailsView(viewModel.userId)
                 .environmentObject(playerService),
             isActive: $isDetailViewActive) {
                 EmptyView()
@@ -107,7 +118,7 @@ struct PopularView: View {
 
 // MARK: - Preview
 #Preview {
-    PopularView(user: DBUser.getTestDBUser())
+    PopularView(userId: "")
         .environmentObject(PlayerService())
 }
 

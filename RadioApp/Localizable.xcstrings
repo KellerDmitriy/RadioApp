@@ -7,9 +7,6 @@
     "%@%%" : {
 
     },
-    "🤡" : {
-
-    },
     "About Us" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1088,6 +1085,9 @@
           }
         }
       }
+    },
+    "Loading..." : {
+
     },
     "Log Out" : {
       "extractionState" : "manual",

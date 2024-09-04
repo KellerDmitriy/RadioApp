@@ -8,8 +8,12 @@
 import Foundation
 
 final class AllStationViewModel: ObservableObject {
+    let userId: String
+    
+    @Published var currentStation: StationModel?
     
     private let networkService: NetworkService
+    private let userService: UserService
     
     private let numberLimit = 20
     
@@ -21,8 +25,13 @@ final class AllStationViewModel: ObservableObject {
     
 
     init(
+        userId: String,
+        userService: UserService = .shared,
         networkService: NetworkService = .shared
+        
     ) {
+        self.userId = userId
+        self.userService = userService
         self.networkService = networkService
     }
     
@@ -38,4 +47,11 @@ final class AllStationViewModel: ObservableObject {
         stations = fetchedAllStations
     }
     
+    /// Checks if a station is in the user's favorites
+    func checkFavorite() -> Bool {
+//        guard !user.favorites.isEmpty else { return false }
+//        guard let currentStation else { return false }
+//        return user.favorites.contains { $0.id == currentStation.id }
+        return false
+    }
 }

@@ -1,5 +1,5 @@
 //
-//  StationDetailsView.swift
+//  DetailsView.swift
 //  RadioApp
 //
 //  Created by Evgeniy K on 09.08.2024.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct StationDetailsView: View {
+struct DetailsView: View {
     // MARK: - Drawing Constants
     private struct Drawing {
         static let faviconSize: CGFloat = 40
@@ -23,8 +23,24 @@ struct StationDetailsView: View {
     }
     
     // MARK: - Properties
+    @StateObject var viewModel: DetailViewModel
+    
     @EnvironmentObject var playerService: PlayerService
     @State private var textOffset: CGFloat = 200
+    
+    
+    // MARK: - Initializer
+    init(_
+        userId: String,
+        userService: UserService = .shared
+    ) {
+        self._viewModel = StateObject(
+            wrappedValue: DetailViewModel(
+                userId: userId,
+                userService: userService
+            )
+        )
+    }
     
     // MARK: - Body
     var body: some View {
@@ -52,19 +68,19 @@ struct StationDetailsView: View {
                 Text(getString(tags: playerService.currentStation.tags)?.uppercased()
                      ?? playerService.currentStation.countryCode
                 )
-                    .font(.custom(DS.Fonts.sfBold,
-                                  size: getString(tags: playerService.currentStation.tags) != nil
-                                  ? Drawing.fontSizeSmall
-                                  : Drawing.fontSizeLarge)
-                    )
-                    .foregroundStyle(.white)
-                    .lineLimit(1)
-                    .offset(x: textOffset)
-                    .onAppear {
-                        withAnimation(.easeInOut(duration: 8).repeatForever()) {
-                            textOffset = -200
-                        }
+                .font(.custom(DS.Fonts.sfBold,
+                              size: getString(tags: playerService.currentStation.tags) != nil
+                              ? Drawing.fontSizeSmall
+                              : Drawing.fontSizeLarge)
+                )
+                .foregroundStyle(.white)
+                .lineLimit(1)
+                .offset(x: textOffset)
+                .onAppear {
+                    withAnimation(.easeInOut(duration: 8).repeatForever()) {
+                        textOffset = -200
                     }
+                }
             }
             .frame(width: 900, height: 20)
             .padding(.top, Drawing.topPadding)
@@ -76,8 +92,11 @@ struct StationDetailsView: View {
                 .frame(height: Drawing.equalizerHeight)
             
             // MARK: - Vote
-            VoteView(isShow: true, idStation: playerService.currentStation.id)
-                .frame(width: Drawing.voteViewSize.width, height: Drawing.voteViewSize.height)
+            VoteView(viewModel.checkFavorite())
+            .onTapGesture {
+                viewModel.addUserFavorite()
+            }
+            .frame(width: Drawing.voteViewSize.width, height: Drawing.voteViewSize.height)
             
             // MARK: - Radio Player
             RadioPlayerView(playerService: playerService)
@@ -112,6 +131,6 @@ struct StationDetailsView: View {
 
 // MARK: - Preview
 #Preview {
-    StationDetailsView()
+    DetailsView("")
         .environmentObject(PlayerService())
 }

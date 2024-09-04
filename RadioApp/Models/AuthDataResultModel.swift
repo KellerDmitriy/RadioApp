@@ -85,7 +85,7 @@ struct DBUser: Codable {
         case email = "email"
         case profileImagePath = "profile_image_path"
         case profileImagePathUrl = "profile_image_path_url"
-        case favorites = "favorites_radio_stations"
+        case favorites = "favorites"
     }
     
     init(from decoder: Decoder) throws {

@@ -16,13 +16,13 @@ struct FavoritesView: View {
     
     // MARK: - Initializer
     init(
-        user: DBUser,
+        userId: String,
         userService: UserService = .shared,
         networkService: NetworkService = .shared
     ) {
         self._viewModel = StateObject(
             wrappedValue: FavoritesViewModel(
-                user: user,
+                userId: userId,
                 userService: userService,
                 networkService: networkService
             )
@@ -43,7 +43,7 @@ struct FavoritesView: View {
             
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack {
-                    ForEach(viewModel.stations) { station in
+                    ForEach(viewModel.favoritesStations) { station in
                         ZStack {
                             if playerService.currentStation.id != station.id {
                                 FavoritesComponentView(
@@ -66,5 +66,5 @@ struct FavoritesView: View {
 
 // MARK: - Preview
 #Preview {
-    FavoritesView(user: DBUser.getTestDBUser())
+    FavoritesView(userId: "")
 }

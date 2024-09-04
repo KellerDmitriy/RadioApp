@@ -23,10 +23,14 @@ final class ProfileViewModel: ObservableObject {
     var userEmail: String {
         currentUser.email
     }
-    var profileImageURL: URL {
-        guard let urlString = currentUser.profileImagePathUrl else { return URL(fileURLWithPath: "") }
-        return URL(string: urlString)!
-    }
+    
+    var profileImageURL: URL? {
+            guard let urlString = currentUser.profileImagePathUrl, 
+                    let url = URL(string: urlString) else {
+                return nil
+            }
+            return url
+        }
     
     private let authService: AuthService
     private let notificationsService: NotificationsService

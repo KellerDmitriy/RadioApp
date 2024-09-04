@@ -10,7 +10,9 @@ import SwiftUI
 struct StationView: View {
     
     @State var isActive: Bool
+    @State var isVote: Bool
     var station: StationModel
+    
     
     var body: some View {
         ZStack {
@@ -54,7 +56,7 @@ struct StationView: View {
                                     .font(.custom(DS.Fonts.sfRegular, size: 14))
                                     .foregroundStyle(isActive ? .white : DS.Colors.frame)
                                 
-                                VoteView(isShow: isActive ? true : false, idStation: station.id)
+                                VoteView(isVote)
                                     .frame(width: 14, height: 14)
                             }
                             Spacer(minLength: 20)
@@ -93,7 +95,6 @@ struct StationView: View {
 
 //MARK: - PREVIEW
 #Preview {
-    StationView(isActive: true, station: StationModel.testStation())
-    
+    StationView(isActive: true, isVote: true, station: StationModel.testStation())
 }
 

@@ -16,11 +16,13 @@ struct AllStationsView: View {
     @State private var isSearching: Bool = false
     
     init(
+        userId: String,
         networkService: NetworkService = .shared
     ) {
         self._viewModel = StateObject(
             wrappedValue: AllStationViewModel(
-                 networkService: networkService
+                userId: userId,
+                networkService: networkService
             )
         )
     }
@@ -47,10 +49,14 @@ struct AllStationsView: View {
                     LazyVStack(pinnedViews: .sectionHeaders) {
                         ForEach(viewModel.stations, id: \.id) { station in
                             NavigationLink {
-                                StationDetailsView()
+                                DetailsView(viewModel.userId)
                                     .environmentObject(playerService)
                             } label: {
-                                StationView(isActive: true, station: station)
+                                StationView(
+                                    isActive: true, 
+                                    isVote: viewModel.checkFavorite(),
+                                    station: station
+                                )
                                     
                             }
                         }
@@ -74,5 +80,5 @@ struct AllStationsView: View {
 
 // MARK: - Preview
 #Preview {
-    AllStationsView()
+    AllStationsView(userId: "")
 }

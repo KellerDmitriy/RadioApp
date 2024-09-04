@@ -49,32 +49,18 @@ final class UserService {
     }
     
     //    MARK: Favorites CRUD
-    private func userFavoritesCollection(_ userId: String) -> CollectionReference {
-        userDocument(userId).collection("favorite_radio_stations")
-    }
-    
-    private func userFavoritesDocument(userId: String, favoritesId: String) -> DocumentReference {
-        userFavoritesCollection(userId).document(favoritesId)
-    }
-    
-    func addFavoriteFor(_ userID: String) async throws {
-        let document = userFavoritesCollection(userID).document()
+    func addFavoriteFor(_ userID: String, station: StationModel) async throws {
+        var user = try await getUser(userId: userID)
         
-        guard let snapshot = try? await document.getDocument(),
-              let station = StationModel(docSnap: snapshot) else {
-            throw NSError(domain: "DataError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to create StationModel from snapshot"])
+        if !user.favorites.contains(station) {
+            user.favorites.append(station)
+            
+            let data = try Firestore.Encoder().encode(user)
+            try await userDocument(userID).setData(data, merge: true)
         }
-        
-        let data = station.representation
-        
-        try await document.setData(data, merge: false)
     }
     
 
-    func removeUserFavorite(userId: String, favoriteId: String) async throws {
-        try await userFavoritesDocument(userId: userId, favoritesId: favoriteId).delete()
-        
-    }
 
 //    func deleteFavorites(user: DBUser) async throws {
 //        do {

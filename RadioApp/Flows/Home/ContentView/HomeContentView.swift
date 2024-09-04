@@ -42,16 +42,23 @@ struct HomeContentView: View {
                     VolumeSliderView(volume: $playerService.volume)
                         .frame(width: 20, height: 300)
                 }
-                switch selectedTab {
-                case .popular:
-                    PopularView(user: viewModel.currentUser ?? DBUser.getTestDBUser())
-                        .environmentObject(playerService)
-                case .favorites:
-                    FavoritesView(user: viewModel.currentUser ?? DBUser.getTestDBUser())
-                        .environmentObject(playerService)
-                case .allStations:
-                    AllStationsView()
-                        .environmentObject(playerService)
+                
+                if !viewModel.userId.isEmpty {
+                    switch selectedTab {
+                    case .popular:
+                        PopularView(userId: viewModel.userId)
+                            .environmentObject(playerService)
+                        
+                    case .favorites:
+                        FavoritesView(userId: viewModel.userId)
+                            .environmentObject(playerService)
+                    case .allStations:
+                        AllStationsView(userId: viewModel.userId)
+                            .environmentObject(playerService)
+                    }
+                } else {
+                    Text("Loading...")
+                        .foregroundColor(.white)
                 }
             }
             
@@ -64,14 +71,16 @@ struct HomeContentView: View {
                 .frame(height: 110)
                 .padding(.bottom, 80)
             
-         
+            
             NavigationLink(destination:
                             ProfileView(viewModel.currentUser ?? DBUser.getTestDBUser()),
                            isActive: $isProfileViewActive,
                            label: { EmptyView() })
         }
-        .task {
-            try? await viewModel.loadCurrentUser()
+        .onAppear {
+            Task{
+                try? await viewModel.loadCurrentUser()
+            }
         }
         .onDisappear(perform: destroyPlayerService)
         .toolbar {
@@ -86,7 +95,7 @@ struct HomeContentView: View {
                         
                         withAnimation(.easeInOut) {
                             isProfileViewActive.toggle()
-                      
+                            
                         }
                     }
                 )
@@ -98,7 +107,7 @@ struct HomeContentView: View {
     }
     
     private func destroyPlayerService() {
-    
+        playerService.removeAllObserver()
     }
 }
 // MARK: - Preview

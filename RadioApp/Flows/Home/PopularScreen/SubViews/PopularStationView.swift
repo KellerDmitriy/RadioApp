@@ -1,5 +1,5 @@
 //
-//  StationPopularView.swift
+//  PopularStationView.swift
 //  RadioApp
 //
 //  Created by Dmitriy Eliseev on 29.07.2024.
@@ -7,12 +7,14 @@
 
 import SwiftUI
 
-struct StationPopularView: View {
+struct PopularStationView: View {
     //MARK: - PROPERTIES
     @EnvironmentObject var playerService: PlayerService
     
     @State var isActive: Bool
+    @State var isVote: Bool
     @State var station: StationModel
+    @State var voteAction: () -> Void
     
     //MARK: - BODY
     var body: some View {
@@ -44,7 +46,10 @@ struct StationPopularView: View {
                             .font(.custom(DS.Fonts.sfRegular, size: 14))
                             .foregroundStyle(isActive ? .white : DS.Colors.frame)
                         
-                        VoteView(isShow: isActive ? true : false, idStation: station.id)
+                        VoteView(isVote)
+                            .onTapGesture {
+                                voteAction()
+                            }
                             .frame(
                                 width: 14,
                                 height: 14
@@ -94,7 +99,11 @@ struct StationPopularView: View {
 
 //MARK: - PREVIEW
 #Preview {
-    StationPopularView(
-        isActive: true, station: StationModel.testStation())
+    PopularStationView(
+        isActive: true, 
+        isVote: true,
+        station: StationModel.testStation(), 
+        voteAction: {}
+    )
         .environmentObject(PlayerService())
 }

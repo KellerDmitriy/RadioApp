@@ -36,43 +36,29 @@ struct StationModel: Identifiable, Codable, Hashable {
         self.tags = tags
         self.countryCode = contryCode
         self.votes = votes
-        
     }
     
-    var representation: [String: Any] {
-        var dict = [String: Any]()
-        
-        let mirror = Mirror(reflecting: self)
-        for child in mirror.children {
-            if let key = child.label {
-                dict[key] = child.value
-            }
-        }
-        return dict
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.url = try container.decode(String.self, forKey: .url)
+        self.favicon = try container.decode(String.self, forKey: .favicon)
+        self.tags = try container.decode(String.self, forKey: .tags)
+        self.countryCode = try container.decode(String.self, forKey: .countryCode)
+        self.votes = try container.decode(Int.self, forKey: .votes)
     }
-
-    init?(docSnap: DocumentSnapshot) {
-        guard let data = docSnap.data() else { return nil }
-        
-        guard let id = data["id"] as? String,
-              let name = data["name"] as? String,
-              let favicon = data["favicon"] as? String,
-              let url = data["url"] as? String,
-              let tags = data["tags"] as? String,
-              let countryCode = data["countryCode"] as? String,
-              let votes = data["votes"] as? Int else {
-            return nil
-        }
-        
-        self.id = id
-        self.name = name
-        self.favicon = favicon
-        self.url = url
-        self.tags = tags
-        self.countryCode = countryCode
-        self.votes = votes
+    
+    func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.id, forKey: .id)
+        try container.encode(self.name, forKey: .name)
+        try container.encode(self.url, forKey: .url)
+        try container.encode(self.favicon, forKey: .favicon)
+        try container.encode(self.tags, forKey: .tags)
+        try container.encode(self.countryCode, forKey: .countryCode)
+        try container.encode(self.votes, forKey: .votes)
     }
-
 }
 
 // MARK: - Preview data
