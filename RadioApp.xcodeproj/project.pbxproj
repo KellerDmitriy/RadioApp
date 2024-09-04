@@ -382,7 +382,7 @@
 		7A7A4B342C5B63F900CD8794 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				E1A7C2812C80F4A9004F3EF9 /* HomeScreen */,
+				E1A7C2812C80F4A9004F3EF9 /* ContentView */,
 				E1ACD3102C79B4D500A15703 /* PopularScreen */,
 				E1ACD3132C79B4FC00A15703 /* FavoriitesScreen */,
 				E1ACD3162C79B53200A15703 /* AllStationsScreen */,
@@ -440,13 +440,13 @@
 			path = SubViews;
 			sourceTree = "<group>";
 		};
-		E1A7C2812C80F4A9004F3EF9 /* HomeScreen */ = {
+		E1A7C2812C80F4A9004F3EF9 /* ContentView */ = {
 			isa = PBXGroup;
 			children = (
 				E1A7C27D2C80F488004F3EF9 /* HomeContentView.swift */,
 				E1A7C27F2C80F4A1004F3EF9 /* HomeViewModel.swift */,
 			);
-			path = HomeScreen;
+			path = ContentView;
 			sourceTree = "<group>";
 		};
 		E1ACD3102C79B4D500A15703 /* PopularScreen */ = {

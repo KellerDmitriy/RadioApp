@@ -5,8 +5,6 @@
 //  Created by Dmitriy Eliseev on 08.08.2024.
 //
 
-
-
 import SwiftUI
 
 struct FavoritesComponentView: View {
@@ -24,7 +22,7 @@ struct FavoritesComponentView: View {
                 .fill(isActive ? DS.Colors.pinkNeon : .clear)
             HStack{
                 VStack(alignment: .leading, spacing: 10) {
-                    Text(getString(tags: self.station.tags)?.uppercased() ?? self.station.countrycode)
+                    Text(getString(tags: self.station.tags)?.uppercased() ?? self.station.countryCode)
                         .font(.custom(DS.Fonts.sfBold, size: getString(tags: self.station.tags) != nil ? 20 : 30))
                         .foregroundStyle(isActive ? .blue : DS.Colors.frame)
                     HStack() {
@@ -81,7 +79,7 @@ struct FavoritesComponentView: View {
 
 //MARK: - PREVIEW
 #Preview {
-    FavoritesView()
+    FavoritesComponentView(isActive: true, station: StationModel.testStation())
 }
 
 

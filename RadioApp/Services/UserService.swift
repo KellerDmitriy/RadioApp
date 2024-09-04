@@ -16,27 +16,27 @@ final class UserService {
     private let userCollection: CollectionReference = Firestore.firestore().collection("users")
     
     // MARK: - Private Methods
-    private func userDocument(userId: String) -> DocumentReference {
+    private func userDocument(_ userId: String) -> DocumentReference {
         userCollection.document(userId)
     }
     
     // MARK: - Public Methods
-    func createNewUser(user: DBUser) async throws {
-        try userDocument(userId: user.id).setData(from: user, merge: false)
+    func createNewUser(_ user: DBUser) async throws {
+        try userDocument(user.userID).setData(from: user, merge: false)
     }
     
     func getUser(userId: String) async throws -> DBUser {
-        try await userDocument(userId: userId).getDocument(as: DBUser.self)
+        try await userDocument(userId).getDocument(as: DBUser.self)
     }
     
     func updateUserName(_ name: String, userID: String) async throws {
         let data: [String : Any] = [DBUser.CodingKeys.name.rawValue : name]
-        try await userDocument(userId: userID).updateData(data)
+        try await userDocument(userID).updateData(data)
     }
     
     func updateUserEmail(_ email: String, userID: String) async throws {
         let data: [String : Any] = [DBUser.CodingKeys.email.rawValue : email]
-        try await userDocument(userId: userID).updateData(data)
+        try await userDocument(userID).updateData(data)
     }
     
     func updateUserProfileImagePath(userId: String, path: String?, url: String?) async throws {
@@ -44,16 +44,44 @@ final class UserService {
             DBUser.CodingKeys.profileImagePath.rawValue : path,
             DBUser.CodingKeys.profileImagePathUrl.rawValue : url,
         ]
+        
+        try await userDocument(userId).updateData(data)
+    }
+    
+    //    MARK: Favorites CRUD
+    private func userFavoritesCollection(_ userId: String) -> CollectionReference {
+        userDocument(userId).collection("favorite_radio_stations")
+    }
+    
+    private func userFavoritesDocument(userId: String, favoritesId: String) -> DocumentReference {
+        userFavoritesCollection(userId).document(favoritesId)
+    }
+    
+    func addFavoriteFor(_ userID: String) async throws {
+        let document = userFavoritesCollection(userID).document()
+        
+        guard let snapshot = try? await document.getDocument(),
+              let station = StationModel(docSnap: snapshot) else {
+            throw NSError(domain: "DataError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to create StationModel from snapshot"])
+        }
+        
+        let data = station.representation
+        
+        try await document.setData(data, merge: false)
+    }
+    
 
-        try await userDocument(userId: userId).updateData(data)
+    func removeUserFavorite(userId: String, favoriteId: String) async throws {
+        try await userFavoritesDocument(userId: userId, favoritesId: favoriteId).delete()
+        
     }
-    
-    private func userFavoriteRadioStationsCollection(userId: String) -> CollectionReference {
-        userDocument(userId: userId).collection("favorite_radio_stations")
-    }
-    
-    private func userFavoriteProductDocument(userId: String, favoriteRadioStationId: String) -> DocumentReference {
-        userFavoriteRadioStationsCollection(userId: userId).document(favoriteRadioStationId)
-    }
-    
+
+//    func deleteFavorites(user: DBUser) async throws {
+//        do {
+//            try await userFavoritesCollection(user.userID).delete()
+//        } catch {
+//            print("problem with delete favorite")
+//            throw error
+//        }
+//    }
 }

@@ -18,10 +18,14 @@ struct PopularView: View {
     
     // MARK: - Initializer
     init(
+        user: DBUser,
+        userService: UserService = .shared,
         networkService: NetworkService = .shared
     ) {
         self._viewModel = StateObject(
             wrappedValue: PopularViewModel(
+                user: user,
+                userService: userService,
                 networkService: networkService
             )
         )
@@ -43,7 +47,7 @@ struct PopularView: View {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 139))], spacing: 15) {
                     ForEach(viewModel.stations.indices,  id: \.self) { index in
                         ZStack {
-                            if playerService.currentStation.stationuuid == viewModel.stations[index].stationuuid {
+                            if playerService.currentStation.id == viewModel.stations[index].id {
                                 StationPopularView(
                                     isActive: true,
                                     station: viewModel.stations[index]
@@ -69,9 +73,11 @@ struct PopularView: View {
         .background(DS.Colors.darkBlue)
         .task {
             Task {
-                try await viewModel.fetchTopStations()
+                await viewModel.fetchTopStations()
                 playerService.addStationForPlayer(viewModel.stations)
-                playerService.playAudio()
+                if viewModel.error == nil {
+                    playerService.playAudio()
+                }
             }
         }
         .alert(isPresented: isPresentedAlert()) {
@@ -101,7 +107,7 @@ struct PopularView: View {
 
 // MARK: - Preview
 #Preview {
-    PopularView()
+    PopularView(user: DBUser.getTestDBUser())
         .environmentObject(PlayerService())
 }
 

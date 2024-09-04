@@ -44,10 +44,10 @@ struct HomeContentView: View {
                 }
                 switch selectedTab {
                 case .popular:
-                    PopularView()
+                    PopularView(user: viewModel.currentUser ?? DBUser.getTestDBUser())
                         .environmentObject(playerService)
                 case .favorites:
-                    FavoritesView()
+                    FavoritesView(user: viewModel.currentUser ?? DBUser.getTestDBUser())
                         .environmentObject(playerService)
                 case .allStations:
                     AllStationsView()
@@ -98,7 +98,7 @@ struct HomeContentView: View {
     }
     
     private func destroyPlayerService() {
-        playerService.deinit()
+    
     }
 }
 // MARK: - Preview

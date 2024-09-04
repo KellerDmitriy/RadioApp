@@ -116,6 +116,6 @@ struct ProfileView: View {
 
 // MARK: - Preview
 #Preview {
-    ProfileView(DBUser(id: "", name: "String", email: "Petrov", profileImagePath: "", profileImagePathUrl: "")
+    ProfileView(DBUser(userID: "", name: "String", email: "Petrov", profileImagePath: "", profileImagePathUrl: "")
     )
 }

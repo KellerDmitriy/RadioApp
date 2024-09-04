@@ -33,7 +33,7 @@ final class ProfileEditViewModel: ObservableObject {
     
     func loadCurrentUser() async throws {
         let authDataResult = try authService.getAuthenticatedUser()
-        self.currentUser = try await userService.getUser(userId: authDataResult.id)
+        self.currentUser = try await userService.getUser(userId: authDataResult.uid)
         if let currentUser = currentUser {
             userName = currentUser.name
             userEmail = currentUser.email
@@ -44,7 +44,7 @@ final class ProfileEditViewModel: ObservableObject {
     func updateUserName() async {
         guard let currentUser else { return }
         do {
-            try await userService.updateUserName(userName, userID: currentUser.id)
+            try await userService.updateUserName(userName, userID: currentUser.userID)
         } catch {
             self.error = ProfileFlowError.map(error)
         }
@@ -54,7 +54,7 @@ final class ProfileEditViewModel: ObservableObject {
         guard let currentUser else { return }
         do {
             try await authService.updateEmail(email: userEmail)
-            try await userService.updateUserEmail(userEmail, userID: currentUser.id)
+            try await userService.updateUserEmail(userEmail, userID: currentUser.userID)
         } catch {
             self.error = ProfileFlowError.map(error)
         }
@@ -68,12 +68,12 @@ final class ProfileEditViewModel: ObservableObject {
             guard let imageData = image.jpegData(compressionQuality: 1.0) else { return }
             
             do {
-                let (path, _) = try await firebaseStorage.saveImage(data: imageData, userID: currentUser.id)
+                let (path, _) = try await firebaseStorage.saveImage(data: imageData, userID: currentUser.userID)
                 
                 let url = try await firebaseStorage.getUrlForImage(path: path)
               
                 try await userService.updateUserProfileImagePath(
-                    userId: currentUser.id,
+                    userId: currentUser.userID,
                     path: path,
                     url: url.absoluteString
                 )
@@ -89,7 +89,7 @@ final class ProfileEditViewModel: ObservableObject {
         Task {
             try await firebaseStorage.deleteImage(path: path)
             try await userService.updateUserProfileImagePath(
-                userId: currentUser.id,
+                userId: currentUser.userID,
                 path: nil,
                 url: nil
             )

@@ -53,7 +53,7 @@ final class AuthViewModel: ObservableObject {
             var authDataResult = try await authService.createUser(email: email, password: password)
             authDataResult.userName = username
             let user = DBUser(auth: authDataResult)
-            try await userService.createNewUser(user: user)
+            try await userService.createNewUser(user)
         } catch {
             await MainActor.run {
                 self.error = error
@@ -76,7 +76,7 @@ final class AuthViewModel: ObservableObject {
         do {
            let authDataResult = try await authService.signInWithGoogle()
             let user = DBUser(auth: authDataResult)
-            try await userService.createNewUser(user: user)
+            try await userService.createNewUser(user)
             await MainActor.run {
                 isAuthenticated = authService.isAuthenticated()
             }

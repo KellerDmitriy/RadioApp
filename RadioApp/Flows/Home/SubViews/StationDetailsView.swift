@@ -50,7 +50,7 @@ struct StationDetailsView: View {
             // MARK: - Station Information
             VStack {
                 Text(getString(tags: playerService.currentStation.tags)?.uppercased()
-                     ?? playerService.currentStation.countrycode
+                     ?? playerService.currentStation.countryCode
                 )
                     .font(.custom(DS.Fonts.sfBold,
                                   size: getString(tags: playerService.currentStation.tags) != nil
@@ -76,7 +76,7 @@ struct StationDetailsView: View {
                 .frame(height: Drawing.equalizerHeight)
             
             // MARK: - Vote
-            VoteView(isShow: true, idStation: playerService.currentStation.stationuuid)
+            VoteView(isShow: true, idStation: playerService.currentStation.id)
                 .frame(width: Drawing.voteViewSize.width, height: Drawing.voteViewSize.height)
             
             // MARK: - Radio Player

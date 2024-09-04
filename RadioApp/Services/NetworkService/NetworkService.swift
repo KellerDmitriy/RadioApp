@@ -14,7 +14,7 @@ final class NetworkService {
     
     // MARK: - get top stations
     
-    func getTopStations(numberLimit: Int) async throws -> [StationModel] {
+    func getTopStations(_ numberLimit: Int) async throws -> [StationModel] {
         var stations = [StationModel]()
         
         guard let url = URLManager.shared.createURLTop(numberLimit: numberLimit) else {

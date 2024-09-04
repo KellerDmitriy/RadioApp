@@ -28,7 +28,7 @@ final class AllStationViewModel: ObservableObject {
     
     func fetchTopStations() async throws {
         var fetchedStations: [StationModel]
-        fetchedStations = try await networkService.getTopStations(numberLimit: numberLimit)
+        fetchedStations = try await networkService.getTopStations(numberLimit)
         stations = fetchedStations
     }
     

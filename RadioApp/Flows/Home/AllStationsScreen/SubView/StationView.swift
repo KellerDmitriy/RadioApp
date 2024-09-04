@@ -22,7 +22,7 @@ struct StationView: View {
                         
                         Text(getString(tags: 
                              self.station.tags)?.uppercased()
-                             ?? self.station.countrycode
+                             ?? self.station.countryCode
                         )
                             .font(
                                 .custom(
@@ -54,7 +54,7 @@ struct StationView: View {
                                     .font(.custom(DS.Fonts.sfRegular, size: 14))
                                     .foregroundStyle(isActive ? .white : DS.Colors.frame)
                                 
-                                VoteView(isShow: isActive ? true : false, idStation: station.stationuuid)
+                                VoteView(isShow: isActive ? true : false, idStation: station.id)
                                     .frame(width: 14, height: 14)
                             }
                             Spacer(minLength: 20)

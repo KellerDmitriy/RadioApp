@@ -16,28 +16,28 @@ struct GoogleSignInResultModel {
 
 // MARK: - AuthDataResultModel
 struct AuthDataResultModel: Codable {
-    let id: String
+    let uid: String
     var userName: String
     let email: String
     let profileImageURL: String?
 
     enum CodingKeys: String, CodingKey {
-        case id
+        case uid
         case userName
         case email
         case profileImageURL
     }
     
     init(user: User) {
-        self.id = user.uid
+        self.uid = user.uid
         self.userName = user.displayName ?? ""
         self.email = user.email ?? ""
         self.profileImageURL = user.photoURL?.absoluteString
     }
 }
 
-struct DBUser: Identifiable, Codable {
-    let id: String
+struct DBUser: Codable {
+    let userID: String
     let name: String
     let email: String
     let profileImagePath: String?
@@ -45,7 +45,7 @@ struct DBUser: Identifiable, Codable {
     var favorites: [StationModel] = []
     
     init(auth: AuthDataResultModel) {
-        self.id = auth.id
+        self.userID = auth.uid
         self.name = auth.userName
         self.email = auth.email
         self.profileImagePath = nil
@@ -55,7 +55,7 @@ struct DBUser: Identifiable, Codable {
     
     static func getTestDBUser() -> DBUser {
        return DBUser(
-            id: "",
+            userID: "",
             name: "",
             email: "",
             profileImagePath: "",
@@ -64,14 +64,14 @@ struct DBUser: Identifiable, Codable {
     }
     
     init(
-        id: String,
+        userID: String,
         name: String,
         email: String,
         profileImagePath: String?,
         profileImagePathUrl: String?,
         favorites: [StationModel] = []
     ) {
-        self.id = id
+        self.userID = userID
         self.name = name
         self.email = email
         self.profileImagePath = profileImagePath
@@ -80,7 +80,7 @@ struct DBUser: Identifiable, Codable {
     }
     
     enum CodingKeys: String, CodingKey {
-        case id = "user_id"
+        case userID = "user_id"
         case name = "name"
         case email = "email"
         case profileImagePath = "profile_image_path"
@@ -90,7 +90,7 @@ struct DBUser: Identifiable, Codable {
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.id = try container.decode(String.self, forKey: .id)
+        self.userID = try container.decode(String.self, forKey: .userID)
         self.name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
         self.email = try container.decodeIfPresent(String.self, forKey: .email) ?? ""
         self.profileImagePath = try container.decodeIfPresent(String.self, forKey: .profileImagePath)
@@ -100,7 +100,7 @@ struct DBUser: Identifiable, Codable {
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(self.id, forKey: .id)
+        try container.encode(self.userID, forKey: .userID)
         try container.encodeIfPresent(self.name, forKey: .name)
         try container.encodeIfPresent(self.email, forKey: .email)
         try container.encodeIfPresent(self.profileImagePath, forKey: .profileImagePath)

@@ -45,7 +45,7 @@ struct AllStationsView: View {
             VStack {
                 ScrollView(.vertical, showsIndicators: false) {
                     LazyVStack(pinnedViews: .sectionHeaders) {
-                        ForEach(viewModel.stations, id: \.stationuuid) { station in
+                        ForEach(viewModel.stations, id: \.id) { station in
                             NavigationLink {
                                 StationDetailsView()
                                     .environmentObject(playerService)

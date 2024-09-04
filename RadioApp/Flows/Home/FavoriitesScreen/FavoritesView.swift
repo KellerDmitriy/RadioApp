@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct FavoritesView: View {
     //MARK: - PROPERTIES
     @StateObject var viewModel: FavoritesViewModel
@@ -15,18 +14,23 @@ struct FavoritesView: View {
     
     @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
     
+    // MARK: - Initializer
     init(
+        user: DBUser,
+        userService: UserService = .shared,
         networkService: NetworkService = .shared
     ) {
         self._viewModel = StateObject(
             wrappedValue: FavoritesViewModel(
+                user: user,
+                userService: userService,
                 networkService: networkService
             )
         )
     }
-    
+    //MARK: - BODY
     var body: some View {
-        VStack{
+        VStack {
             HStack {
                 Text(Resources.Text.favorites.localized(language))
                     .font(.custom(DS.Fonts.sfRegular, size: 30))
@@ -37,14 +41,16 @@ struct FavoritesView: View {
             .padding(.top, 100)
             .background(DS.Colors.darkBlue)
             
-            VStack {
-                ScrollView(.vertical, showsIndicators: false){
-                    LazyVStack {
-                        ForEach(viewModel.stations, id: \.stationuuid) { item in
-                            FavoritesComponentView(
-                                isActive: true,
-                                station: item
-                            )
+            ScrollView(.vertical, showsIndicators: false) {
+                LazyVStack {
+                    ForEach(viewModel.stations) { station in
+                        ZStack {
+                            if playerService.currentStation.id != station.id {
+                                FavoritesComponentView(
+                                    isActive: true,
+                                    station: station
+                                )
+                            }
                         }
                     }
                 }
@@ -53,15 +59,12 @@ struct FavoritesView: View {
         }
         .background(DS.Colors.darkBlue)
         .onAppear {
-         
-            
         }
     }
-
 }
 
 
 // MARK: - Preview
 #Preview {
-    FavoritesView()
+    FavoritesView(user: DBUser.getTestDBUser())
 }

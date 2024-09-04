@@ -1908,7 +1908,7 @@
         }
       }
     },
-    "votes %d" : {
+    "votes %lld" : {
 
     },
     "We may also update these terms to reflect changes in our practices or legal requirements. We will provide notice of any material changes, but it is your responsibility to review these terms regularly." : {

@@ -69,6 +69,6 @@ struct VoteView: View {
 
 //MARK: - PREVIEW
 #Preview {
-    VoteView(isShow: .random(), idStation: StationModel.testStation().stationuuid)
+    VoteView(isShow: .random(), idStation: StationModel.testStation().id)
 }
       

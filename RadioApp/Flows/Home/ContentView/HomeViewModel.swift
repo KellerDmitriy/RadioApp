@@ -43,7 +43,7 @@ final class HomeViewModel: ObservableObject {
       func loadCurrentUser() async throws {
           do {
               let authDataResult = try authService.getAuthenticatedUser()
-              self.currentUser = try await userService.getUser(userId: authDataResult.id)
+              self.currentUser = try await userService.getUser(userId: authDataResult.uid)
           } catch {
               self.error = error
           }
