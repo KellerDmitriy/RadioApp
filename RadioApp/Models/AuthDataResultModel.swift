@@ -59,7 +59,8 @@ struct DBUser: Codable {
             name: "",
             email: "",
             profileImagePath: "",
-            profileImagePathUrl: ""
+            profileImagePathUrl: "",
+            favorites: []
           )
     }
     

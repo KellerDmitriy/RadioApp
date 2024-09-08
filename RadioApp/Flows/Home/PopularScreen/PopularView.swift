@@ -45,24 +45,27 @@ struct PopularView: View {
             
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 139))], spacing: 15) {
-                    ForEach(viewModel.stations, id: \.id) { station in
+                    ForEach(viewModel.stations.indices, id: \.self) { index in
+                        let station = viewModel.stations[index]
                         ZStack {
                             PopularCellView(
                                 isSelect: station.id == playerService.currentStation.id,
-                                isFavorite: station.isFavorite ?? false,
+                                isFavorite: station.isFavorite,
                                 isPlayMusic: playerService.isPlayMusic,
                                 station: station,
-                                favoriteAction: { viewModel.toggleFavorite(station: station)}
+                                favoriteAction: { viewModel.toggleFavorite(station: station) }
                             )
+                        }
                             .onTapGesture {
-                                playerService.currentStation = station
+                                viewModel.currentStation = station
+                                playerService.indexRadio = index
                                 playerService.playAudio()
                             }
-                            
                             .onLongPressGesture {
-                                isDetailViewActive = true
+                                if station.id == playerService.currentStation.id {
+                                    isDetailViewActive = true
+                                }
                             }
-                        }
                     }
                 }
             }
@@ -87,19 +90,19 @@ struct PopularView: View {
             )
         }
         
-        if let currentStation = viewModel.currentStation {
-                NavigationLink(
-                    destination: DetailsView(
-                        viewModel.userId,
-                        station: currentStation
-                    )
-                    .environmentObject(playerService),
-                    isActive: $isDetailViewActive
-                ) {
-                    EmptyView()
-                }
+        if isDetailViewActive, let currentStation = viewModel.currentStation {
+            NavigationLink(
+                destination: DetailsView(
+                    viewModel.userId,
+                    station: currentStation
+                )
+                .environmentObject(playerService),
+                isActive: $isDetailViewActive
+            ) {
+                EmptyView()
             }
         }
+    }
     
     private func isPresentedAlert() -> Binding<Bool> {
         Binding(get: { viewModel.error != nil },

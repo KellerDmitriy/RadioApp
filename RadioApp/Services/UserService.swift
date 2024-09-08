@@ -51,18 +51,6 @@ final class UserService {
     
     
     // MARK: - Favorites CRUD
-    
-    func saveFavoriteFor(_ userId: String, station: StationModel) async throws {
-        var user = try await getUser(userId: userId)
-        
-        if !user.favorites.contains(station) {
-            user.favorites.append(station)
-            let data = try Firestore.Encoder().encode(user)
-    
-            try await userDocument(userId).setData(data, merge: true)
-        }
-    }
-    
     func deleteFavorite(_ userId: String, _ stationId: String) async throws {
         var user = try await getUser(userId: userId)
         
@@ -73,16 +61,6 @@ final class UserService {
         } else {
             throw NSError(domain: "StationNotFound", code: 404, userInfo: [NSLocalizedDescriptionKey: "Station not found in user's favorites."])
         }
-    }
-    
-    func getFavoritesForUser(_ userId: String) async throws -> [StationModel] {
-        let user = try await getUser(userId: userId)
-        return user.favorites
-    }
-    
-    func isFavorite(_ userId: String, _ currentStationId: String) async throws -> Bool {
-        let favoriteStations = try await getFavoritesForUser(userId)
-        return favoriteStations.contains { $0.id == currentStationId }
     }
     
     func saveFavoriteStatus(for userId: String, station: StationModel, with status: Bool) async throws {
@@ -97,5 +75,29 @@ final class UserService {
                 try await deleteFavorite(userId, station.id)
             }
         }
+    }
+    
+    func getFavoritesForUser(_ userId: String) async throws -> [StationModel] {
+        let user = try await getUser(userId: userId)
+        return user.favorites
+    }
+    
+            
+    func saveFavoriteFor(_ userId: String, station: StationModel) async throws {
+        var user = try await getUser(userId: userId)
+        
+        if !user.favorites.contains(where: { $0.id == station.id }) {
+            var favoriteStation = station
+            
+            user.favorites.append(favoriteStation)
+            
+            let data = try Firestore.Encoder().encode(user)
+            try await userDocument(userId).setData(data, merge: true)
+        }
+    }
+    
+    private func isFavorite(_ userId: String, _ currentStationId: String) async throws -> Bool {
+        let favoriteStations = try await getFavoritesForUser(userId)
+        return favoriteStations.contains { $0.id == currentStationId }
     }
 }

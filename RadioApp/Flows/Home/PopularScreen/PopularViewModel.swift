@@ -18,17 +18,9 @@ final class PopularViewModel: ObservableObject {
     private let numberLimit = 20
     
     @Published var stations = [StationModel]()
-    @Published var currentIndex: Int?
     @Published var error: Error? = nil
-
     
-    var currentStation: StationModel? {
-        guard let currentIndex = currentIndex,
-                stations.indices.contains(currentIndex) else {
-            return nil
-        }
-        return stations[currentIndex]
-    }
+    var currentStation: StationModel? = nil
 
     // MARK: - Initializer
     init(
@@ -43,9 +35,20 @@ final class PopularViewModel: ObservableObject {
     
     // MARK: - Methods
     /// Fetches top stations from the network service
+    /// Fetches top stations from the network service and updates favorite status
     func fetchTopStations() async {
         do {
-            stations = try await networkService.getTopStations(numberLimit)
+            var stationsFromAPI = try await networkService.getTopStations(numberLimit)
+            let favoriteStations = try await userService.getFavoritesForUser(userId)
+            
+
+            for index in stationsFromAPI.indices {
+                if favoriteStations.contains(where: { $0.id == stationsFromAPI[index].id }) {
+                    stationsFromAPI[index].isFavorite = true
+                }
+            }
+            stations = stationsFromAPI
+            
         } catch {
             self.error = error
         }
@@ -57,19 +60,27 @@ final class PopularViewModel: ObservableObject {
     }
     
     func toggleFavorite(station: StationModel) {
-           Task {
-               do {
-                   let isFavorite = station.isFavorite ?? false
-                   try await userService.saveFavoriteStatus(for: userId, station: station, with: !isFavorite)
-                   
-                   if let index = stations.firstIndex(where: { $0.id == station.id }) {
-                       stations[index].isFavorite = !isFavorite
-                   }
-               } catch {
-                   self.error = error
-               }
-           }
-       }
+        Task {
+            do {
+                let isFavorite = station.isFavorite
+                
+                // Обновляем статус избранного для текущей станции
+                var updatedStation = station
+                updatedStation.isFavorite = !isFavorite
+                
+                // Сохраняем изменённую станцию в базе данных
+                try await userService.saveFavoriteStatus(for: userId, station: updatedStation, with: updatedStation.isFavorite)
+                
+                // Обновляем локально массив станций
+                if let index = stations.firstIndex(where: { $0.id == station.id }) {
+                    stations[index] = updatedStation
+                }
+                
+            } catch {
+                self.error = error
+            }
+        }
+    }
        
        func fetchFavorites() async {
            do {

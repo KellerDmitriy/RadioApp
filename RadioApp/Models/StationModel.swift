@@ -17,7 +17,7 @@ struct StationModel: Identifiable, Codable, Hashable {
     let tags: String
     let countryCode: String
     var votes: Int
-    var isFavorite: Bool? 
+    var isFavorite = false
 
     enum CodingKeys: String, CodingKey {
         case id = "stationuuid"
@@ -27,9 +27,10 @@ struct StationModel: Identifiable, Codable, Hashable {
         case tags
         case countryCode = "countrycode"
         case votes
+        case isFavorite
     }
 
-    init(id: String, name: String, url: String, favicon: String, tags: String, countryCode: String, votes: Int, isFavorite: Bool? = nil) {
+    init(id: String, name: String, url: String, favicon: String, tags: String, countryCode: String, votes: Int, isFavorite: Bool) {
         self.id = id
         self.name = name
         self.url = url
@@ -49,7 +50,7 @@ struct StationModel: Identifiable, Codable, Hashable {
         self.tags = try container.decode(String.self, forKey: .tags)
         self.countryCode = try container.decode(String.self, forKey: .countryCode)
         self.votes = try container.decode(Int.self, forKey: .votes)
-        self.isFavorite = nil 
+        self.isFavorite = false
     }
 
     func encode(to encoder: any Encoder) throws {
@@ -61,6 +62,7 @@ struct StationModel: Identifiable, Codable, Hashable {
         try container.encode(self.tags, forKey: .tags)
         try container.encode(self.countryCode, forKey: .countryCode)
         try container.encode(self.votes, forKey: .votes)
+        try container.encode(self.isFavorite, forKey: .isFavorite)
     }
 }
 
