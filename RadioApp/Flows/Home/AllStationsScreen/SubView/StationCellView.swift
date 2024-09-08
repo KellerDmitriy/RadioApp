@@ -1,5 +1,5 @@
 //
-//  StationView.swift
+//  StationCellView.swift
 //  RadioApp
 //
 //  Created by Evgeniy K on 02.08.2024.
@@ -7,10 +7,11 @@
 
 import SwiftUI
 
-struct StationView: View {
+struct StationCellView: View {
     
-    @State var isActive: Bool
-    @State var isVote: Bool
+    var isActive: Bool
+    var isVote: Bool
+    var voteAction: () -> Void
     var station: StationModel
     
     
@@ -56,8 +57,11 @@ struct StationView: View {
                                     .font(.custom(DS.Fonts.sfRegular, size: 14))
                                     .foregroundStyle(isActive ? .white : DS.Colors.frame)
                                 
-                                VoteView(isVote)
-                                    .frame(width: 14, height: 14)
+                                FavoriteButton(
+                                    isFavorite: isVote,
+                                    action: voteAction
+                                )
+                                   
                             }
                             Spacer(minLength: 20)
                             if isActive {
@@ -95,6 +99,6 @@ struct StationView: View {
 
 //MARK: - PREVIEW
 #Preview {
-    StationView(isActive: true, isVote: true, station: StationModel.testStation())
+    StationCellView(isActive: true, isVote: true, voteAction: {}, station: StationModel.testStation())
 }
 

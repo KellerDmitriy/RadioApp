@@ -7,24 +7,23 @@
 
 import SwiftUI
 
-struct FavoritesComponentView: View {
+struct FavoritesCellView: View {
     //MARK: - PROPERTIES
-    @EnvironmentObject var playerService: PlayerService
     
-    @State var isActive: Bool
-    
-    var station: StationModel
+    let isSelect: Bool
+    let station: StationModel
+    let deleteAction: () -> ()
     
     //MARK: - BODY
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20)
-                .fill(isActive ? DS.Colors.pinkNeon : .clear)
+                .fill(isSelect ? DS.Colors.pinkNeon : .clear)
             HStack{
                 VStack(alignment: .leading, spacing: 10) {
                     Text(getString(tags: self.station.tags)?.uppercased() ?? self.station.countryCode)
                         .font(.custom(DS.Fonts.sfBold, size: getString(tags: self.station.tags) != nil ? 20 : 30))
-                        .foregroundStyle(isActive ? .blue : DS.Colors.frame)
+                        .foregroundStyle(isSelect ? .blue : DS.Colors.frame)
                     HStack() {
                         Spacer()
                         Text(station.name)
@@ -33,10 +32,10 @@ struct FavoritesComponentView: View {
                             .fixedSize(horizontal: false, vertical: true)
                             .multilineTextAlignment(.center)
                             .font(.custom(.sfRegular, size: 10))
-                            .foregroundStyle(isActive ? .white : DS.Colors.frame)
+                            .foregroundStyle(isSelect ? .white : DS.Colors.frame)
                         Spacer()
                     }
-                    if isActive {
+                    if isSelect {
                         SplineView(isActive: true)
                             .frame(height: 20)
                     } else {
@@ -45,10 +44,10 @@ struct FavoritesComponentView: View {
                     }
                 }
                 .frame(width: 120, height: 120)
-                .foregroundStyle(isActive ? .white : DS.Colors.grayNotActive)
+                .foregroundStyle(isSelect ? .white : DS.Colors.grayNotActive)
                 Spacer(minLength: 80)
                 Button {
-//                    deleteItem()
+                    deleteAction()
                 } label: {
                     Image(systemName: "heart.fill")
                         .resizable()
@@ -61,11 +60,11 @@ struct FavoritesComponentView: View {
         }
     
         .frame(width: 293, height: 120)
-        
+        .animation(.easeInOut, value: isSelect)
         .clipShape(.rect(cornerRadius: 20))
         .overlay {
             RoundedRectangle(cornerRadius: 20)
-                .stroke(isActive ? DS.Colors.pinkNeon : DS.Colors.frame, lineWidth: 2)
+                .stroke(isSelect ? DS.Colors.pinkNeon : DS.Colors.frame, lineWidth: 2)
         }
     }
     
@@ -79,7 +78,7 @@ struct FavoritesComponentView: View {
 
 //MARK: - PREVIEW
 #Preview {
-    FavoritesComponentView(isActive: true, station: StationModel.testStation())
+    FavoritesCellView(isSelect: true, station: StationModel.testStation(), deleteAction: {})
 }
 
 

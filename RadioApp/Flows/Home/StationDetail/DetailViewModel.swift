@@ -10,17 +10,21 @@ import Foundation
 final class DetailViewModel: ObservableObject {
     // MARK: - Stored Properties
     let userId: String
+    let station: StationModel
     
     private let userService: UserService
     @Published var stationId = ""
+    
     @Published var error: Error? = nil
     
     // MARK: - Initializer
     init(
         userId: String,
+        station: StationModel,
         userService: UserService = .shared
     ) {
         self.userId = userId
+        self.station = station
         self.userService = userService
     }
     
@@ -34,7 +38,7 @@ final class DetailViewModel: ObservableObject {
     /// Adds a station to the user's favorites
     func addUserFavorite() {
 //        Task {
-//            try? await userService.addFavoriteFor(userId, station: <#StationModel#>)
+//            try? await userService.addFavoriteFor(userId, station: StationModel)
 //        }
     }
     

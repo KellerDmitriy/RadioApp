@@ -48,26 +48,54 @@ final class UserService {
         try await userDocument(userId).updateData(data)
     }
     
-    //    MARK: Favorites CRUD
-    func addFavoriteFor(_ userID: String, station: StationModel) async throws {
-        var user = try await getUser(userId: userID)
+    
+    
+    // MARK: - Favorites CRUD
+    
+    func saveFavoriteFor(_ userId: String, station: StationModel) async throws {
+        var user = try await getUser(userId: userId)
         
         if !user.favorites.contains(station) {
             user.favorites.append(station)
-            
             let data = try Firestore.Encoder().encode(user)
-            try await userDocument(userID).setData(data, merge: true)
+    
+            try await userDocument(userId).setData(data, merge: true)
         }
     }
     
-
-
-//    func deleteFavorites(user: DBUser) async throws {
-//        do {
-//            try await userFavoritesCollection(user.userID).delete()
-//        } catch {
-//            print("problem with delete favorite")
-//            throw error
-//        }
-//    }
+    func deleteFavorite(_ userId: String, _ stationId: String) async throws {
+        var user = try await getUser(userId: userId)
+        
+        if let index = user.favorites.firstIndex(where: { $0.id == stationId }) {
+            user.favorites.remove(at: index)
+            let data = try Firestore.Encoder().encode(user)
+            try await userDocument(userId).setData(data, merge: true)
+        } else {
+            throw NSError(domain: "StationNotFound", code: 404, userInfo: [NSLocalizedDescriptionKey: "Station not found in user's favorites."])
+        }
+    }
+    
+    func getFavoritesForUser(_ userId: String) async throws -> [StationModel] {
+        let user = try await getUser(userId: userId)
+        return user.favorites
+    }
+    
+    func isFavorite(_ userId: String, _ currentStationId: String) async throws -> Bool {
+        let favoriteStations = try await getFavoritesForUser(userId)
+        return favoriteStations.contains { $0.id == currentStationId }
+    }
+    
+    func saveFavoriteStatus(for userId: String, station: StationModel, with status: Bool) async throws {
+        let isCurrentlyFavorite = try await isFavorite(userId, station.id)
+        
+        if status {
+            if !isCurrentlyFavorite {
+                try await saveFavoriteFor(userId, station: station)
+            }
+        } else {
+            if isCurrentlyFavorite {
+                try await deleteFavorite(userId, station.id)
+            }
+        }
+    }
 }

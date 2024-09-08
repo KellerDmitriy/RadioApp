@@ -82,7 +82,7 @@ struct HomeContentView: View {
                 try? await viewModel.loadCurrentUser()
             }
         }
-        .onDisappear(perform: destroyPlayerService)
+   
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 ToolbarName(userName: viewModel.userName)
@@ -95,7 +95,7 @@ struct HomeContentView: View {
                         
                         withAnimation(.easeInOut) {
                             isProfileViewActive.toggle()
-                            
+                            destroyPlayerService()
                         }
                     }
                 )
@@ -108,6 +108,7 @@ struct HomeContentView: View {
     
     private func destroyPlayerService() {
         playerService.removeAllObserver()
+        print("remove Observers")
     }
 }
 // MARK: - Preview

@@ -17,7 +17,6 @@ struct DetailsView: View {
         static let equalizerHeight: CGFloat = 350
         static let radioPlayerHeight: CGFloat = 110
         static let volumeSliderHeight: CGFloat = 100
-        static let voteViewSize: CGSize = CGSize(width: 14, height: 14)
         static let fontSizeLarge: CGFloat = 30
         static let fontSizeSmall: CGFloat = 20
     }
@@ -32,11 +31,13 @@ struct DetailsView: View {
     // MARK: - Initializer
     init(_
         userId: String,
+        station: StationModel,
         userService: UserService = .shared
     ) {
         self._viewModel = StateObject(
             wrappedValue: DetailViewModel(
-                userId: userId,
+                userId: userId, 
+                station: station,
                 userService: userService
             )
         )
@@ -92,12 +93,12 @@ struct DetailsView: View {
                 .frame(height: Drawing.equalizerHeight)
             
             // MARK: - Vote
-            VoteView(viewModel.checkFavorite())
-            .onTapGesture {
-                viewModel.addUserFavorite()
-            }
-            .frame(width: Drawing.voteViewSize.width, height: Drawing.voteViewSize.height)
-            
+            FavoriteButton(
+                isFavorite: viewModel.checkFavorite(),
+                action: { viewModel.addUserFavorite()
+                }
+            )
+
             // MARK: - Radio Player
             RadioPlayerView(playerService: playerService)
                 .environmentObject(playerService)
@@ -131,6 +132,6 @@ struct DetailsView: View {
 
 // MARK: - Preview
 #Preview {
-    DetailsView("")
+    DetailsView("", station: StationModel.testStation())
         .environmentObject(PlayerService())
 }

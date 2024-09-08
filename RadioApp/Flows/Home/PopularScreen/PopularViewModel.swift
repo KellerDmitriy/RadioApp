@@ -15,14 +15,21 @@ final class PopularViewModel: ObservableObject {
     private let userService: UserService
     private let networkService: NetworkService
     
-    private let numberLimit = 30
+    private let numberLimit = 20
     
     @Published var stations = [StationModel]()
-    @Published var currentStation: StationModel?
-    
-    @Published var isVote = false
+    @Published var currentIndex: Int?
     @Published var error: Error? = nil
+
     
+    var currentStation: StationModel? {
+        guard let currentIndex = currentIndex,
+                stations.indices.contains(currentIndex) else {
+            return nil
+        }
+        return stations[currentIndex]
+    }
+
     // MARK: - Initializer
     init(
         userId: String,
@@ -49,21 +56,26 @@ final class PopularViewModel: ObservableObject {
         error = nil
     }
     
-    /// Adds a station to the user's favorites
-    func addUserFavorite() {
-        guard let currentStation else { return }
-        print(currentStation)
-        Task {
-            try? await userService.addFavoriteFor(userId, station: currentStation)
-        }
-    }
-    
-    /// Checks if a station is in the user's favorites
-    func checkFavorite() {
-//        guard !user.favorites.isEmpty else { return false }
-//        return user.favorites.contains { $0.id == stationId }
-        var isVote = false
-        isVote.toggle()
+    func toggleFavorite(station: StationModel) {
+           Task {
+               do {
+                   let isFavorite = station.isFavorite ?? false
+                   try await userService.saveFavoriteStatus(for: userId, station: station, with: !isFavorite)
+                   
+                   if let index = stations.firstIndex(where: { $0.id == station.id }) {
+                       stations[index].isFavorite = !isFavorite
+                   }
+               } catch {
+                   self.error = error
+               }
+           }
+       }
        
-    }
+       func fetchFavorites() async {
+           do {
+               self.stations = try await userService.getFavoritesForUser(userId)
+           } catch {
+               self.error = error
+           }
+       }
 }

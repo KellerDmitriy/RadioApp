@@ -7,28 +7,53 @@
 
 import Foundation
 
+@MainActor
 final class FavoritesViewModel: ObservableObject {
     // MARK: - Stored Properties
     let userId: String
-    
     private let userService: UserService
-    private let networkService: NetworkService
     
-    private let numberLimit = 20
+    @Published var favoritesStations: [StationModel] = []
+    @Published var currentStation: StationModel? 
+    @Published var error: Error? = nil
     
-    var favoritesStations: [StationModel] = []
-
     
     // MARK: - Initializer
     init(
         userId: String,
-        userService: UserService = .shared,
-        networkService: NetworkService = .shared
+        userService: UserService = .shared
     ) {
         self.userId = userId
         self.userService = userService
-        self.networkService = networkService
+    }
+
+    // Fetch favorite stations
+    func getFavorites() async {
+        do {
+            favoritesStations = try await userService.getFavoritesForUser(userId)
+        } catch {
+            self.error = error
+        }
     }
     
-
+    func deleteFavorite() async {
+        do {
+            guard let currentStation else { return }
+            try await userService.deleteFavorite(userId, currentStation.id)
+            await getFavorites()
+        } catch {
+            self.error = error
+        }
+    }
+    
+    // Cancel error alert
+    func cancelErrorAlert() {
+        error = nil
+    }
+    
+    // Set the current station when a cell is activated
+    func setCurrentStation(at index: Int) {
+        currentStation = favoritesStations[index]
+    }
+    
 }

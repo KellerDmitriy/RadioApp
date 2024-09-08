@@ -24,7 +24,7 @@ final class PlayerService: ObservableObject {
     private var volumeObserver: NSKeyValueObservation?
     
     @Published var stations = [StationModel]()
-    @Published var indexRadio = 0
+    @Published var indexRadio: Int? = nil
     @Published var volume: CGFloat = 0.0
     @Published var amplitude: CGFloat = 0.0
     @Published var isPlayMusic = false
@@ -35,7 +35,7 @@ final class PlayerService: ObservableObject {
             guard !stations.isEmpty else {
                 return StationModel.testStation()
             }
-            return stations[indexRadio]
+            return stations[indexRadio ?? 0]
         }
         set {
             if let newIndex = stations.firstIndex(of: newValue) {
@@ -53,6 +53,7 @@ final class PlayerService: ObservableObject {
     init() {
         self.volume = CGFloat(session.outputVolume)
         setVolumeObserver()
+
     }
     
     func removeAllObserver() {
@@ -64,8 +65,8 @@ final class PlayerService: ObservableObject {
     
     // MARK: - Add Radio Station to Player
     func addStationForPlayer(_ stations: [StationModel]) {
-        self.stations.append(contentsOf: stations)
-        indexRadio = min(indexRadio, stations.count - 1)
+        self.stations = stations
+        
     }
     
     // MARK: - Audio Playback Methods
@@ -98,15 +99,19 @@ final class PlayerService: ObservableObject {
     /// Plays the next station in the list
     func nextStationStream() {
         guard !stations.isEmpty else { return }
-        indexRadio = (indexRadio + 1) % stations.count
-        playAudio()
+        if indexRadio != nil {
+            indexRadio = ((indexRadio ?? 0) + 1) % stations.count
+            playAudio()
+        }
     }
     
     /// Plays the previous station in the list
     func backTrackAudioStream() {
         guard !stations.isEmpty else { return }
-        indexRadio = (indexRadio - 1 + stations.count) % stations.count
-        playAudio()
+        if indexRadio != nil {
+            indexRadio = ((indexRadio ?? 0) - 1) % stations.count
+            playAudio()
+        }
     }
     
     private func playAudioStream() {

@@ -17,27 +17,29 @@ struct StationModel: Identifiable, Codable, Hashable {
     let tags: String
     let countryCode: String
     var votes: Int
-    
+    var isFavorite: Bool? 
+
     enum CodingKeys: String, CodingKey {
-      case id = "stationuuid"
-      case name
-      case url
-      case favicon
-      case tags
-      case countryCode = "countrycode"
-      case votes
+        case id = "stationuuid"
+        case name
+        case url
+        case favicon
+        case tags
+        case countryCode = "countrycode"
+        case votes
     }
-    
-    init(id: String, name: String, url: String, favicon: String, tags: String, contryCode: String, votes: Int) {
+
+    init(id: String, name: String, url: String, favicon: String, tags: String, countryCode: String, votes: Int, isFavorite: Bool? = nil) {
         self.id = id
         self.name = name
         self.url = url
         self.favicon = favicon
         self.tags = tags
-        self.countryCode = contryCode
+        self.countryCode = countryCode
         self.votes = votes
+        self.isFavorite = isFavorite
     }
-    
+
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decode(String.self, forKey: .id)
@@ -47,8 +49,9 @@ struct StationModel: Identifiable, Codable, Hashable {
         self.tags = try container.decode(String.self, forKey: .tags)
         self.countryCode = try container.decode(String.self, forKey: .countryCode)
         self.votes = try container.decode(Int.self, forKey: .votes)
+        self.isFavorite = nil 
     }
-    
+
     func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(self.id, forKey: .id)
@@ -70,18 +73,12 @@ extension StationModel {
             url: "http://stream-uk1.radioparadise.com/aac-320",
             favicon: "https://www.radioparadise.com/favicon-32x32.png",
             tags: "california,eclectic,free,internet,non-commercial,paradise,radio",
-            contryCode: "US",
-            votes: 201303
+            countryCode: "US",
+            votes: 201303,
+            isFavorite: true
         )
         return station
     }
 }
-
-struct Like: Codable {
-    var idUUID = UUID()
-    var likeSet: Set<String>
-}
-
-
 
 

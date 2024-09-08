@@ -45,35 +45,22 @@ struct PopularView: View {
             
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 139))], spacing: 15) {
-                    ForEach(viewModel.stations.indices,  id: \.self) { index in
+                    ForEach(viewModel.stations, id: \.id) { station in
                         ZStack {
-                            if playerService.currentStation.id == viewModel.stations[index].id {
-                                PopularStationView(
-                                    isActive: true,
-                                    isVote: viewModel.isVote,
-                                    station: viewModel.stations[index], 
-                                    voteAction: { viewModel.addUserFavorite() }
-                                )
-                                .onTapGesture {
-                                    viewModel.currentStation = viewModel.stations[index]
-                                    print(viewModel.currentStation)
-                                }
-                                .onLongPressGesture {
-                                    isDetailViewActive = true
-                                    print(viewModel.currentStation)
-                                }
-                            } else {
-                                PopularStationView(
-                                    isActive: false,
-                                    isVote: viewModel.isVote,
-                                    station: viewModel.stations[index], 
-                                    voteAction: { viewModel.addUserFavorite() }
-                                )
-                                .onTapGesture {
-                                    print(viewModel.currentStation)
-                                    playerService.indexRadio = index
-                                    playerService.playAudio()
-                                }
+                            PopularCellView(
+                                isSelect: station.id == playerService.currentStation.id,
+                                isFavorite: station.isFavorite ?? false,
+                                isPlayMusic: playerService.isPlayMusic,
+                                station: station,
+                                favoriteAction: { viewModel.toggleFavorite(station: station)}
+                            )
+                            .onTapGesture {
+                                playerService.currentStation = station
+                                playerService.playAudio()
+                            }
+                            
+                            .onLongPressGesture {
+                                isDetailViewActive = true
                             }
                         }
                     }
@@ -89,8 +76,8 @@ struct PopularView: View {
                     playerService.playAudio()
                 }
             }
-            print("Vcv- \(viewModel.userId)")
         }
+        
         .alert(isPresented: isPresentedAlert()) {
             Alert(
                 title: Text(Resources.Text.error.localized(language)),
@@ -100,13 +87,19 @@ struct PopularView: View {
             )
         }
         
-        NavigationLink(
-            destination: DetailsView(viewModel.userId)
-                .environmentObject(playerService),
-            isActive: $isDetailViewActive) {
-                EmptyView()
+        if let currentStation = viewModel.currentStation {
+                NavigationLink(
+                    destination: DetailsView(
+                        viewModel.userId,
+                        station: currentStation
+                    )
+                    .environmentObject(playerService),
+                    isActive: $isDetailViewActive
+                ) {
+                    EmptyView()
+                }
             }
-    }
+        }
     
     private func isPresentedAlert() -> Binding<Bool> {
         Binding(get: { viewModel.error != nil },

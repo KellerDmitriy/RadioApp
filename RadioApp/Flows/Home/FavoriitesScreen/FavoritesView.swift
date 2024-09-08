@@ -8,61 +8,132 @@
 import SwiftUI
 
 struct FavoritesView: View {
-    //MARK: - PROPERTIES
+    // MARK: - Properties
     @StateObject var viewModel: FavoritesViewModel
     @EnvironmentObject var playerService: PlayerService
     
     @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
     
+    @State private var isDetailViewActive = false
+    
     // MARK: - Initializer
     init(
         userId: String,
-        userService: UserService = .shared,
-        networkService: NetworkService = .shared
+        userService: UserService = .shared
     ) {
         self._viewModel = StateObject(
             wrappedValue: FavoritesViewModel(
                 userId: userId,
-                userService: userService,
-                networkService: networkService
+                userService: userService
             )
         )
     }
-    //MARK: - BODY
+    
+    // MARK: - Body
     var body: some View {
         VStack {
-            HStack {
-                Text(Resources.Text.favorites.localized(language))
-                    .font(.custom(DS.Fonts.sfRegular, size: 30))
-                    .foregroundStyle(.white)
-                Spacer()
-            }
-            .padding(.leading)
-            .padding(.top, 100)
-            .background(DS.Colors.darkBlue)
+            headerView
             
-            ScrollView(.vertical, showsIndicators: false) {
-                LazyVStack {
-                    ForEach(viewModel.favoritesStations) { station in
-                        ZStack {
-                            if playerService.currentStation.id != station.id {
-                                FavoritesComponentView(
-                                    isActive: true,
-                                    station: station
-                                )
+            if viewModel.favoritesStations.isEmpty {
+                Spacer()
+                Text("You have no saved stations")
+                    .foregroundColor(.white)
+                    .padding()
+            } else {
+                favoritesListView
+            }
+            
+            Spacer()
+        }
+        .background(DS.Colors.darkBlue)
+        .alert(isPresented: isPresentedAlert()) {
+            errorAlert
+        }
+        .onAppear {
+            Task {
+                await viewModel.getFavorites()
+            }
+        }
+        if let currentStation = viewModel.currentStation {
+            NavigationLink(
+                destination: DetailsView(
+                    viewModel.userId,
+                    station: currentStation
+                )
+                .environmentObject(playerService),
+                isActive: $isDetailViewActive) {
+                    EmptyView()
+                }
+        }
+    }
+    
+    // MARK: - Subviews
+    private var headerView: some View {
+        HStack {
+            Text(Resources.Text.favorites.localized(language))
+                .font(.custom(DS.Fonts.sfRegular, size: 30))
+                .foregroundStyle(.white)
+            Spacer()
+        }
+        .padding(.leading)
+        .padding(.top, 100)
+        .background(DS.Colors.darkBlue)
+    }
+    
+    private var favoritesListView: some View {
+        ScrollView(.vertical, showsIndicators: false) {
+            LazyVStack {
+                ForEach(viewModel.favoritesStations.indices, id: \.self) { index in
+                    ZStack {
+                        FavoritesCellView(
+                            isSelect: playerService.currentStation.id == viewModel.favoritesStations[index].id ,
+                            station: viewModel.favoritesStations[index],
+                            deleteAction: {
+                                Task {
+                                    await viewModel.deleteFavorite()
+                                }
                             }
+                        )
+                        .onTapGesture {
+                            handleStationSelection(at: index)
+                        }
+                        .onLongPressGesture {
+                            isDetailViewActive = true
                         }
                     }
                 }
             }
-            Spacer()
-        }
-        .background(DS.Colors.darkBlue)
-        .onAppear {
         }
     }
+    
+    private func handleStationSelection(at index: Int) {
+        viewModel.setCurrentStation(at: index)
+        
+        if viewModel.currentStation != nil {
+            playerService.addStationForPlayer(viewModel.favoritesStations)
+            playerService.indexRadio = index
+            playerService.playAudio()
+        }
+    }
+    
+    private var errorAlert: Alert {
+        Alert(
+            title: Text(Resources.Text.error.localized(language)),
+            message: Text(viewModel.error?.localizedDescription ?? ""),
+            dismissButton: .default(
+                Text(Resources.Text.ok.localized(language)),
+                action: viewModel.cancelErrorAlert
+            )
+        )
+    }
+    
+    private func isPresentedAlert() -> Binding<Bool> {
+        Binding(
+            get: { viewModel.error != nil },
+            set: { _ in }
+        )
+    }
 }
-
 
 // MARK: - Preview
 #Preview {

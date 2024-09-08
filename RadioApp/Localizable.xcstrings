@@ -1969,6 +1969,9 @@
         }
       }
     },
+    "You have no saved stations" : {
+
+    },
     "Your email" : {
       "extractionState" : "manual",
       "localizations" : {

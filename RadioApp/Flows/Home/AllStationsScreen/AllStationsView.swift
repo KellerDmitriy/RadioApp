@@ -49,12 +49,14 @@ struct AllStationsView: View {
                     LazyVStack(pinnedViews: .sectionHeaders) {
                         ForEach(viewModel.stations, id: \.id) { station in
                             NavigationLink {
-                                DetailsView(viewModel.userId)
+                                DetailsView(viewModel.userId,
+                                            station: station)
                                     .environmentObject(playerService)
                             } label: {
-                                StationView(
-                                    isActive: true, 
+                                StationCellView(
+                                    isActive: true,
                                     isVote: viewModel.checkFavorite(),
+                                    voteAction: { viewModel.checkFavorite() },
                                     station: station
                                 )
                                     
