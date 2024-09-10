@@ -99,6 +99,11 @@
 		E1E87BD02C68B4250070D855 /* Button + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E87BCF2C68B4250070D855 /* Button + Extension.swift */; };
 		E1E87BD32C68BE850070D855 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E87BD22C68BE850070D855 /* AuthViewModel.swift */; };
 		E1F14AA62C886ABB009A5CE3 /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F14AA52C886ABB009A5CE3 /* DetailViewModel.swift */; };
+		E1F73CFA2C90235400DEBA72 /* CacheImplementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F73CF92C90235400DEBA72 /* CacheImplementation.swift */; };
+		E1F73CFC2C9023AA00DEBA72 /* CacheEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F73CFB2C9023AA00DEBA72 /* CacheEntry.swift */; };
+		E1F73D022C903F3C00DEBA72 /* DataFetchPhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F73D012C903F3C00DEBA72 /* DataFetchPhase.swift */; };
+		E1F73D042C90482400DEBA72 /* CacheProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F73D032C90482400DEBA72 /* CacheProtocol.swift */; };
+		E1F73D062C9048DE00DEBA72 /* KeysTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F73D052C9048DE00DEBA72 /* KeysTracker.swift */; };
 		E1FFE1AD2C77786E0091C66D /* ProfileFlowError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FFE1AC2C77786E0091C66D /* ProfileFlowError.swift */; };
 /* End PBXBuildFile section */
 
@@ -190,6 +195,11 @@
 		E1E87BCF2C68B4250070D855 /* Button + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Button + Extension.swift"; sourceTree = "<group>"; };
 		E1E87BD22C68BE850070D855 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		E1F14AA52C886ABB009A5CE3 /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
+		E1F73CF92C90235400DEBA72 /* CacheImplementation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheImplementation.swift; sourceTree = "<group>"; };
+		E1F73CFB2C9023AA00DEBA72 /* CacheEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheEntry.swift; sourceTree = "<group>"; };
+		E1F73D012C903F3C00DEBA72 /* DataFetchPhase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataFetchPhase.swift; sourceTree = "<group>"; };
+		E1F73D032C90482400DEBA72 /* CacheProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheProtocol.swift; sourceTree = "<group>"; };
+		E1F73D052C9048DE00DEBA72 /* KeysTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeysTracker.swift; sourceTree = "<group>"; };
 		E1FFE1AC2C77786E0091C66D /* ProfileFlowError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileFlowError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -328,6 +338,7 @@
 			children = (
 				2663C7AA2C56A257002EFD0C /* StationModel.swift */,
 				E1C8A2BE2C6A0F7800DF542B /* AuthDataResultModel.swift */,
+				E1F73D012C903F3C00DEBA72 /* DataFetchPhase.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -517,6 +528,7 @@
 		E1E497E32C56D4DF0099440D /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				E1F73CF62C9022C900DEBA72 /* CacheService */,
 				22891AC32C5B5EF700DE33E6 /* FirebaseServices */,
 				E1E497E42C56D4F70099440D /* NetworkService */,
 				E1E87BB42C649F450070D855 /* NotificationsService.swift */,
@@ -623,6 +635,17 @@
 				7A1194762C6502A60050515E /* Equalizer */,
 			);
 			path = StationDetail;
+			sourceTree = "<group>";
+		};
+		E1F73CF62C9022C900DEBA72 /* CacheService */ = {
+			isa = PBXGroup;
+			children = (
+				E1F73CF92C90235400DEBA72 /* CacheImplementation.swift */,
+				E1F73CFB2C9023AA00DEBA72 /* CacheEntry.swift */,
+				E1F73D032C90482400DEBA72 /* CacheProtocol.swift */,
+				E1F73D052C9048DE00DEBA72 /* KeysTracker.swift */,
+			);
+			path = CacheService;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -735,6 +758,7 @@
 				E1ACD31E2C7DF1DF00A15703 /* PlayButtonView.swift in Sources */,
 				E1E4980C2C5A10560099440D /* ChevronCyrcleView.swift in Sources */,
 				2663C7A12C56A10E002EFD0C /* CustomTabBarView.swift in Sources */,
+				E1F73CFC2C9023AA00DEBA72 /* CacheEntry.swift in Sources */,
 				E1A7C27E2C80F488004F3EF9 /* HomeContentView.swift in Sources */,
 				E1ACD3122C79B4F200A15703 /* PopularViewModel.swift in Sources */,
 				E1DBFD892C735F1B00F9AA86 /* Image + Extension.swift in Sources */,
@@ -748,8 +772,11 @@
 				E133D7D42C6345BE00BA4E84 /* String + Extension.swift in Sources */,
 				268696642C57DC330075E9DC /* PopularCellView.swift in Sources */,
 				22891AC52C5B5F5F00DE33E6 /* AuthService.swift in Sources */,
+				E1F73D022C903F3C00DEBA72 /* DataFetchPhase.swift in Sources */,
 				E1E497DA2C56D14F0099440D /* Resources.swift in Sources */,
+				E1F73D062C9048DE00DEBA72 /* KeysTracker.swift in Sources */,
 				2663C7802C569E54002EFD0C /* WelcomeView.swift in Sources */,
+				E1F73D042C90482400DEBA72 /* CacheProtocol.swift in Sources */,
 				7A98A3682C5CCE820049DE5F /* SearchButtonView.swift in Sources */,
 				7AAEB6F62C6330FB004D7424 /* ToolbarName.swift in Sources */,
 				E1E497E62C56D5380099440D /* NetworkService.swift in Sources */,
@@ -776,6 +803,7 @@
 				E1FFE1AD2C77786E0091C66D /* ProfileFlowError.swift in Sources */,
 				E1E87BCC2C6893440070D855 /* ProfileEditViewModel.swift in Sources */,
 				2663C7952C56A01F002EFD0C /* ProfileView.swift in Sources */,
+				E1F73CFA2C90235400DEBA72 /* CacheImplementation.swift in Sources */,
 				E1E87BB52C649F450070D855 /* NotificationsService.swift in Sources */,
 				7A1194782C6502BE0050515E /* EqualizerView.swift in Sources */,
 				E1E498012C56EC900099440D /* Font + Ext.swift in Sources */,

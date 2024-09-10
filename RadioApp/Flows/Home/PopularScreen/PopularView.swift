@@ -16,6 +16,14 @@ struct PopularView: View {
     
     @State private var isDetailViewActive = false
     
+    var error: Error? {
+        if case let .failure(error) = viewModel.phase {
+            return error
+        } else {
+            return nil
+        }
+    }
+    
     // MARK: - Initializer
     init(
         userId: String,
@@ -73,18 +81,21 @@ struct PopularView: View {
         .background(DS.Colors.darkBlue)
         .task {
             Task {
-                await viewModel.fetchTopStations()
+                await viewModel.fetchTopStations(ignoreCache: true)
                 playerService.addStationForPlayer(viewModel.stations)
-                if viewModel.error == nil {
+                if error == nil {
                     playerService.playAudio()
                 }
             }
+        }
+        .refreshable {
+            await refreshTask()
         }
         
         .alert(isPresented: isPresentedAlert()) {
             Alert(
                 title: Text(Resources.Text.error.localized(language)),
-                message: Text(viewModel.error?.localizedDescription ?? ""),
+                message: Text(error?.localizedDescription ?? ""),
                 dismissButton: .default(Text(Resources.Text.ok.localized(language)),
                                         action: viewModel.cancelErrorAlert)
             )
@@ -104,8 +115,12 @@ struct PopularView: View {
         }
     }
     
+    private func refreshTask() async {
+        await viewModel.refreshTask()
+    }
+    
     private func isPresentedAlert() -> Binding<Bool> {
-        Binding(get: { viewModel.error != nil },
+         Binding(get: {error != nil },
                 set: { isPresenting in
             if isPresenting { return }
         })
