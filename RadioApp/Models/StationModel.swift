@@ -17,7 +17,7 @@ struct StationModel: Identifiable, Codable, Hashable {
     let tags: String
     let countryCode: String
     var votes: Int
-    var isFavorite = false
+    var isFavorite: Bool
 
     enum CodingKeys: String, CodingKey {
         case id = "stationuuid"
@@ -50,10 +50,12 @@ struct StationModel: Identifiable, Codable, Hashable {
         self.tags = try container.decode(String.self, forKey: .tags)
         self.countryCode = try container.decode(String.self, forKey: .countryCode)
         self.votes = try container.decode(Int.self, forKey: .votes)
-        self.isFavorite = false
+        
+        // Попытка декодировать isFavorite, если оно присутствует
+        self.isFavorite = try container.decodeIfPresent(Bool.self, forKey: .isFavorite) ?? false
     }
 
-    func encode(to encoder: any Encoder) throws {
+    func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(self.id, forKey: .id)
         try container.encode(self.name, forKey: .name)
@@ -65,7 +67,6 @@ struct StationModel: Identifiable, Codable, Hashable {
         try container.encode(self.isFavorite, forKey: .isFavorite)
     }
 }
-
 // MARK: - Preview data
 extension StationModel {
     static func testStation() -> StationModel {
