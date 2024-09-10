@@ -9,27 +9,38 @@ import Foundation
 import AVFoundation
 import Combine
 
+// MARK: - PlayerService
+// A service class responsible for managing audio playback using AVPlayer
 final class PlayerService: ObservableObject {
     
     // MARK: - Properties
+    
+    // AVPlayer instance for streaming audio
     var player: AVPlayer?
+    
+    // AVPlayerItem instance, not used directly in this class
     private var playerItem: AVPlayerItem?
+    
+    // Timer for periodically updating the amplitude
     private var timer: AnyCancellable?
+    
+    // Interval for amplitude updates
     private let updateInterval: TimeInterval = 0.08
     
-    // Audio session object
+    // Audio session object for managing audio configurations
     private let session = AVAudioSession.sharedInstance()
     
     // Observer for volume changes
     private var volumeObserver: NSKeyValueObservation?
     
+    // Published properties to update UI or other observers
     @Published var stations = [StationModel]()
     @Published var indexRadio: Int? = nil
     @Published var volume: CGFloat = 0.0
     @Published var amplitude: CGFloat = 0.0
     @Published var isPlayMusic = false
     
-    // Computed property for current station
+    // Computed property to get or set the current station
     var currentStation: StationModel {
         get {
             guard !stations.isEmpty else {
@@ -44,18 +55,21 @@ final class PlayerService: ObservableObject {
         }
     }
     
-    // Computed property for current URL
+    // Computed property to get the URL of the current station
     private var currentURL: String {
         currentStation.url
     }
     
     // MARK: - Initialization
+    // Initializes the PlayerService and sets up the volume observer
     init() {
         self.volume = CGFloat(session.outputVolume)
         setVolumeObserver()
-
     }
     
+    // MARK: - Observer Management
+    
+    // Removes all observers and stops the player
     func removeAllObserver() {
         stopUpdatingAmplitude()
         stopAudioStream()
@@ -64,9 +78,10 @@ final class PlayerService: ObservableObject {
     }
     
     // MARK: - Add Radio Station to Player
+    
+    // Adds a list of stations to the player
     func addStationForPlayer(_ stations: [StationModel]) {
         self.stations = stations
-        
     }
     
     // MARK: - Audio Playback Methods
@@ -114,6 +129,7 @@ final class PlayerService: ObservableObject {
         }
     }
     
+    /// Plays the audio stream from the current station
     private func playAudioStream() {
         guard !stations.isEmpty else { return }
         player?.play()
@@ -145,7 +161,6 @@ final class PlayerService: ObservableObject {
     }
     
     // MARK: - Amplitude
-    
     /// Starts updating the amplitude
     private func startUpdatingAmplitude() {
         timer = Timer.publish(every: updateInterval, on: .main, in: .common)

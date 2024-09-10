@@ -84,9 +84,6 @@ final class PopularViewModel: ObservableObject {
             try? await cache.saveToDisk()
             
             print("CACHE SET")
-            for station in stationsFromAPI {
-                print("Station ID: \(station.name), isFavorite: \(station.isFavorite)")
-            }
             phase = .success(stationsFromAPI)
         } catch {
             phase = .failure(error)
@@ -121,15 +118,6 @@ final class PopularViewModel: ObservableObject {
             } catch {
                 phase = .failure(error)
             }
-        }
-    }
-    
-    func fetchFavorites() async {
-        do {
-            let favorites = try await userService.getFavoritesForUser(userId)
-            phase = .success(favorites)
-        } catch {
-            phase = .failure(error)
         }
     }
 }

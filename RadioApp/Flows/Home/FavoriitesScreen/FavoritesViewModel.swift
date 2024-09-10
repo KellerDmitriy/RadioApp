@@ -15,6 +15,7 @@ final class FavoritesViewModel: ObservableObject {
     
     @Published var favoritesStations: [StationModel] = []
     @Published var currentStation: StationModel? 
+    @Published var isFavorite = false
     @Published var error: Error? = nil
     
     
@@ -39,7 +40,10 @@ final class FavoritesViewModel: ObservableObject {
     func deleteFavorite() async {
         do {
             guard let currentStation else { return }
-            try await userService.deleteFavorite(userId, currentStation.id)
+            try await userService.saveFavoriteStatus(
+                for: userId,
+                station: currentStation,
+                with: isFavorite)
             await getFavorites()
         } catch {
             self.error = error

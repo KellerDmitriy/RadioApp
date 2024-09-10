@@ -220,6 +220,7 @@ struct AuthView: View {
         }
     }
     
+    @Sendable
     private func googleButtonTap() async  {
         do {
             try await viewModel.signInGoogle()

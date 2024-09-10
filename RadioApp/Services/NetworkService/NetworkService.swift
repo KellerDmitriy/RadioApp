@@ -13,7 +13,6 @@ final class NetworkService {
     private init() {}
     
     // MARK: - get top stations
-    
     func getTopStations(_ numberLimit: Int) async throws -> [StationModel] {
         var stations = [StationModel]()
         
@@ -36,7 +35,6 @@ final class NetworkService {
     }
     
     // MARK: - get top stations
-    
     func getAllStations() async throws -> [StationModel] {
         var allStations = [StationModel]()
         
@@ -59,7 +57,6 @@ final class NetworkService {
     }
     
     // MARK: - get station by UUID
-    
     func getStationById(id: String) async throws -> [StationModel] {
         var stationById = [StationModel]()
         
@@ -83,7 +80,6 @@ final class NetworkService {
     
     
     // MARK: - vote for station by UUID.
-    
     func voteStationById(id: String) async throws {
         
         guard let url = URLManager.shared.createURLUUID(id: id) else {
@@ -98,7 +94,6 @@ final class NetworkService {
     }
     
     // MARK: - search Station
-    
     func searchByName(searchText: String) async throws -> [StationModel] {
         var searchByName = [StationModel]()
         
@@ -119,8 +114,6 @@ final class NetworkService {
         searchByName = decodedStation
         return searchByName
     }
-    
-    
 }
 
 

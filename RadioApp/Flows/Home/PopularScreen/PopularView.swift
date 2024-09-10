@@ -81,7 +81,7 @@ struct PopularView: View {
         .background(DS.Colors.darkBlue)
         .task {
             Task {
-                await viewModel.fetchTopStations(ignoreCache: true)
+                await viewModel.fetchTopStations()
                 playerService.addStationForPlayer(viewModel.stations)
                 if error == nil {
                     playerService.playAudio()

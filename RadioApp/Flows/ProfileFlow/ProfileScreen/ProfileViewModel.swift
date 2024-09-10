@@ -58,9 +58,7 @@ final class ProfileViewModel: ObservableObject {
     }
 
     
-    
     //    MARK: - AuthService Methods
-    
     func logOut() {
         do {
             try authService.signOut()

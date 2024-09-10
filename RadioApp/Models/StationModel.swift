@@ -9,27 +9,32 @@ import Foundation
 import FirebaseFirestore
 
 // MARK: - JSON Model
+// A model representing a radio station, conforming to Identifiable, Codable, and Hashable protocols
 struct StationModel: Identifiable, Codable, Hashable {
-    let id: String
-    let name: String
-    let url: String
-    let favicon: String
-    let tags: String
-    let countryCode: String
-    var votes: Int
-    var isFavorite: Bool
+    let id: String           // Unique identifier for the station
+    let name: String         // Name of the station
+    let url: String          // URL of the station's stream
+    let favicon: String      // URL to the station's favicon
+    let tags: String         // Comma-separated tags describing the station
+    let countryCode: String  // Country code of the station
+    var votes: Int           // Number of votes the station has received
+    var isFavorite: Bool     // Indicates if the station is marked as a favorite
 
+    // MARK: - Coding Keys
+    // Maps the JSON keys to the properties of the struct
     enum CodingKeys: String, CodingKey {
-        case id = "stationuuid"
+        case id = "stationuuid"          // Maps "stationuuid" JSON key to the "id" property
         case name
         case url
         case favicon
         case tags
-        case countryCode = "countrycode"
+        case countryCode = "countrycode" // Maps "countrycode" JSON key to the "countryCode" property
         case votes
         case isFavorite
     }
 
+    // MARK: - Initializers
+    // Custom initializer to create a StationModel instance
     init(id: String, name: String, url: String, favicon: String, tags: String, countryCode: String, votes: Int, isFavorite: Bool) {
         self.id = id
         self.name = name
@@ -41,6 +46,7 @@ struct StationModel: Identifiable, Codable, Hashable {
         self.isFavorite = isFavorite
     }
 
+    // Custom initializer to decode the StationModel from JSON
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decode(String.self, forKey: .id)
@@ -50,11 +56,10 @@ struct StationModel: Identifiable, Codable, Hashable {
         self.tags = try container.decode(String.self, forKey: .tags)
         self.countryCode = try container.decode(String.self, forKey: .countryCode)
         self.votes = try container.decode(Int.self, forKey: .votes)
-        
-        // Попытка декодировать isFavorite, если оно присутствует
         self.isFavorite = try container.decodeIfPresent(Bool.self, forKey: .isFavorite) ?? false
     }
 
+    // Method to encode the StationModel to JSON
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(self.id, forKey: .id)
@@ -67,7 +72,9 @@ struct StationModel: Identifiable, Codable, Hashable {
         try container.encode(self.isFavorite, forKey: .isFavorite)
     }
 }
-// MARK: - Preview data
+
+// MARK: - Preview Data
+// Extension to provide test data for previews or testing purposes
 extension StationModel {
     static func testStation() -> StationModel {
         let station = StationModel(
@@ -83,5 +90,3 @@ extension StationModel {
         return station
     }
 }
-
-
