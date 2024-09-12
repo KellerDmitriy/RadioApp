@@ -19,20 +19,19 @@ struct FetchTaskToken: Equatable {
 @MainActor
 final class PopularViewModel: ObservableObject {
     // MARK: - Stored Properties
-    @Published var userId: String
     private let userService: UserService
     private let networkService: NetworkService
-    private let timeIntervalForUpdateCache: TimeInterval = 24 * 60 * 60
+    private let timeIntervalForUpdateCache: TimeInterval = 24 * 60
     private let cache: DiskCache<[StationModel]>
     private let numberLimit = 5
     
+    @Published var userId: String
     @Published var fetchTaskToken: FetchTaskToken
     @Published var phase: DataFetchPhase<[StationModel]> = .empty
     @Published var selectedOrder: DisplayOrderType = .alphabetical
     @Published var selectedIndex: Int?
     
     // MARK: - Computed Properties
-
     private var sortedStations: [StationModel] {
         guard let stations = phase.value else { return [] }
         switch selectedOrder {
@@ -76,13 +75,9 @@ final class PopularViewModel: ObservableObject {
     
     // MARK: - Methods
     func getStations() -> [StationModel] { sortedStations }
-    
     func getCurrentStation(_ index: Int) -> StationModel { getStations()[index] }
-    
     func selectStation(at index: Int) { selectedIndex = index }
-    
     func isSelectCell(_ index: Int) -> Bool { selectedIndex == index }
-   
     func isFavoriteStation(_ index: Int) -> Bool { getCurrentStation(index).isFavorite }
     
     /// Refreshes the cache and updates the fetch task token.

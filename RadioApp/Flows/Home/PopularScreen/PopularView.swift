@@ -55,7 +55,6 @@ struct PopularView: View {
                 .labelsHidden()
                 .offset(x: 30)
             }
-
             
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 139))], spacing: 15) {
@@ -63,7 +62,7 @@ struct PopularView: View {
                         let station = viewModel.getCurrentStation(index)
                         ZStack {
                             PopularCellView(
-                                isSelect: viewModel.isSelectCell(index),
+                                isSelect: isSelectCell(index),
                                 isFavorite: viewModel.isFavoriteStation(index),
                                 isPlayMusic: playerService.isPlayMusic,
                                 station: station,
@@ -72,7 +71,7 @@ struct PopularView: View {
                         }
                         .onTapGesture {
                             viewModel.selectStation(at: index)
-                            playerService.indexRadio = index
+                            playerService.indexRadio = viewModel.selectedIndex
                             playerService.playAudio()
                         }
                         .onLongPressGesture {
@@ -120,6 +119,17 @@ struct PopularView: View {
     
     private func refreshTask() async {
         await viewModel.refreshTask()
+    }
+    
+    private func isSelectCell(_ index: Int) -> Bool {
+        var isSelect = false
+        guard let currentStation = playerService.currentStation  else { return false }
+        if playerService.isPlayMusic {
+            isSelect = viewModel.getCurrentStation(index).id == currentStation.id
+        } else {
+            isSelect = viewModel.isSelectCell(index)
+        }
+        return isSelect
     }
     
     private func isPresentedAlert() -> Binding<Bool> {
