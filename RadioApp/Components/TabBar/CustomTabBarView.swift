@@ -74,7 +74,6 @@ struct CustomTabBarView: View {
             }
             .frame(maxWidth: UIScreen.main.bounds.width / 3)
         }
-        .frame(height: 80)
         .padding(.bottom, 3)
         .background(DS.Colors.darkBlue)
     }

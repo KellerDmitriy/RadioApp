@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct PlayButtonView: View {
-    @Binding var isPlay: Bool
-    var action: () -> ()
+    let isPlay: Bool
+    let action: () -> ()
     
     var body: some View {
         Button {
@@ -45,7 +45,7 @@ struct PlayButtonView: View {
                 .fill(DS.Colors.pinkNeon)
                 .frame(width: 100, height: 100)
         }
-        .overlay(PlayButtonAnimation(animation: $isPlay))
+        .overlay(PlayButtonAnimation(animation: isPlay))
     }
 }
 

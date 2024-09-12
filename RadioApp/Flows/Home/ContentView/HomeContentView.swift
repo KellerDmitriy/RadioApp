@@ -37,58 +37,46 @@ struct HomeContentView: View {
     // MARK: - Body
     var body: some View {
         ZStack(alignment: .bottom) {
-            HStack {
+            VStack {
                 VStack {
-                    VolumeSliderView(volume: $playerService.volume)
-                        .frame(width: 20, height: 300)
-                }
-                
-                if !viewModel.userId.isEmpty {
-                    switch selectedTab {
-                    case .popular:
-                        PopularView(userId: viewModel.userId)
-                            .environmentObject(playerService)
-                        
-                    case .favorites:
-                        FavoritesView(userId: viewModel.userId)
-                            .environmentObject(playerService)
-                    case .allStations:
-                        AllStationsView(userId: viewModel.userId)
-                            .environmentObject(playerService)
+                    if !viewModel.userId.isEmpty {
+                        switch selectedTab {
+                        case .popular:
+                            PopularView(userId: viewModel.userId)
+                                .environmentObject(playerService)
+                            
+                        case .favorites:
+                            FavoritesView(userId: viewModel.userId)
+                                .environmentObject(playerService)
+                        case .allStations:
+                            AllStationsView(userId: viewModel.userId)
+                                .environmentObject(playerService)
+                        }
+                    } else {
+                        Text("Loading...")
+                            .foregroundColor(.white)
                     }
-                } else {
-                    Text("Loading...")
-                        .foregroundColor(.white)
                 }
+                .padding(.top, 120)
+                .padding(.horizontal, 12)
+                
+                Spacer()
+                CustomTabBarView(selectedTab: $selectedTab)
+                    .frame(height: 80)
             }
-            
-            .padding(.top, 120)
-            .padding(.horizontal, 12)
-            .background(DS.Colors.darkBlue)
-            
-           
-            CustomTabBarView(selectedTab: $selectedTab)
-            
-            RadioPlayerView(playerService: playerService)
-                .frame(height: 110)
-                .padding(.bottom, 80)
-            
-            
+                RadioPlayerView(playerService: playerService)
+                    .padding(.bottom, 66)
+                
+
             NavigationLink(destination:
                             ProfileView(viewModel.currentUser ?? DBUser.getTestDBUser()),
                            isActive: $isProfileViewActive,
                            label: { EmptyView() })
         }
-        .onAppear {
-            Task {
-                try? await viewModel.loadCurrentUser()
-            }
-        }
-   
+        
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 ToolbarName(userName: viewModel.userName)
-                
             }
             ToolbarItem(placement: .topBarTrailing) {
                 ToolbarProfile(
@@ -103,7 +91,13 @@ struct HomeContentView: View {
                 )
             }
         }
-      
+        .onAppear {
+            Task {
+                try? await viewModel.loadCurrentUser()
+            }
+        }
+        .background(DS.Colors.darkBlue)
+        .opacity(0.8)
         .ignoresSafeArea()
         .navigationBarBackButtonHidden(true)
     }

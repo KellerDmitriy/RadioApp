@@ -29,12 +29,10 @@ final class PopularViewModel: ObservableObject {
     @Published var fetchTaskToken: FetchTaskToken
     @Published var phase: DataFetchPhase<[StationModel]> = .empty
     @Published var selectedOrder: DisplayOrderType = .alphabetical
+    @Published var selectedIndex: Int?
     
     // MARK: - Computed Properties
-    var stations: [StationModel] {
-        sortedStations
-    }
-    
+
     private var sortedStations: [StationModel] {
         guard let stations = phase.value else { return [] }
         switch selectedOrder {
@@ -45,27 +43,15 @@ final class PopularViewModel: ObservableObject {
         }
     }
     
+    var currentIndex: Int {
+         selectedIndex ?? 0
+    }
+    
     var error: Error? {
         if case let .failure(error) = phase {
             return error
         }
         return nil
-    }
-    
-    var index: Int? = nil
-    
-    var currentStation: StationModel? {
-        guard let index = index, index >= 0, index < stations.count else {
-            return nil
-        }
-        return stations[index]
-    }
-    
-    var isSelect: Bool {
-        guard let currentStation = currentStation else {
-            return false
-        }
-        return stations.contains { $0.id == currentStation.id }
     }
     
     // MARK: - Initializer
@@ -89,6 +75,15 @@ final class PopularViewModel: ObservableObject {
     }
     
     // MARK: - Methods
+    func getStations() -> [StationModel] { sortedStations }
+    
+    func getCurrentStation(_ index: Int) -> StationModel { getStations()[index] }
+    
+    func selectStation(at index: Int) { selectedIndex = index }
+    
+    func isSelectCell(_ index: Int) -> Bool { selectedIndex == index }
+   
+    func isFavoriteStation(_ index: Int) -> Bool { getCurrentStation(index).isFavorite }
     
     /// Refreshes the cache and updates the fetch task token.
     func refreshTask() async {
@@ -134,11 +129,10 @@ final class PopularViewModel: ObservableObject {
     }
     
     /// Toggles the favorite status of the current station.
-    func toggleFavorite() {
-        guard let currentStation = currentStation else { return }
+    func toggleFavorite(_ index: Int) {
         Task {
             do {
-                var updatedStation = currentStation
+                var updatedStation = getCurrentStation(index)
                 updatedStation.isFavorite.toggle()
             
                 try await userService.saveFavoriteStatus(
@@ -148,7 +142,7 @@ final class PopularViewModel: ObservableObject {
                 )
                 
                 if var currentStations = phase.value,
-                   let index = currentStations.firstIndex(where: { $0.id == currentStation.id }) {
+                   let index = currentStations.firstIndex(where: { $0.id == getCurrentStation(index).id }) {
                     currentStations[index] = updatedStation
                     phase = .success(currentStations)
                 }

@@ -15,9 +15,7 @@ final class HomeViewModel: ObservableObject {
               print("User ID updated to: \(currentUser?.userID ?? "No ID")")
           }
       }
-    
     @Published var error: Error?
-    
     @Published var userId = ""
     
     var userName: String {

@@ -59,22 +59,19 @@ struct PopularView: View {
             
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 139))], spacing: 15) {
-                    ForEach(viewModel.stations.indices, id: \.self) { index in
-                        let station = viewModel.stations[index]
-                        let isSelected = station.id == viewModel.currentStation?.id
-                        let isFavorite = station.isFavorite
-                        
+                    ForEach(viewModel.getStations().indices, id: \.self) { index in
+                        let station = viewModel.getCurrentStation(index)
                         ZStack {
                             PopularCellView(
-                                isSelect: isSelected,
-                                isFavorite: isFavorite,
+                                isSelect: viewModel.isSelectCell(index),
+                                isFavorite: viewModel.isFavoriteStation(index),
                                 isPlayMusic: playerService.isPlayMusic,
                                 station: station,
-                                favoriteAction: { viewModel.toggleFavorite() }
+                                favoriteAction: { viewModel.toggleFavorite(index) }
                             )
                         }
                         .onTapGesture {
-                            viewModel.index = index
+                            viewModel.selectStation(at: index)
                             playerService.indexRadio = index
                             playerService.playAudio()
                         }
@@ -91,7 +88,7 @@ struct PopularView: View {
         .task {
             Task {
                 await viewModel.fetchTopStations()
-                playerService.addStationForPlayer(viewModel.stations)
+                playerService.addStationForPlayer(viewModel.getStations())
             }
         }
         .refreshable {
@@ -107,11 +104,11 @@ struct PopularView: View {
             )
         }
         
-        if isDetailViewActive, let currentStation = viewModel.currentStation {
+        if isDetailViewActive {
             NavigationLink(
                 destination: DetailsView(
                     viewModel.userId,
-                    station: currentStation
+                    station: viewModel.getCurrentStation(viewModel.currentIndex)
                 )
                 .environmentObject(playerService),
                 isActive: $isDetailViewActive

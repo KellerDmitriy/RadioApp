@@ -13,7 +13,12 @@ struct RadioPlayerView: View {
     var body: some View {
         ZStack {
             LinearGradient(
-                  gradient: Gradient(colors: [DS.Colors.darkBlue, Color.black.opacity(0)]),
+                gradient: Gradient(
+                    colors: [
+                    DS.Colors.darkBlue,
+                    DS.Colors.darkBlue
+                        .opacity(0.3)
+                ]),
                   startPoint: .bottom,
                   endPoint: .top
               )
@@ -22,12 +27,13 @@ struct RadioPlayerView: View {
                 Spacer()
                 BackButtonView(action: backButtonTap)
                 Spacer()
-                PlayButtonView(isPlay: $playerService.isPlayMusic, action: playButtonTap)
+                PlayButtonView(isPlay: playerService.isPlayMusic, action: playButtonTap)
                 Spacer()
                 NextButtonView(action: nextButtonTap)
                 Spacer()
             }
         }
+        .frame(height: 110)
     }
     
     

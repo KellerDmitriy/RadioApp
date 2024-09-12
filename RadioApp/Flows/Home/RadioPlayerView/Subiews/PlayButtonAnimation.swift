@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PlayButtonAnimation: View {
-    @Binding var animation: Bool
+    let animation: Bool
 
     var body: some View {
         ZStack {
@@ -26,11 +26,15 @@ struct PlayButtonAnimation: View {
                 .opacity(animation ? 0 : 0.8)
         }
         .frame(width: 115, height: 115)
-        .animation(.easeInOut(duration: 1.2).repeatForever(autoreverses: false), value: animation)
+        .animation(
+            .easeInOut(duration: 1.2)
+            .repeatForever(autoreverses: false),
+                   value: animation
+        )
     }
 }
 
 #Preview {
-    PlayButtonAnimation(animation: .constant(true))
+    PlayButtonAnimation(animation: true)
 }
 
