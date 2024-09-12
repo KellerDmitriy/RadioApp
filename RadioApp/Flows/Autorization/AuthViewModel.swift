@@ -12,9 +12,11 @@ import GoogleSignIn
 final class AuthViewModel: ObservableObject {
     var email = ""
     var password = ""
+    var passwordConfirm = ""
     var username = ""
     var forgotEmail = ""
     
+    @Published var isPasswordConfirmValid = false
     @Published var isAuthenticated: Bool
     @Published var error: Error?
     
@@ -29,22 +31,16 @@ final class AuthViewModel: ObservableObject {
     }
     
     func cancelErrorAlert() {
-        Task { @MainActor in
-            error = nil
-        }
+        error = nil
     }
     
     //    MARK: - AuthService Methods
     func signIn() async {
         do {
             try await authService.signInUser(email: email, password: password)
-            await MainActor.run {
-                isAuthenticated = authService.isAuthenticated()
-            }
+            isAuthenticated = authService.isAuthenticated()
         } catch {
-            await MainActor.run {
-                self.error = error
-            }
+            self.error = error
         }
     }
     
@@ -55,9 +51,7 @@ final class AuthViewModel: ObservableObject {
             let user = DBUser(auth: authDataResult)
             try await userService.createNewUser(user)
         } catch {
-            await MainActor.run {
-                self.error = error
-            }
+            self.error = error
         }
     }
     
@@ -66,24 +60,18 @@ final class AuthViewModel: ObservableObject {
             try await authService.resetPassword(email: forgotEmail)
             
         } catch {
-            await MainActor.run {
-                self.error = error
-            }
+            self.error = error
         }
     }
     
     func signInGoogle() async throws {
         do {
-           let authDataResult = try await authService.signInWithGoogle()
+            let authDataResult = try await authService.signInWithGoogle()
             let user = DBUser(auth: authDataResult)
             try await userService.createNewUser(user)
-            await MainActor.run {
-                isAuthenticated = authService.isAuthenticated()
-            }
+            isAuthenticated = authService.isAuthenticated()
         } catch {
-            await MainActor.run {
-                self.error = error
-            }
+            self.error = error
         }
     }
 }

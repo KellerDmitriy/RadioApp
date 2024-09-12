@@ -10,7 +10,7 @@ import FirebaseFirestore
 
 // MARK: - JSON Model
 // A model representing a radio station, conforming to Identifiable, Codable, and Hashable protocols
-struct StationModel: Identifiable, Codable, Hashable {
+struct StationModel: Identifiable, Codable, Hashable, Equatable {
     let id: String           // Unique identifier for the station
     let name: String         // Name of the station
     let url: String          // URL of the station's stream
@@ -19,7 +19,11 @@ struct StationModel: Identifiable, Codable, Hashable {
     let countryCode: String  // Country code of the station
     var votes: Int           // Number of votes the station has received
     var isFavorite: Bool     // Indicates if the station is marked as a favorite
-
+    
+//    static func == (lhs: StationModel, rhs: StationModel) -> Bool {
+//        return lhs.id == rhs.id && lhs.name == rhs.name && lhs.isFavorite == rhs.isFavorite
+//    }
+    
     // MARK: - Coding Keys
     // Maps the JSON keys to the properties of the struct
     enum CodingKeys: String, CodingKey {
@@ -32,7 +36,7 @@ struct StationModel: Identifiable, Codable, Hashable {
         case votes
         case isFavorite
     }
-
+    
     // MARK: - Initializers
     // Custom initializer to create a StationModel instance
     init(id: String, name: String, url: String, favicon: String, tags: String, countryCode: String, votes: Int, isFavorite: Bool) {
@@ -45,7 +49,7 @@ struct StationModel: Identifiable, Codable, Hashable {
         self.votes = votes
         self.isFavorite = isFavorite
     }
-
+    
     // Custom initializer to decode the StationModel from JSON
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -58,7 +62,7 @@ struct StationModel: Identifiable, Codable, Hashable {
         self.votes = try container.decode(Int.self, forKey: .votes)
         self.isFavorite = try container.decodeIfPresent(Bool.self, forKey: .isFavorite) ?? false
     }
-
+    
     // Method to encode the StationModel to JSON
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)

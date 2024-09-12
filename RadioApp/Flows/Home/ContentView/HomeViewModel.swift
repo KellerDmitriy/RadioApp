@@ -12,7 +12,6 @@ final class HomeViewModel: ObservableObject {
     // MARK: - Stored Properties
     @Published private(set) var currentUser: DBUser? {
           didSet {
-              // Проверяем, устанавливается ли userId
               print("User ID updated to: \(currentUser?.userID ?? "No ID")")
           }
       }
@@ -49,7 +48,6 @@ final class HomeViewModel: ObservableObject {
     func loadCurrentUser() async throws {
         do {
             self.userId = try authService.getAuthenticatedUser().uid
-
             self.currentUser = try await userService.getUser(userId: userId)
         } catch {
             self.error = error

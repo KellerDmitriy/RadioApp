@@ -23,7 +23,10 @@ final class UserService {
     // MARK: - Private Methods
     // Returns a reference to a specific user document in the Firestore collection
     private func userDocument(_ userId: String) -> DocumentReference {
-        userCollection.document(userId)
+        guard !userId.isEmpty else {
+            fatalError("User ID cannot be empty.")
+        }
+        return userCollection.document(userId)
     }
     
     // MARK: - Public Methods
@@ -34,7 +37,10 @@ final class UserService {
     
     // Retrieves a user from the Firestore database
     func getUser(userId: String) async throws -> DBUser {
-        try await userDocument(userId).getDocument(as: DBUser.self)
+        guard !userId.isEmpty else {
+            throw NSError(domain: "InvalidUserID", code: 400, userInfo: [NSLocalizedDescriptionKey: "User ID cannot be empty."])
+        }
+        return try await userDocument(userId).getDocument(as: DBUser.self)
     }
     
     // Updates the user's name in the Firestore database

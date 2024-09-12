@@ -41,23 +41,24 @@ final class PlayerService: ObservableObject {
     @Published var isPlayMusic = false
     
     // Computed property to get or set the current station
-    var currentStation: StationModel {
+    var currentStation: StationModel? {
         get {
             guard !stations.isEmpty else {
                 return StationModel.testStation()
             }
-            return stations[indexRadio ?? 0]
+            guard let indexRadio else { return nil }
+            return stations[indexRadio]
         }
         set {
-            if let newIndex = stations.firstIndex(of: newValue) {
-                self.indexRadio = newIndex
+            if let newStation = newValue, let newIndex = stations.firstIndex(of: newStation) {
+                       self.indexRadio = newIndex
             }
         }
     }
     
     // Computed property to get the URL of the current station
     private var currentURL: String {
-        currentStation.url
+        currentStation?.url ?? ""
     }
     
     // MARK: - Initialization

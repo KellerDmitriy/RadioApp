@@ -7,31 +7,66 @@
 
 import Foundation
 
+// MARK: - FetchTaskToken
+
 struct FetchTaskToken: Equatable {
     var stations: String
     var token: Date
 }
-fileprivate let dateFormatter = DateFormatter()
+
+// MARK: - PopularViewModel
 
 @MainActor
 final class PopularViewModel: ObservableObject {
     // MARK: - Stored Properties
     @Published var userId: String
-    
     private let userService: UserService
     private let networkService: NetworkService
-    private let timeIntervarForUpdateCache: TimeInterval = 24 * 60
+    private let timeIntervalForUpdateCache: TimeInterval = 24 * 60 * 60
     private let cache: DiskCache<[StationModel]>
     private let numberLimit = 5
     
     @Published var fetchTaskToken: FetchTaskToken
     @Published var phase: DataFetchPhase<[StationModel]> = .empty
+    @Published var selectedOrder: DisplayOrderType = .alphabetical
     
+    // MARK: - Computed Properties
     var stations: [StationModel] {
-        phase.value ?? []
+        sortedStations
     }
     
-    var currentStation: StationModel? = nil
+    private var sortedStations: [StationModel] {
+        guard let stations = phase.value else { return [] }
+        switch selectedOrder {
+        case .alphabetical:
+            return stations.sorted(by: { $0.name < $1.name })
+        case .favoriteFirst:
+            return stations.sorted { $0.isFavorite && !$1.isFavorite }
+        }
+    }
+    
+    var error: Error? {
+        if case let .failure(error) = phase {
+            return error
+        }
+        return nil
+    }
+    
+    var index: Int? = nil
+    
+    var currentStation: StationModel? {
+        guard let index = index, index >= 0, index < stations.count else {
+            return nil
+        }
+        return stations[index]
+    }
+    
+    var isSelect: Bool {
+        guard let currentStation = currentStation else {
+            return false
+        }
+        return stations.contains { $0.id == currentStation.id }
+    }
     
     // MARK: - Initializer
     init(
@@ -45,7 +80,7 @@ final class PopularViewModel: ObservableObject {
         self.fetchTaskToken = FetchTaskToken(stations: "RadioStations", token: Date())
         self.cache = DiskCache<[StationModel]>(
             filename: "xca_radio_stations",
-            expirationInterval: timeIntervarForUpdateCache
+            expirationInterval: timeIntervalForUpdateCache
         )
         
         Task(priority: .userInitiated) {
@@ -53,14 +88,15 @@ final class PopularViewModel: ObservableObject {
         }
     }
     
+    // MARK: - Methods
+    
+    /// Refreshes the cache and updates the fetch task token.
     func refreshTask() async {
         await cache.removeValue(forKey: fetchTaskToken.stations)
         fetchTaskToken.token = Date()
     }
     
-    // MARK: - Methods
-    /// Fetches top stations from the network service
-    /// Fetches top stations from the network service and updates favorite status
+    /// Fetches top stations from the network service and updates the favorite status.
     func fetchTopStations(ignoreCache: Bool = false) async {
         let keyForCache = fetchTaskToken.stations
         if !ignoreCache, let stationsFromCache = await cache.value(forKey: keyForCache) {
@@ -90,28 +126,29 @@ final class PopularViewModel: ObservableObject {
         }
     }
     
-    /// Cancels the error alert
+    /// Cancels the error alert and refreshes the data.
     func cancelErrorAlert() {
         Task {
-            await fetchTopStations()
+            await fetchTopStations(ignoreCache: true)
         }
     }
     
-    func toggleFavorite(station: StationModel) {
+    /// Toggles the favorite status of the current station.
+    func toggleFavorite() {
+        guard let currentStation = currentStation else { return }
         Task {
             do {
-                let isFavorite = station.isFavorite
+                var updatedStation = currentStation
+                updatedStation.isFavorite.toggle()
+            
+                try await userService.saveFavoriteStatus(
+                    for: userId,
+                    station: updatedStation,
+                    with: updatedStation.isFavorite
+                )
                 
-                // Обновляем статус избранного для текущей станции
-                var updatedStation = station
-                updatedStation.isFavorite = !isFavorite
-                
-                // Сохраняем изменённую станцию в базе данных
-                try await userService.saveFavoriteStatus(for: userId, station: updatedStation, with: updatedStation.isFavorite)
-                
-                // Обновляем локально массив станций
                 if var currentStations = phase.value,
-                   let index = currentStations.firstIndex(where: { $0.id == station.id }) {
+                   let index = currentStations.firstIndex(where: { $0.id == currentStation.id }) {
                     currentStations[index] = updatedStation
                     phase = .success(currentStations)
                 }

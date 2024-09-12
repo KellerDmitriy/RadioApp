@@ -121,6 +121,14 @@ struct AuthView: View {
                 )
                 .shake(isPresentedAlert())
                 .padding(.top, 16)
+                
+                CustomTextField(
+                    placeHolder: Resources.Text.passwordConfirm.localized(language),
+                    isSecure: true,
+                    text: $viewModel.passwordConfirm
+                )
+                .shake(isPresentedAlert())
+                .padding(.top, 16)
             } else {
                 CustomTextField(
                     placeHolder: Resources.Text.email.localized(language),

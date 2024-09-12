@@ -36,7 +36,7 @@ struct AllStationsView: View {
                 Spacer()
             }
             .padding(.leading)
-            .padding(.top, 100)
+
             // search view
             SearchBarView(
                 searchText: $viewModel.searchText,

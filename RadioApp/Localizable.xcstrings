@@ -65,6 +65,23 @@
         }
       }
     },
+    "Alphabetical" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alphabetical"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Алфавитный порядок"
+          }
+        }
+      }
+    },
     "Are you sure you want to log out?" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -296,6 +313,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Разработчики"
+          }
+        }
+      }
+    },
+    "display_order" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Формат отображения"
           }
         }
       }
@@ -557,6 +585,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Евгений Кукарский"
+          }
+        }
+      }
+    },
+    "Favorite First" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показывать сначала избранные"
           }
         }
       }

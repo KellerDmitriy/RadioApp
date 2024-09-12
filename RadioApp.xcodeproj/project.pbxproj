@@ -103,6 +103,7 @@
 		E1F73D022C903F3C00DEBA72 /* DataFetchPhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F73D012C903F3C00DEBA72 /* DataFetchPhase.swift */; };
 		E1F73D042C90482400DEBA72 /* CacheProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F73D032C90482400DEBA72 /* CacheProtocol.swift */; };
 		E1F73D062C9048DE00DEBA72 /* KeysTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F73D052C9048DE00DEBA72 /* KeysTracker.swift */; };
+		E1F73D092C92C80000DEBA72 /* DisplayOrderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F73D082C92C80000DEBA72 /* DisplayOrderType.swift */; };
 		E1FFE1AD2C77786E0091C66D /* ProfileFlowError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FFE1AC2C77786E0091C66D /* ProfileFlowError.swift */; };
 /* End PBXBuildFile section */
 
@@ -199,6 +200,7 @@
 		E1F73D012C903F3C00DEBA72 /* DataFetchPhase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataFetchPhase.swift; sourceTree = "<group>"; };
 		E1F73D032C90482400DEBA72 /* CacheProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheProtocol.swift; sourceTree = "<group>"; };
 		E1F73D052C9048DE00DEBA72 /* KeysTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeysTracker.swift; sourceTree = "<group>"; };
+		E1F73D082C92C80000DEBA72 /* DisplayOrderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayOrderType.swift; sourceTree = "<group>"; };
 		E1FFE1AC2C77786E0091C66D /* ProfileFlowError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileFlowError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -393,6 +395,7 @@
 		7A7A4B342C5B63F900CD8794 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				E1F73D072C92C7E500DEBA72 /* Helper */,
 				E1A7C2812C80F4A9004F3EF9 /* ContentView */,
 				E1ACD3102C79B4D500A15703 /* PopularScreen */,
 				E1ACD3132C79B4FC00A15703 /* FavoriitesScreen */,
@@ -646,6 +649,14 @@
 			path = CacheService;
 			sourceTree = "<group>";
 		};
+		E1F73D072C92C7E500DEBA72 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				E1F73D082C92C80000DEBA72 /* DisplayOrderType.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -795,6 +806,7 @@
 				2663C7AB2C56A257002EFD0C /* StationModel.swift in Sources */,
 				E1C8A2B62C69EB9900DF542B /* FavoritesCellView.swift in Sources */,
 				E16EBD572C5CB3F10010BF71 /* Color + Ext.swift in Sources */,
+				E1F73D092C92C80000DEBA72 /* DisplayOrderType.swift in Sources */,
 				7A7A4B382C5B64DE00CD8794 /* AllStationsView.swift in Sources */,
 				E1FFE1AD2C77786E0091C66D /* ProfileFlowError.swift in Sources */,
 				E1E87BCC2C6893440070D855 /* ProfileEditViewModel.swift in Sources */,

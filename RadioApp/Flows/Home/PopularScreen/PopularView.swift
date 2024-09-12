@@ -16,13 +16,6 @@ struct PopularView: View {
     
     @State private var isDetailViewActive = false
     
-    var error: Error? {
-        if case let .failure(error) = viewModel.phase {
-            return error
-        } else {
-            return nil
-        }
-    }
     
     // MARK: - Initializer
     init(
@@ -42,38 +35,54 @@ struct PopularView: View {
     //MARK: - BODY
     var body: some View {
         VStack {
-            HStack {
+            HStack() {
                 Text(Resources.Text.popular.localized(language))
                     .font(.custom(DS.Fonts.sfRegular, size: 30))
                     .foregroundStyle(.white)
+                
                 Spacer()
+                
+                Picker(
+                    LocalizedStringKey("display_order"),
+                    selection: $viewModel.selectedOrder) {
+                    ForEach(DisplayOrderType.allCases, id: \.self) { order in
+                        Text(order.name).tag(order)
+                    }
+                }
+                .accentColor(.white)
+                .pickerStyle(MenuPickerStyle())
+                .frame(maxWidth: 200)
+                .labelsHidden()
+                .offset(x: 30)
             }
-            .padding(.top, 100)
-            .background(DS.Colors.darkBlue)
+
             
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 139))], spacing: 15) {
                     ForEach(viewModel.stations.indices, id: \.self) { index in
                         let station = viewModel.stations[index]
+                        let isSelected = station.id == viewModel.currentStation?.id
+                        let isFavorite = station.isFavorite
+                        
                         ZStack {
                             PopularCellView(
-                                isSelect: station.id == playerService.currentStation.id,
-                                isFavorite: station.isFavorite,
+                                isSelect: isSelected,
+                                isFavorite: isFavorite,
                                 isPlayMusic: playerService.isPlayMusic,
                                 station: station,
-                                favoriteAction: { viewModel.toggleFavorite(station: station) }
+                                favoriteAction: { viewModel.toggleFavorite() }
                             )
                         }
-                            .onTapGesture {
-                                viewModel.currentStation = station
-                                playerService.indexRadio = index
-                                playerService.playAudio()
+                        .onTapGesture {
+                            viewModel.index = index
+                            playerService.indexRadio = index
+                            playerService.playAudio()
+                        }
+                        .onLongPressGesture {
+                            if station.id == playerService.currentStation?.id {
+                                isDetailViewActive = true
                             }
-                            .onLongPressGesture {
-                                if station.id == playerService.currentStation.id {
-                                    isDetailViewActive = true
-                                }
-                            }
+                        }
                     }
                 }
             }
@@ -83,9 +92,6 @@ struct PopularView: View {
             Task {
                 await viewModel.fetchTopStations()
                 playerService.addStationForPlayer(viewModel.stations)
-                if error == nil {
-                    playerService.playAudio()
-                }
             }
         }
         .refreshable {
@@ -95,7 +101,7 @@ struct PopularView: View {
         .alert(isPresented: isPresentedAlert()) {
             Alert(
                 title: Text(Resources.Text.error.localized(language)),
-                message: Text(error?.localizedDescription ?? ""),
+                message: Text(viewModel.error?.localizedDescription ?? ""),
                 dismissButton: .default(Text(Resources.Text.ok.localized(language)),
                                         action: viewModel.cancelErrorAlert)
             )
@@ -120,7 +126,7 @@ struct PopularView: View {
     }
     
     private func isPresentedAlert() -> Binding<Bool> {
-         Binding(get: {error != nil },
+        Binding(get: { viewModel.error != nil },
                 set: { isPresenting in
             if isPresenting { return }
         })
@@ -129,7 +135,7 @@ struct PopularView: View {
 
 // MARK: - Preview
 #Preview {
-    PopularView(userId: "")
+    PopularView(userId: "EySUMWfrYxRzC06bjVW7Yy3P2FE3")
         .environmentObject(PlayerService())
 }
 

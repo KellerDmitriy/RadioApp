@@ -62,9 +62,11 @@ struct HomeContentView: View {
                 }
             }
             
+            .padding(.top, 120)
             .padding(.horizontal, 12)
             .background(DS.Colors.darkBlue)
             
+           
             CustomTabBarView(selectedTab: $selectedTab)
             
             RadioPlayerView(playerService: playerService)
@@ -78,7 +80,7 @@ struct HomeContentView: View {
                            label: { EmptyView() })
         }
         .onAppear {
-            Task{
+            Task {
                 try? await viewModel.loadCurrentUser()
             }
         }
@@ -101,7 +103,7 @@ struct HomeContentView: View {
                 )
             }
         }
-        
+      
         .ignoresSafeArea()
         .navigationBarBackButtonHidden(true)
     }

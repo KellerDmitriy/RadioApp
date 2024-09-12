@@ -14,10 +14,26 @@ final class FavoritesViewModel: ObservableObject {
     private let userService: UserService
     
     @Published var favoritesStations: [StationModel] = []
-    @Published var currentStation: StationModel? 
+    
+    
     @Published var isFavorite = false
     @Published var error: Error? = nil
     
+    var index: Int? = nil
+    
+    var currentStation: StationModel? {
+          guard let index = index, index >= 0, index < favoritesStations.count else {
+              return nil
+          }
+          return favoritesStations[index]
+      }
+    
+    var isSelect: Bool {
+        guard let index = index, index >= 0, index < favoritesStations.count else {
+            return false
+        }
+        return favoritesStations[index].id == (currentStation?.id ?? "")
+    }
     
     // MARK: - Initializer
     init(
@@ -56,8 +72,8 @@ final class FavoritesViewModel: ObservableObject {
     }
     
     // Set the current station when a cell is activated
-    func setCurrentStation(at index: Int) {
-        currentStation = favoritesStations[index]
+    func setCurrentIndex(_ index: Int) {
+        self.index = index
     }
     
 }

@@ -76,7 +76,6 @@ struct FavoritesView: View {
             Spacer()
         }
         .padding(.leading)
-        .padding(.top, 100)
         .background(DS.Colors.darkBlue)
     }
     
@@ -86,7 +85,7 @@ struct FavoritesView: View {
                 ForEach(viewModel.favoritesStations.indices, id: \.self) { index in
                     ZStack {
                         FavoritesCellView(
-                            isSelect: playerService.currentStation.id == viewModel.favoritesStations[index].id ,
+                            isSelect: viewModel.isSelect,
                             station: viewModel.favoritesStations[index],
                             deleteAction: {
                                 Task {
@@ -107,7 +106,7 @@ struct FavoritesView: View {
     }
     
     private func handleStationSelection(at index: Int) {
-        viewModel.setCurrentStation(at: index)
+        viewModel.setCurrentIndex(index)
         
         if viewModel.currentStation != nil {
             playerService.addStationForPlayer(viewModel.favoritesStations)
@@ -137,5 +136,5 @@ struct FavoritesView: View {
 
 // MARK: - Preview
 #Preview {
-    FavoritesView(userId: "")
+    FavoritesView(userId: "EySUMWfrYxRzC06bjVW7Yy3P2FE3")
 }

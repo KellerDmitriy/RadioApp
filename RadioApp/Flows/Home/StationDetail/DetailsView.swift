@@ -48,9 +48,9 @@ struct DetailsView: View {
         VStack {
             // MARK: - Header Section
             Spacer()
-            
+          
             // MARK: - Favicon
-            AsyncImage(url: URL(string: playerService.currentStation.favicon)) { image in
+            AsyncImage(url: URL(string: viewModel.station.favicon )) { image in
                 image
                     .resizable()
                     .scaledToFit()
@@ -66,11 +66,10 @@ struct DetailsView: View {
             
             // MARK: - Station Information
             VStack {
-                Text(getString(tags: playerService.currentStation.tags)?.uppercased()
-                     ?? playerService.currentStation.countryCode
+                Text(getString(tags: viewModel.station.tags)?.uppercased() ?? viewModel.station.countryCode
                 )
                 .font(.custom(DS.Fonts.sfBold,
-                              size: getString(tags: playerService.currentStation.tags) != nil
+                              size: getString(tags: viewModel.station.tags) != nil
                               ? Drawing.fontSizeSmall
                               : Drawing.fontSizeLarge)
                 )
