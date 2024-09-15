@@ -17,14 +17,12 @@ struct HomeContentView: View {
     
     // MARK: - Initializer
     init(
+        playerService: PlayerService = .shared,
         authService: AuthService = .shared,
         userService: UserService = .shared,
         networkService: NetworkService = .shared
     ) {
-        self._playerService = StateObject(
-            wrappedValue: PlayerService()
-        )
-        
+        self._playerService = StateObject(wrappedValue: playerService)
         self._viewModel = StateObject(
             wrappedValue: HomeViewModel(
                 authService: authService,
@@ -69,7 +67,7 @@ struct HomeContentView: View {
                 
 
             NavigationLink(destination:
-                            ProfileView(viewModel.currentUser ?? DBUser.getTestDBUser()),
+                            ProfileView(viewModel.user),
                            isActive: $isProfileViewActive,
                            label: { EmptyView() })
         }

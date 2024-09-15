@@ -56,5 +56,5 @@ struct RadioPlayerView: View {
 }
 
 #Preview {
-    RadioPlayerView(playerService: PlayerService())
+    RadioPlayerView(playerService: PlayerService.shared)
 }

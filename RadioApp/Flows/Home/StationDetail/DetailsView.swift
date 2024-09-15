@@ -132,5 +132,5 @@ struct DetailsView: View {
 // MARK: - Preview
 #Preview {
     DetailsView("", station: StationModel.testStation())
-        .environmentObject(PlayerService())
+        .environmentObject(PlayerService.shared)
 }

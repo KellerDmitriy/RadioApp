@@ -12,7 +12,7 @@ import Combine
 // MARK: - PlayerService
 // A service class responsible for managing audio playback using AVPlayer
 final class PlayerService: ObservableObject {
-    
+    static let shared = PlayerService()
     // MARK: - Properties
     
     // AVPlayer instance for streaming audio
@@ -63,7 +63,7 @@ final class PlayerService: ObservableObject {
     
     // MARK: - Initialization
     // Initializes the PlayerService and sets up the volume observer
-    init() {
+    private init() {
         self.volume = CGFloat(session.outputVolume)
         setVolumeObserver()
     }

@@ -22,6 +22,11 @@ final class HomeViewModel: ObservableObject {
         currentUser?.name ?? ""
     }
     
+    var user: DBUser {
+        guard let currentUser else { return DBUser.getTestDBUser() }
+        return currentUser
+    }
+    
     var profileImageURL: URL {
         guard let urlString = currentUser?.profileImagePathUrl else { return URL(fileURLWithPath: "") }
         return URL(string: urlString)!

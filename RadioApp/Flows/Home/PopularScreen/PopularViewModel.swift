@@ -15,7 +15,6 @@ struct FetchTaskToken: Equatable {
 }
 
 // MARK: - PopularViewModel
-
 @MainActor
 final class PopularViewModel: ObservableObject {
     // MARK: - Stored Properties
@@ -80,40 +79,31 @@ final class PopularViewModel: ObservableObject {
     func isSelectCell(_ index: Int) -> Bool { selectedIndex == index }
     func isFavoriteStation(_ index: Int) -> Bool { getCurrentStation(index).isFavorite }
     
+    
+    /// Fetches top stations from the network service and updates the favorite status.
+    func fetchTopStations(ignoreCache: Bool = false) async {
+        phase = .empty
+        do {
+            if !ignoreCache, let cachedStations = await cache.value(forKey: fetchTaskToken.stations) {
+                print("CACHE HIT")
+                phase = .success(cachedStations)
+            } else {
+                let stationsFromAPI = try await loadStationsFromAPI()
+                print("CACHE MISSED/EXPIRED")
+                phase = .success(stationsFromAPI)
+            }
+            
+            let favoriteStations = try await userService.getFavoritesForUser(userId)
+            updateFavoritesStatus()
+        } catch {
+            phase = .failure(error)
+        }
+    }
+    
     /// Refreshes the cache and updates the fetch task token.
     func refreshTask() async {
         await cache.removeValue(forKey: fetchTaskToken.stations)
         fetchTaskToken.token = Date()
-    }
-    
-    /// Fetches top stations from the network service and updates the favorite status.
-    func fetchTopStations(ignoreCache: Bool = false) async {
-        let keyForCache = fetchTaskToken.stations
-        if !ignoreCache, let stationsFromCache = await cache.value(forKey: keyForCache) {
-            phase = .success(stationsFromCache)
-            print("CACHE HIT")
-            return
-        }
-        print("CACHE MISSED/EXPIRED")
-        phase = .empty
-        do {
-            var stationsFromAPI = try await networkService.getTopStations(numberLimit)
-            let favoriteStations = try await userService.getFavoritesForUser(userId)
-            
-            for index in stationsFromAPI.indices {
-                if favoriteStations.contains(where: { $0.id == stationsFromAPI[index].id }) {
-                    stationsFromAPI[index].isFavorite = true
-                }
-            }
-            
-            await cache.setValue(stationsFromAPI, forKey: keyForCache)
-            try? await cache.saveToDisk()
-            
-            print("CACHE SET")
-            phase = .success(stationsFromAPI)
-        } catch {
-            phase = .failure(error)
-        }
     }
     
     /// Cancels the error alert and refreshes the data.
@@ -145,5 +135,28 @@ final class PopularViewModel: ObservableObject {
                 phase = .failure(error)
             }
         }
+    }
+    
+    // MARK: - Private Methods
+    private func updateFavoritesStatus() {
+        guard var currentStations = phase.value else { return }
+        Task {
+            do {
+                let favoriteStations = try await userService.getFavoritesForUser(userId)
+                for index in currentStations.indices {
+                    currentStations[index].isFavorite = favoriteStations.contains { $0.id == currentStations[index].id }
+                }
+                phase = .success(currentStations)
+            } catch {
+                print("Error updating favorite status: \(error)")
+            }
+        }
+    }
+    
+    private func loadStationsFromAPI() async throws -> [StationModel] {
+        let stationsFromAPI = try await networkService.getTopStations(numberLimit)
+        await cache.setValue(stationsFromAPI, forKey: fetchTaskToken.stations)
+        try? await cache.saveToDisk()
+        return stationsFromAPI
     }
 }

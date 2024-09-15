@@ -302,6 +302,7 @@
 			isa = PBXGroup;
 			children = (
 				E16EBD5A2C5CB42A0010BF71 /* RadioAppApp.swift */,
+				E1A7C2812C80F4A9004F3EF9 /* ContentView */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -396,7 +397,6 @@
 			isa = PBXGroup;
 			children = (
 				E1F73D072C92C7E500DEBA72 /* Helper */,
-				E1A7C2812C80F4A9004F3EF9 /* ContentView */,
 				E1ACD3102C79B4D500A15703 /* PopularScreen */,
 				E1ACD3132C79B4FC00A15703 /* FavoriitesScreen */,
 				E1ACD3162C79B53200A15703 /* AllStationsScreen */,

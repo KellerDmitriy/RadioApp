@@ -52,13 +52,15 @@ struct FavoritesView: View {
         .onAppear {
             Task {
                 await viewModel.getFavorites()
+                playerService.addStationForPlayer(viewModel.getStations())
             }
         }
-        if let currentStation = viewModel.currentStation {
+        
+        if let selectedIndex = viewModel.selectedIndex {
             NavigationLink(
                 destination: DetailsView(
                     viewModel.userId,
-                    station: currentStation
+                    station: viewModel.getCurrentStation(selectedIndex)
                 )
                 .environmentObject(playerService),
                 isActive: $isDetailViewActive) {
@@ -85,16 +87,19 @@ struct FavoritesView: View {
                 ForEach(viewModel.favoritesStations.indices, id: \.self) { index in
                     ZStack {
                         FavoritesCellView(
-                            isSelect: viewModel.isSelect,
-                            station: viewModel.favoritesStations[index],
+                            isSelect: viewModel.isSelectCell(index),
+                            station: viewModel.getCurrentStation(index),
                             deleteAction: {
                                 Task {
-                                    await viewModel.deleteFavorite()
+                                    await viewModel.deleteFavorite(station: viewModel.getCurrentStation(index))
                                 }
                             }
                         )
                         .onTapGesture {
-                            handleStationSelection(at: index)
+                            
+                            viewModel.selectStation(at: index)
+                            playerService.indexRadio = viewModel.selectedIndex
+                            playerService.playAudio()
                         }
                         .onLongPressGesture {
                             isDetailViewActive = true
@@ -105,15 +110,6 @@ struct FavoritesView: View {
         }
     }
     
-    private func handleStationSelection(at index: Int) {
-        viewModel.setCurrentIndex(index)
-        
-        if viewModel.currentStation != nil {
-            playerService.addStationForPlayer(viewModel.favoritesStations)
-            playerService.indexRadio = index
-            playerService.playAudio()
-        }
-    }
     
     private var errorAlert: Alert {
         Alert(

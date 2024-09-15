@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PopularView: View {
-    //MARK: - PROPERTIES
+    // MARK: - Properties
     @StateObject var viewModel: PopularViewModel
     @EnvironmentObject var playerService: PlayerService
     
@@ -16,7 +16,17 @@ struct PopularView: View {
     
     @State private var isDetailViewActive = false
     
-    
+    // MARK: - Drawing Constants
+    private struct Drawing {
+        static let titleFontSize: CGFloat = 30
+        static let pickerMaxWidth: CGFloat = 200
+        static let pickerOffsetY: CGFloat = 4
+        static let gridItemMinimumWidth: CGFloat = 139
+        static let gridSpacing: CGFloat = 15
+        static let verticalPadding: CGFloat = 10
+        static let backgroundColor: Color = DS.Colors.darkBlue
+    }
+
     // MARK: - Initializer
     init(
         userId: String,
@@ -32,34 +42,43 @@ struct PopularView: View {
         )
     }
     
-    //MARK: - BODY
+    // MARK: - Body
     var body: some View {
         VStack {
-            HStack() {
+            // MARK: - Header
+           HStack() {
+                // MARK: - Header
                 Text(Resources.Text.popular.localized(language))
-                    .font(.custom(DS.Fonts.sfRegular, size: 30))
+                    .font(
+                        .custom(DS.Fonts.sfRegular,
+                            size: Drawing.titleFontSize)
+                    )
                     .foregroundStyle(.white)
-                
-                Spacer()
-                
+Spacer()
+                // MARK: - Display Order Picker
                 Picker(
                     LocalizedStringKey("display_order"),
-                    selection: $viewModel.selectedOrder) {
+                    selection: $viewModel.selectedOrder
+                ) {
                     ForEach(DisplayOrderType.allCases, id: \.self) { order in
                         Text(order.name).tag(order)
                     }
                 }
                 .accentColor(.white)
                 .pickerStyle(MenuPickerStyle())
-                .frame(maxWidth: 200)
-                .labelsHidden()
-                .offset(x: 30)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .frame(maxWidth: Drawing.pickerMaxWidth)
+                .offset(y: Drawing.pickerOffsetY)
             }
+            .padding(.vertical, Drawing.verticalPadding)
             
+            // MARK: - Stations Grid
             ScrollView(.vertical, showsIndicators: false) {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 139))], spacing: 15) {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: Drawing.gridItemMinimumWidth))], spacing: Drawing.gridSpacing) {
                     ForEach(viewModel.getStations().indices, id: \.self) { index in
                         let station = viewModel.getCurrentStation(index)
+                        
+                        // MARK: - Station Cell
                         ZStack {
                             PopularCellView(
                                 isSelect: isSelectCell(index),
@@ -83,8 +102,9 @@ struct PopularView: View {
                 }
             }
         }
-        .background(DS.Colors.darkBlue)
+        .background(Drawing.backgroundColor)
         .task {
+            // MARK: - Fetch Stations Task
             Task {
                 await viewModel.fetchTopStations()
                 playerService.addStationForPlayer(viewModel.getStations())
@@ -93,8 +113,8 @@ struct PopularView: View {
         .refreshable {
             await refreshTask()
         }
-        
         .alert(isPresented: isPresentedAlert()) {
+            // MARK: - Error Alert
             Alert(
                 title: Text(Resources.Text.error.localized(language)),
                 message: Text(viewModel.error?.localizedDescription ?? ""),
@@ -103,6 +123,7 @@ struct PopularView: View {
             )
         }
         
+        // MARK: - Detail View Navigation
         if isDetailViewActive {
             NavigationLink(
                 destination: DetailsView(
@@ -117,6 +138,7 @@ struct PopularView: View {
         }
     }
     
+    // MARK: - Private Methods
     private func refreshTask() async {
         await viewModel.refreshTask()
     }
@@ -143,9 +165,5 @@ struct PopularView: View {
 // MARK: - Preview
 #Preview {
     PopularView(userId: "EySUMWfrYxRzC06bjVW7Yy3P2FE3")
-        .environmentObject(PlayerService())
+        .environmentObject(PlayerService.shared)
 }
-
-
-
-
