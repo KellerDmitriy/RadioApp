@@ -21,7 +21,7 @@ struct PopularView: View {
         static let titleFontSize: CGFloat = 30
         static let pickerMaxWidth: CGFloat = 200
         static let pickerOffsetY: CGFloat = 4
-        static let gridItemMinimumWidth: CGFloat = 139
+        static let gridItemMinimumWidth: CGFloat = 119
         static let gridSpacing: CGFloat = 15
         static let verticalPadding: CGFloat = 10
         static let backgroundColor: Color = DS.Colors.darkBlue

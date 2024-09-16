@@ -36,36 +36,44 @@ struct HomeContentView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             VStack {
-                VStack {
-                    if !viewModel.userId.isEmpty {
-                        switch selectedTab {
-                        case .popular:
-                            PopularView(userId: viewModel.userId)
-                                .environmentObject(playerService)
-                            
-                        case .favorites:
-                            FavoritesView(userId: viewModel.userId)
-                                .environmentObject(playerService)
-                        case .allStations:
-                            AllStationsView(userId: viewModel.userId)
-                                .environmentObject(playerService)
+                HStack {
+                    // MARK: - Volume Slider
+                    VolumeSliderView(
+                        volume: $playerService.volume
+                    )
+                    .environmentObject(playerService)
+                    .frame(width: 30, height: 300)
+                    .padding(.trailing, 16)
+                    VStack {
+                        if !viewModel.userId.isEmpty {
+                            switch selectedTab {
+                            case .popular:
+                                PopularView(userId: viewModel.userId)
+                                    .environmentObject(playerService)
+                            case .favorites:
+                                FavoritesView(userId: viewModel.userId)
+                                    .environmentObject(playerService)
+                            case .allStations:
+                                AllStationsView(userId: viewModel.userId)
+                                    .environmentObject(playerService)
+                            }
+                        } else {
+                            Text("Loading...")
+                                .foregroundColor(.white)
                         }
-                    } else {
-                        Text("Loading...")
-                            .foregroundColor(.white)
                     }
                 }
+                .padding(.trailing, 12)
                 .padding(.top, 120)
-                .padding(.horizontal, 12)
                 
                 Spacer()
                 CustomTabBarView(selectedTab: $selectedTab)
                     .frame(height: 80)
             }
-                RadioPlayerView(playerService: playerService)
-                    .padding(.bottom, 66)
-                
-
+            RadioPlayerView(playerService: playerService)
+                .padding(.bottom, 66)
+            
+            
             NavigationLink(destination:
                             ProfileView(viewModel.user),
                            isActive: $isProfileViewActive,

@@ -10,13 +10,14 @@ import SwiftUI
 struct DetailsView: View {
     // MARK: - Drawing Constants
     private struct Drawing {
-        static let faviconSize: CGFloat = 40
+        static let faviconSize: CGFloat = 60
         static let faviconFrameSize: CGSize = CGSize(width: 60, height: 60)
-        static let topPadding: CGFloat = 30
+        static let bottomPadding: CGFloat = 30
         static let horizontalPadding: CGFloat = 20
         static let equalizerHeight: CGFloat = 350
         static let radioPlayerHeight: CGFloat = 110
-        static let volumeSliderHeight: CGFloat = 100
+        static let volumeSliderHeight: CGFloat = 20
+        
         static let fontSizeLarge: CGFloat = 30
         static let fontSizeSmall: CGFloat = 20
     }
@@ -25,18 +26,18 @@ struct DetailsView: View {
     @StateObject var viewModel: DetailViewModel
     
     @EnvironmentObject var playerService: PlayerService
-    @State private var textOffset: CGFloat = 200
+    @State private var textOffset: CGFloat = -50
     
     
     // MARK: - Initializer
     init(_
-        userId: String,
-        station: StationModel,
-        userService: UserService = .shared
+         userId: String,
+         station: StationModel,
+         userService: UserService = .shared
     ) {
         self._viewModel = StateObject(
             wrappedValue: DetailViewModel(
-                userId: userId, 
+                userId: userId,
                 station: station,
                 userService: userService
             )
@@ -48,9 +49,9 @@ struct DetailsView: View {
         VStack {
             // MARK: - Header Section
             Spacer()
-          
+            
             // MARK: - Favicon
-            AsyncImage(url: URL(string: viewModel.station.favicon )) { image in
+            AsyncImage(url: URL(string: playerService.currentStation?.favicon ?? "" )) { image in
                 image
                     .resizable()
                     .scaledToFit()
@@ -66,7 +67,7 @@ struct DetailsView: View {
             
             // MARK: - Station Information
             VStack {
-                Text(getString(tags: viewModel.station.tags)?.uppercased() ?? viewModel.station.countryCode
+                Text(getString(tags: playerService.currentStation?.tags ?? "")?.uppercased() ?? viewModel.station.countryCode
                 )
                 .font(.custom(DS.Fonts.sfBold,
                               size: getString(tags: viewModel.station.tags) != nil
@@ -77,37 +78,47 @@ struct DetailsView: View {
                 .lineLimit(1)
                 .offset(x: textOffset)
                 .onAppear {
-                    withAnimation(.easeInOut(duration: 8).repeatForever()) {
-                        textOffset = -200
-                    }
+                    withAnimation(.easeInOut(duration: 8)
+                        .repeatForever()) {
+                            textOffset = 50
+                        }
                 }
             }
-            .frame(width: 900, height: 20)
-            .padding(.top, Drawing.topPadding)
+            .frame(width: 200, height: 20)
+            .padding(.top, Drawing.bottomPadding)
             
             
             // MARK: - Equalizer
             EqualizerView(playerService.amplitude)
-                .padding(.top, Drawing.topPadding)
+                .padding(.top, Drawing.bottomPadding)
                 .frame(height: Drawing.equalizerHeight)
             
             // MARK: - Vote
-            FavoriteButton(
-                isFavorite: viewModel.checkFavorite(),
-                action: { viewModel.addUserFavorite()
+            VStack {
+                ZStack {
+                    FavoriteButton(
+                        isFavorite: viewModel.isFavorite,
+                        action: { viewModel.checkFavorite()
+                        }
+                    )
+                    .offset(x: 120, y: -70)
+                    
+                    // MARK: - Radio Player
+                    RadioPlayerView(playerService: playerService)
+                        .environmentObject(playerService)
+                        .frame(height: Drawing.radioPlayerHeight)
                 }
-            )
-
-            // MARK: - Radio Player
-            RadioPlayerView(playerService: playerService)
+                
+                // MARK: - Volume Slider
+                VolumeSliderView(
+                    volume: $playerService.volume,
+                    horizontal: true
+                    )
                 .environmentObject(playerService)
-                .padding(.bottom, Drawing.radioPlayerHeight)
-                .frame(height: Drawing.radioPlayerHeight)
+                    .frame(width: 300, height: 33)
+            }
+            .padding(.bottom, Drawing.bottomPadding)
             
-            // MARK: - Volume Slider
-            VolumeSliderView(volume: $playerService.volume, rotation: true)
-                .padding(.top, Drawing.topPadding)
-                .frame(height: Drawing.volumeSliderHeight)
         }
         
         // MARK: - View Configuration

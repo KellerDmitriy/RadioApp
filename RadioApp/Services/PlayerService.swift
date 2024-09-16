@@ -8,6 +8,7 @@
 import Foundation
 import AVFoundation
 import Combine
+import MediaPlayer
 
 // MARK: - PlayerService
 // A service class responsible for managing audio playback using AVPlayer
@@ -36,7 +37,8 @@ final class PlayerService: ObservableObject {
     // Published properties to update UI or other observers
     @Published var stations = [StationModel]()
     @Published var indexRadio: Int? = nil
-    @Published var volume: CGFloat = 0.0
+    @Published var volume: Float = 1.0
+    @Published var systemVolume: Float = 1.0
     @Published var amplitude: CGFloat = 0.0
     @Published var isPlayMusic = false
     
@@ -64,7 +66,7 @@ final class PlayerService: ObservableObject {
     // MARK: - Initialization
     // Initializes the PlayerService and sets up the volume observer
     private init() {
-        self.volume = CGFloat(session.outputVolume)
+        setupAudioSession()
         setVolumeObserver()
     }
     
@@ -79,7 +81,6 @@ final class PlayerService: ObservableObject {
     }
     
     // MARK: - Add Radio Station to Player
-    
     // Adds a list of stations to the player
     func addStationForPlayer(_ stations: [StationModel]) {
         self.stations = stations
@@ -139,19 +140,23 @@ final class PlayerService: ObservableObject {
     }
     
     // MARK: - Volume
+    private func setupAudioSession() {
+        do {
+            try session.setCategory(.playback, options: [.mixWithOthers])
+            try session.setActive(true)
+        } catch {
+            print("Error setting up audio session: \(error.localizedDescription)")
+        }
+    }
     
     /// Sets up the volume observer to monitor volume changes
     private func setVolumeObserver() {
-        do {
-            try session.setCategory(.ambient)
-            try session.setActive(true, options: .notifyOthersOnDeactivation)
-        } catch {
-            print(error.localizedDescription)
-        }
+        self.systemVolume = session.outputVolume
         volumeObserver = session.observe(\.outputVolume) { [weak self] session, _ in
             DispatchQueue.main.async {
-                self?.volume = CGFloat(session.outputVolume)
-                print("Current volume value - \(self?.volume ?? 0.0)")
+                self?.systemVolume = session.outputVolume
+                self?.volume = self?.systemVolume ?? 1.0
+                self?.player?.volume = self?.volume ?? 1.0
             }
         }
     }
@@ -160,6 +165,19 @@ final class PlayerService: ObservableObject {
     private func unsubscribeVolumeObserver() {
         volumeObserver?.invalidate()
     }
+    
+    func setPlayerVolume(_ volume: Float) {
+        self.volume = volume
+        player?.volume = volume
+    }
+    
+    func setSystemVolume(_ volume: Float) {
+            // Adjust the volume using MPVolumeView
+            let volumeView = MPVolumeView(frame: .zero)
+            if let slider = volumeView.subviews.first(where: { $0 is UISlider }) as? UISlider {
+                slider.value = volume
+            }
+        }
     
     // MARK: - Amplitude
     /// Starts updating the amplitude

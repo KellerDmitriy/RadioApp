@@ -6,16 +6,19 @@
 //
 
 import Foundation
+
 @MainActor
 final class DetailViewModel: ObservableObject {
     // MARK: - Stored Properties
     let userId: String
-    let station: StationModel
+    @Published var station: StationModel
+    @Published var error: Error? = nil
     
     private let userService: UserService
-    @Published var stationId = ""
     
-    @Published var error: Error? = nil
+    var isFavorite: Bool {
+        station.isFavorite
+    }
     
     // MARK: - Initializer
     init(
@@ -35,17 +38,10 @@ final class DetailViewModel: ObservableObject {
         error = nil
     }
     
-    /// Adds a station to the user's favorites
-    func addUserFavorite() {
-//        Task {
-//            try? await userService.addFavoriteFor(userId, station: StationModel)
-//        }
-    }
-    
     /// Checks if a station is in the user's favorites
-    func checkFavorite() -> Bool {
+    func checkFavorite(){
 //        guard !user.favorites.isEmpty else { return false }
 //        return user.favorites.contains { $0.id == stationId }
-        return false
+//        return false
     }
 }

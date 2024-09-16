@@ -9,73 +9,149 @@ import SwiftUI
 
 // MARK: - View
 struct VolumeSliderView: View {
-    // MARK: - Properties
-    @Binding var volume: CGFloat
-    
-    @State var rotation = false
-    
-    // MARK: - Body
+    @Binding var volume: Float
+    @State private var lastCoordinateValue: CGFloat = 0.0
+    @State var horizontal: Bool = false
+    @State var mute: Bool = false
+    @EnvironmentObject var playerService: PlayerService
+
+    private let minValue: Double = 0.0
+    private let maxValue: Double = 190.0
+
     var body: some View {
-        VStack {
-            // MARK: - Volume Percentage Text
-            Text("\((Int(volume * 100)).formatted())%")
-                .font(.system(size: 12))
-                .foregroundStyle(.white)
-                .rotationEffect(
-                    rotation == true
-                    ? -Angle(degrees: (90))
-                    : Angle(degrees: 0)
-                )
-                .offset(CGSize(width: 0, height: rotation == true ? -12.0 : 0.0))
-            
-            GeometryReader { screen in
-                // MARK: - Volume Indicator Stack
-                ZStack(alignment: .bottom) {
-                    // MARK: - Background Rectangles
-                    ZStack(alignment: .bottom) {
-                        RoundedRectangle(cornerRadius: .infinity)
-                            .foregroundStyle(DS.Colors.frame)
-                        
-                        RoundedRectangle(cornerRadius: .infinity)
-                            .foregroundStyle(DS.Colors.blueNeon)
-                            .frame(height: (screen.size.height * CGFloat(self.volume)))
+        GeometryReader { geometry in
+            let sliderLength: CGFloat = maxValue
+            let sliderThickness: CGFloat = 2
+            let knobSize: CGFloat = 15
+
+            VStack {
+                if horizontal {
+                    HStack {
+                        volumeIcon()
+                        slider(sliderLength: sliderLength, sliderThickness: sliderThickness, knobSize: knobSize)
+                        volumeTextLabel()
                     }
-                    .frame(width: 4)
-                    
-                    // MARK: - Volume Pointer Circle
-                    Circle()
-                        .foregroundStyle(DS.Colors.blueNeon)
-                        .position(CGPoint(x: 5.0, y: screen.size.height - (screen.size.height * CGFloat(self.volume))))
-                        .frame(width: 10)
+                } else {
+                    VStack {
+                        volumeTextLabel()
+                        slider(sliderLength: sliderLength, sliderThickness: sliderThickness, knobSize: knobSize)
+                        volumeIcon()
+                    }
                 }
             }
-            .frame(width: 10)
-        
-            // MARK: - Speaker Icon
-            Image(systemName: 
-                    volume == 0
-                  ? "speaker.slash"
-                  : "speaker.wave.2"
-            )
-                .resizable()
-                .offset(CGSize(
-                    width: rotation == true ? 0 : 5.0,
-                    height: rotation == true ? 0 : 5.0)
-                )
-                .frame(width: 18, height: 18)
-                .foregroundStyle(DS.Colors.frame)
-                .rotationEffect(rotation == true ? -Angle(degrees: (90)) : Angle(degrees: 0))
         }
-        
-        // MARK: - Main View Rotation
-        .rotationEffect(rotation == true ? Angle(degrees: (90)) : Angle(degrees: 0))
+        .onAppear {
+            lastCoordinateValue = CGFloat(Double(volume) * maxValue)
+        }
+        .onChange(of: playerService.volume) { newValue in
+            self.volume = newValue  // Синхронизация громкости с PlayerService
+        }
+        .animation(.linear(duration: 0.1), value: volume)
+    }
+
+    // MARK: - Мьютинг звука
+    private func toggleMute() {
+        if volume != 0.0 {
+            playerService.setPlayerVolume(0.0)  // Устанавливаем громкость на 0
+            mute = true
+        } else {
+            playerService.setPlayerVolume(Float(lastCoordinateValue / maxValue))  // Возвращаем прежнее значение громкости
+            mute = false
+        }
+    }
+
+    // MARK: - Иконка громкости
+    private func volumeIcon() -> some View {
+        Image(systemName: volumeIconName(volume: volume))
+            .foregroundColor(.gray)
+            .frame(width: 20, height: 20)
+            .onTapGesture {
+                toggleMute()
+            }
+            .padding(horizontal ? .trailing : .top, 10)
+    }
+
+    // MARK: - Текстовое отображение громкости
+    private func volumeTextLabel() -> some View {
+        Text(volumeText(volume: Double(volume) * maxValue))
+            .foregroundColor(.white)
+            .font(.custom(.sfRegular, size: 18))
+            .frame(width: 60)
+            .padding(horizontal ? .leading : .bottom, 10)
+    }
+
+    // MARK: - Общий слайдер для обоих направлений
+    private func slider(sliderLength: CGFloat, sliderThickness: CGFloat, knobSize: CGFloat) -> some View {
+        ZStack(alignment: horizontal ? .leading : .bottom) {
+            // Фон слайдера
+            RoundedRectangle(cornerRadius: 10)
+                .frame(width: horizontal ? sliderLength : sliderThickness, height: horizontal ? sliderThickness : sliderLength)
+                .foregroundColor(Color.gray.opacity(0.2))
+
+            // Заполненная часть
+            RoundedRectangle(cornerRadius: 10)
+                .frame(width: horizontal ? CGFloat(Double(volume) * maxValue) : sliderThickness,
+                       height: horizontal ? sliderThickness : CGFloat(Double(volume) * maxValue))
+                .foregroundColor(DS.Colors.blueNeon)
+
+            // Ползунок
+            Circle()
+                .foregroundColor(DS.Colors.blueNeon)
+                .frame(width: knobSize, height: knobSize)
+                .offset(
+                    x: horizontal ? CGFloat(Double(volume) * maxValue - knobSize).clamped(to: 0...maxValue) : 0,
+                    y: horizontal ? 0 : -CGFloat(Double(volume) * maxValue).clamped(to: 0...maxValue)
+                )
+                .gesture(
+                    DragGesture(minimumDistance: 0)
+                        .onChanged { v in
+                            let newValue = horizontal
+                                ? (lastCoordinateValue + v.translation.width).clamped(to: minValue...maxValue)
+                                : (lastCoordinateValue - v.translation.height).clamped(to: minValue...maxValue)
+                            setVolume(Float(newValue / maxValue))
+                        }
+                        .onEnded { _ in
+                            lastCoordinateValue = CGFloat(Double(volume) * maxValue)
+                        }
+                )
+        }
+        .frame(width: horizontal ? sliderLength : sliderThickness,
+               height: horizontal ? sliderThickness : sliderLength)
+    }
+
+    private func volumeIconName(volume: Float) -> String {
+        switch volume {
+        case 0:
+            return "volume.slash.fill"
+        case 0..<0.333:
+            return "volume.1.fill"
+        case 0.333..<0.667:
+            return "volume.2.fill"
+        case 0.667...1:
+            return "volume.3.fill"
+        default:
+            return "volume.fill"
+        }
+    }
+
+    private func volumeText(volume: Double) -> String {
+        "\(Int(volume / maxValue * 100))%"
     }
     
+    func setVolume(_ volume: Float) {
+        self.volume = max(0.0, min(volume, 1.0))
+        playerService.setPlayerVolume(self.volume)
+    }
 }
 
+extension Comparable {
+    func clamped(to range: ClosedRange<Self>) -> Self {
+        return min(max(self, range.lowerBound), range.upperBound)
+    }
+}
 
-//MARK: - PREVIEW
+//MARK: - Пример Preview
 #Preview {
-    VolumeSliderView(volume: .constant(5.0))
-      
+    VolumeSliderView(volume: .constant(0.5), horizontal: false)
+        .environmentObject(PlayerService.shared)
 }
