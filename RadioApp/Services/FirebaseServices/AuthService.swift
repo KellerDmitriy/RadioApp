@@ -11,13 +11,21 @@ import Firebase
 import GoogleSignIn
 
 
-final class AuthService {
-    // MARK: - Properties
-    static let shared = AuthService()
-    
-    // MARK: - Initializer
-    private init() {}
-    
+protocol IAuthService {
+    func isAuthenticated() -> Bool
+    func getAuthenticatedUser() throws -> AuthDataResultModel
+    func signOut() throws
+    func delete() async throws
+    func createUser(email: String, password: String) async throws -> AuthDataResultModel
+    func signInUser(email: String, password: String) async throws -> AuthDataResultModel
+    func resetPassword(email: String) async throws
+    func updateEmail(email: String) async throws
+    func signInWithGoogle() async throws -> AuthDataResultModel
+    func signIn(credential: AuthCredential) async throws -> AuthDataResultModel
+}
+
+// MARK: - AuthService
+final class AuthService: IAuthService {
     // MARK: - Methods
     func isAuthenticated() -> Bool {
         return Auth.auth().currentUser?.uid != nil

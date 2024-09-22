@@ -18,8 +18,8 @@ struct FetchTaskToken: Equatable {
 @MainActor
 final class PopularViewModel: ObservableObject {
     // MARK: - Stored Properties
-    private let userService: UserService
-    private let networkService: NetworkService
+    private let userService = DIService.resolve(forKey: .userService) ?? UserService()
+    private let networkService = DIService.resolve(forKey: .networkService) ?? NetworkService()
     private let timeIntervalForUpdateCache: TimeInterval = 24 * 60
     private let cache: DiskCache<[StationModel]>
     private let numberLimit = 5
@@ -54,13 +54,9 @@ final class PopularViewModel: ObservableObject {
     
     // MARK: - Initializer
     init(
-        userId: String,
-        userService: UserService = .shared,
-        networkService: NetworkService = .shared
+        userId: String
     ) {
         self.userId = userId
-        self.userService = userService
-        self.networkService = networkService
         self.fetchTaskToken = FetchTaskToken(stations: "RadioStations", token: Date())
         self.cache = DiskCache<[StationModel]>(
             filename: "xca_radio_stations",

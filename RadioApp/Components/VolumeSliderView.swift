@@ -44,7 +44,7 @@ struct VolumeSliderView: View {
             lastCoordinateValue = CGFloat(Double(volume) * maxValue)
         }
         .onChange(of: playerService.volume) { newValue in
-            self.volume = newValue  // Синхронизация громкости с PlayerService
+            self.volume = newValue  
         }
         .animation(.linear(duration: 0.1), value: volume)
     }
@@ -52,10 +52,10 @@ struct VolumeSliderView: View {
     // MARK: - Мьютинг звука
     private func toggleMute() {
         if volume != 0.0 {
-            playerService.setPlayerVolume(0.0)  // Устанавливаем громкость на 0
+            playerService.setPlayerVolume(0.0)
             mute = true
         } else {
-            playerService.setPlayerVolume(Float(lastCoordinateValue / maxValue))  // Возвращаем прежнее значение громкости
+            playerService.setPlayerVolume(Float(lastCoordinateValue / maxValue))
             mute = false
         }
     }
@@ -108,7 +108,7 @@ struct VolumeSliderView: View {
                             let newValue = horizontal
                                 ? (lastCoordinateValue + v.translation.width).clamped(to: minValue...maxValue)
                                 : (lastCoordinateValue - v.translation.height).clamped(to: minValue...maxValue)
-                            setVolume(Float(newValue / maxValue))
+                            playerService.setPlayerVolume(Float(newValue / maxValue))
                         }
                         .onEnded { _ in
                             lastCoordinateValue = CGFloat(Double(volume) * maxValue)
@@ -136,11 +136,6 @@ struct VolumeSliderView: View {
 
     private func volumeText(volume: Double) -> String {
         "\(Int(volume / maxValue * 100))%"
-    }
-    
-    func setVolume(_ volume: Float) {
-        self.volume = max(0.0, min(volume, 1.0))
-        playerService.setPlayerVolume(self.volume)
     }
 }
 

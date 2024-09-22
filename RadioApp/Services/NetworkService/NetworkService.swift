@@ -7,10 +7,17 @@
 
 import Foundation
 
-final class NetworkService {
-    
-    public static let shared = NetworkService()
-    private init() {}
+// MARK: - NetworkServiceProtocol
+protocol INetworkService {
+    func getTopStations(_ numberLimit: Int) async throws -> [StationModel]
+    func getAllStations() async throws -> [StationModel]
+    func getStationById(id: String) async throws -> [StationModel]
+    func voteStationById(id: String) async throws
+    func searchByName(searchText: String) async throws -> [StationModel]
+}
+
+// MARK: - NetworkService
+final class NetworkService: INetworkService {
     
     // MARK: - get top stations
     func getTopStations(_ numberLimit: Int) async throws -> [StationModel] {

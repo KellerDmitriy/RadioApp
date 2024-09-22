@@ -7,18 +7,22 @@
 import Foundation
 import FirebaseFirestore
 
+protocol IUserService {
+    func createNewUser(_ user: DBUser) async throws
+    func getUser(userId: String) async throws -> DBUser
+    func updateUserName(_ name: String, userID: String) async throws
+    func updateUserEmail(_ email: String, userID: String) async throws
+    func updateUserProfileImagePath(userId: String, path: String?, url: String?) async throws
+    func saveFavoriteStatus(for userId: String, station: StationModel, with status: Bool) async throws
+    func getFavoritesForUser(_ userId: String) async throws -> [StationModel]
+}
+
 // MARK: - UserService
 // A service class responsible for handling user-related operations with Firestore
-final class UserService {
+final class UserService: IUserService {
     // MARK: - Properties
-    // Singleton instance of UserService
-    static let shared = UserService()
-    
     // Reference to the "users" collection in Firestore
     private let userCollection: CollectionReference = Firestore.firestore().collection("users")
-    
-    // Private initializer to enforce singleton pattern
-    private init() {}
     
     // MARK: - Private Methods
     // Returns a reference to a specific user document in the Firestore collection

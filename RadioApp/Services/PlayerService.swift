@@ -53,7 +53,7 @@ final class PlayerService: ObservableObject {
         }
         set {
             if let newStation = newValue, let newIndex = stations.firstIndex(of: newStation) {
-                       self.indexRadio = newIndex
+                self.indexRadio = newIndex
             }
         }
     }
@@ -66,7 +66,7 @@ final class PlayerService: ObservableObject {
     // MARK: - Initialization
     // Initializes the PlayerService and sets up the volume observer
     private init() {
-        setupAudioSession()
+        configureAudioSession()
         setVolumeObserver()
     }
     
@@ -91,13 +91,11 @@ final class PlayerService: ObservableObject {
     /// Plays audio from the current station's URL
     func playAudio() {
         guard let url = URL(string: currentURL) else { return }
-        do {
-            try session.setCategory(.playback)
-            player = AVPlayer(url: url)
-            playAudioStream()
-        } catch {
-            print(error.localizedDescription)
-        }
+        configureAudioSession()
+        player = AVPlayer(url: url)
+        player?.play()
+        isPlayMusic = true
+        startUpdatingAmplitude()
     }
     
     /// Pauses the currently playing audio stream
@@ -109,8 +107,8 @@ final class PlayerService: ObservableObject {
     
     /// Stops the audio stream and releases the player
     func stopAudioStream() {
-        isPlayMusic = false
         player = nil
+        isPlayMusic = false
     }
     
     /// Plays the next station in the list
@@ -140,10 +138,10 @@ final class PlayerService: ObservableObject {
     }
     
     // MARK: - Volume
-    private func setupAudioSession() {
-        do {
-            try session.setCategory(.playback, options: [.mixWithOthers])
-            try session.setActive(true)
+    private func configureAudioSession() {
+           do {
+               try session.setCategory(.playback, options: [.mixWithOthers])
+               try session.setActive(true)
         } catch {
             print("Error setting up audio session: \(error.localizedDescription)")
         }
@@ -155,8 +153,7 @@ final class PlayerService: ObservableObject {
         volumeObserver = session.observe(\.outputVolume) { [weak self] session, _ in
             DispatchQueue.main.async {
                 self?.systemVolume = session.outputVolume
-                self?.volume = self?.systemVolume ?? 1.0
-                self?.player?.volume = self?.volume ?? 1.0
+                self?.updatePlayerVolume(self?.systemVolume ?? 1.0)
             }
         }
     }
@@ -167,17 +164,23 @@ final class PlayerService: ObservableObject {
     }
     
     func setPlayerVolume(_ volume: Float) {
+        self.volume = max(0.0, min(volume, 1.0))
+        player?.volume = volume
+        setSystemVolume(self.volume)
+    }
+    
+    private func setSystemVolume(_ volume: Float) {
+        // Adjust the volume using MPVolumeView
+        let volumeView = MPVolumeView(frame: .zero)
+        if let slider = volumeView.subviews.first(where: { $0 is UISlider }) as? UISlider {
+            slider.value = volume
+        }
+    }
+    
+    private func updatePlayerVolume(_ volume: Float) {
         self.volume = volume
         player?.volume = volume
     }
-    
-    func setSystemVolume(_ volume: Float) {
-            // Adjust the volume using MPVolumeView
-            let volumeView = MPVolumeView(frame: .zero)
-            if let slider = volumeView.subviews.first(where: { $0 is UISlider }) as? UISlider {
-                slider.value = volume
-            }
-        }
     
     // MARK: - Amplitude
     /// Starts updating the amplitude

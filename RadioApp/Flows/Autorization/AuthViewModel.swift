@@ -20,13 +20,11 @@ final class AuthViewModel: ObservableObject {
     @Published var isAuthenticated: Bool
     @Published var error: Error?
     
-    private let authService: AuthService
-    private let userService: UserService
+    private let authService: IAuthService = DIService.resolve(forKey: .authService) ?? AuthService()
+    private let userService = DIService.resolve(forKey: .userService) ?? UserService()
     
     // MARK: - Initializer
-    init(authService: AuthService = .shared, userService: UserService = .shared) {
-        self.authService = authService
-        self.userService = userService
+    init() {
         isAuthenticated = authService.isAuthenticated()
     }
     

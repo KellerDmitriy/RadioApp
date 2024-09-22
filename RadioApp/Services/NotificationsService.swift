@@ -9,14 +9,20 @@ import SwiftUI
 import Foundation
 import UserNotifications
 
+// MARK: - NotificationsServiceProtocol
+protocol INotificationsService {
+    var hasRequestedNotifications: Bool { get set }
+    
+    func requestNotificationAuthorization()
+    func sendTestNotification()
+    func cancelNotification()
+}
+
 // MARK: - NotificationsService
 // A service class responsible for handling user notifications
-final class NotificationsService {
+final class NotificationsService: INotificationsService {
     
     // MARK: - Properties
-    
-    // Singleton instance of NotificationsService
-    public static let shared = NotificationsService()
     
     // User's selected language for localization
     @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
@@ -35,18 +41,14 @@ final class NotificationsService {
         }
     }
     
-    // MARK: - Init
     
-    // Private initializer to enforce singleton pattern
-    private init() {}
-    
-    // MARK: - Methods
-    
+    // MARK: - Private Methods
     // Saves the user's notification preference to UserDefaults
     private func saveNotificationPreference(_ value: Bool) {
         UserDefaults.standard.set(value, forKey: "hasRequestedNotifications")
     }
     
+    // MARK: - Public Methods
     // Requests notification authorization from the user
     func requestNotificationAuthorization() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
@@ -72,6 +74,14 @@ final class NotificationsService {
         UNUserNotificationCenter.current().add(request)
     }
     
+    // Cancels all pending and delivered notifications
+    func cancelNotification() {
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+    }
+    
+    // MARK: - Private Helper Methods
+    
     // Returns a random notification body text based on the selected language
     private func getRandomNotificationBody() -> String {
         let notifications = [
@@ -81,11 +91,5 @@ final class NotificationsService {
             Resources.Text.notificationBody4.localized(language)
         ]
         return notifications.randomElement() ?? Resources.Text.notificationBody1
-    }
-    
-    // Cancels all pending and delivered notifications
-    func cancelNotification() {
-        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
-        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
     }
 }

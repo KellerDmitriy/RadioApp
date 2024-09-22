@@ -18,13 +18,11 @@ struct FavoritesView: View {
     
     // MARK: - Initializer
     init(
-        userId: String,
-        userService: UserService = .shared
+        userId: String
     ) {
         self._viewModel = StateObject(
             wrappedValue: FavoritesViewModel(
-                userId: userId,
-                userService: userService
+                userId: userId
             )
         )
     }

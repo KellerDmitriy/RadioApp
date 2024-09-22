@@ -15,9 +15,16 @@ import GoogleSignIn
 struct RadioAppApp: App {
     //MARK: -
     @AppStorage("isOnboarding") var isOnboarding = false
+    private let authService: IAuthService = DIService.resolve(forKey: .authService) ?? AuthService()
+    
     //MARK: - Init
     init() {
         FirebaseApp.configure()
+        DIService.register({ UserService() }, forKey: .userService, lifecycle: .transient)
+        DIService.register({ AuthService() }, forKey: .authService, lifecycle: .singleton)
+        DIService.register({ FirebaseStorageService() }, forKey: .storageService, lifecycle: .singleton)
+        DIService.register({ NotificationsService() }, forKey: .notificationsService, lifecycle: .transient)
+        DIService.register({ NetworkService() }, forKey: .networkService, lifecycle: .singleton)
     }
     
     //MARK: - Body
@@ -27,7 +34,7 @@ struct RadioAppApp: App {
                 if !isOnboarding {
                     WelcomeView()
                         .preferredColorScheme(.dark)
-                } else if AuthService.shared.isAuthenticated() {
+                } else if authService.isAuthenticated() {
                     HomeContentView()
                         .preferredColorScheme(.dark)
                 } else {

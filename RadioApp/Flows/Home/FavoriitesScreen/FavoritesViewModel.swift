@@ -11,7 +11,7 @@ import Foundation
 final class FavoritesViewModel: ObservableObject {
     // MARK: - Stored Properties
     let userId: String
-    private let userService: UserService
+    private let userService = DIService.resolve(forKey: .userService) ?? UserService()
     
     @Published var favoritesStations: [StationModel] = []
     @Published var selectedIndex: Int?
@@ -20,11 +20,9 @@ final class FavoritesViewModel: ObservableObject {
     
     // MARK: - Initializer
     init(
-        userId: String,
-        userService: UserService = .shared
+        userId: String
     ) {
         self.userId = userId
-        self.userService = userService
     }
 
     func getStations() -> [StationModel] { favoritesStations }

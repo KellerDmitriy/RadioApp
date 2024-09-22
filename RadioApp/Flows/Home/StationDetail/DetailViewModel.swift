@@ -14,7 +14,7 @@ final class DetailViewModel: ObservableObject {
     @Published var station: StationModel
     @Published var error: Error? = nil
     
-    private let userService: UserService
+    private let userService = DIService.resolve(forKey: .userService) ?? UserService()
     
     var isFavorite: Bool {
         station.isFavorite
@@ -23,12 +23,10 @@ final class DetailViewModel: ObservableObject {
     // MARK: - Initializer
     init(
         userId: String,
-        station: StationModel,
-        userService: UserService = .shared
+        station: StationModel
     ) {
         self.userId = userId
         self.station = station
-        self.userService = userService
     }
     
     // MARK: - Methods

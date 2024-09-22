@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+
 @MainActor
 final class ProfileEditViewModel: ObservableObject {
     
@@ -16,20 +17,12 @@ final class ProfileEditViewModel: ObservableObject {
     @Published var userEmail: String = ""
     @Published var profileImage: URL? = nil
     
-    private let userService: UserService
-    private let authService: AuthService
-    private let firebaseStorage: FirebaseStorageService
+    private let userService = DIService.resolve(forKey: .userService) ?? UserService()
+    private let authService: IAuthService = DIService.resolve(forKey: .authService) ?? AuthService()
+    private let firebaseStorage: IFirebaseStorageService = DIService.resolve(forKey: .storageService) ?? FirebaseStorageService()
     
     // MARK: - Initializer
-    init(
-        userService: UserService = .shared,
-        authService: AuthService = .shared,
-        firebaseStorage: FirebaseStorageService = .shared)
-    {
-        self.userService = userService
-        self.authService = authService
-        self.firebaseStorage = firebaseStorage
-    }
+    init(){}
     
     func loadCurrentUser() async throws {
         let authDataResult = try authService.getAuthenticatedUser()

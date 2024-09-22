@@ -26,35 +26,26 @@ struct PopularView: View {
         static let verticalPadding: CGFloat = 10
         static let backgroundColor: Color = DS.Colors.darkBlue
     }
-
+    
     // MARK: - Initializer
-    init(
-        userId: String,
-        userService: UserService = .shared,
-        networkService: NetworkService = .shared
-    ) {
+    init(userId: String) {
         self._viewModel = StateObject(
-            wrappedValue: PopularViewModel(
-                userId: userId,
-                userService: userService,
-                networkService: networkService
-            )
-        )
+            wrappedValue: PopularViewModel(userId: userId))
     }
     
     // MARK: - Body
     var body: some View {
         VStack {
             // MARK: - Header
-           HStack() {
+            HStack() {
                 // MARK: - Header
                 Text(Resources.Text.popular.localized(language))
                     .font(
                         .custom(DS.Fonts.sfRegular,
-                            size: Drawing.titleFontSize)
+                                size: Drawing.titleFontSize)
                     )
                     .foregroundStyle(.white)
-Spacer()
+                Spacer()
                 // MARK: - Display Order Picker
                 Picker(
                     LocalizedStringKey("display_order"),
@@ -108,6 +99,9 @@ Spacer()
             Task {
                 await viewModel.fetchTopStations()
                 playerService.addStationForPlayer(viewModel.getStations())
+                if let indexRadio = playerService.indexRadio {
+                    viewModel.selectedIndex = indexRadio
+                }
             }
         }
         .refreshable {

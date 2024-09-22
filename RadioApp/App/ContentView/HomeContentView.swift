@@ -17,19 +17,10 @@ struct HomeContentView: View {
     
     // MARK: - Initializer
     init(
-        playerService: PlayerService = .shared,
-        authService: AuthService = .shared,
-        userService: UserService = .shared,
-        networkService: NetworkService = .shared
+        playerService: PlayerService = .shared
     ) {
         self._playerService = StateObject(wrappedValue: playerService)
-        self._viewModel = StateObject(
-            wrappedValue: HomeViewModel(
-                authService: authService,
-                networkService: networkService,
-                userService: userService
-            )
-        )
+        self._viewModel = StateObject(wrappedValue: HomeViewModel())
     }
     
     // MARK: - Body

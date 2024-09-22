@@ -16,13 +16,9 @@ struct AuthView: View {
     @State private var isSignUpActive = false
 
     // MARK: - Initializer
-    init(
-        authService: AuthService = .shared
-    ) {
+    init() {
         self._viewModel = StateObject(
-            wrappedValue: AuthViewModel(
-                authService: authService
-            )
+            wrappedValue: AuthViewModel()
         )
     }
     

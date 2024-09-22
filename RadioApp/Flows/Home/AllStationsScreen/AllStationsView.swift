@@ -16,13 +16,11 @@ struct AllStationsView: View {
     @State private var isSearching: Bool = false
     
     init(
-        userId: String,
-        networkService: NetworkService = .shared
+        userId: String
     ) {
         self._viewModel = StateObject(
             wrappedValue: AllStationViewModel(
-                userId: userId,
-                networkService: networkService
+                userId: userId
             )
         )
     }

@@ -15,16 +15,11 @@ struct ProfileView: View {
     @StateObject var viewModel: ProfileViewModel
     
     init(
-        _ currentUser: DBUser,
-        authService: AuthService = .shared,
-        firebaseService: FirebaseStorageService = .shared,
-        notificationsService: NotificationsService = .shared
+        _ currentUser: DBUser
     ) {
         self._viewModel = StateObject(
             wrappedValue: ProfileViewModel(
-                currentUser: currentUser,
-                authService: authService,
-                notificationsService: notificationsService
+                currentUser: currentUser
             )
         )
     }

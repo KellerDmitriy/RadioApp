@@ -32,14 +32,12 @@ struct DetailsView: View {
     // MARK: - Initializer
     init(_
          userId: String,
-         station: StationModel,
-         userService: UserService = .shared
+         station: StationModel
     ) {
         self._viewModel = StateObject(
             wrappedValue: DetailViewModel(
                 userId: userId,
-                station: station,
-                userService: userService
+                station: station
             )
         )
     }

@@ -32,20 +32,14 @@ final class HomeViewModel: ObservableObject {
         return URL(string: urlString)!
     }
     
-    private let networkService: NetworkService
-    private let userService: UserService
-    private let authService: AuthService
+    private let networkService = DIService.resolve(forKey: .networkService) ?? NetworkService()
+    private let userService = DIService.resolve(forKey: .userService) ?? UserService()
+    private let authService = DIService.resolve(forKey: .authService) ?? AuthService()
+    
+
     
     // MARK: - Initializer
-    init(
-        authService: AuthService = .shared,
-        networkService: NetworkService = .shared,
-        userService: UserService = .shared
-    ) {
-        self.authService = authService
-        self.networkService = networkService
-        self.userService = userService
-    }
+    init() {}
     
     // MARK: - Methods
     func loadCurrentUser() async throws {

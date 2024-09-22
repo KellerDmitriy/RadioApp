@@ -12,8 +12,8 @@ final class AllStationViewModel: ObservableObject {
     
     @Published var currentStation: StationModel?
     
-    private let networkService: NetworkService
-    private let userService: UserService
+    private let networkService = DIService.resolve(forKey: .networkService) ?? NetworkService()
+    private let userService = DIService.resolve(forKey: .userService) ?? UserService()
     
     private let numberLimit = 20
     
@@ -25,14 +25,9 @@ final class AllStationViewModel: ObservableObject {
     
 
     init(
-        userId: String,
-        userService: UserService = .shared,
-        networkService: NetworkService = .shared
-        
+        userId: String
     ) {
         self.userId = userId
-        self.userService = userService
-        self.networkService = networkService
     }
     
     func fetchTopStations() async throws {

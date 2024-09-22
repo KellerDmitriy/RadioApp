@@ -16,16 +16,9 @@ struct ProfileEditView: View {
     @State private var isImagePickerPresented = false
     @State private var imagePickerSource: UIImagePickerController.SourceType = .camera
     
-    init(
-        userService: UserService = .shared,
-        authService: AuthService = .shared,
-        firebaseService: FirebaseStorageService = .shared
-    ) {
+    init() {
         self._viewModel = StateObject(
             wrappedValue: ProfileEditViewModel(
-                userService: userService,
-                authService: authService,
-                firebaseStorage: firebaseService
             )
         )
     }

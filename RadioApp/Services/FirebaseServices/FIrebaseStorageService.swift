@@ -8,10 +8,17 @@
 import SwiftUI
 import FirebaseStorage
 
-final class FirebaseStorageService {
-    
-    // MARK: - Singleton Instance
-    static let shared = FirebaseStorageService()
+// MARK: - FirebaseStorageServiceProtocol
+protocol IFirebaseStorageService {
+    func getUrlForImage(path: String) async throws -> URL
+    func getData(userID: String, path: String) async throws -> Data
+    func getImage(userID: String, path: String) async throws -> UIImage
+    func saveImage(data: Data, userID: String) async throws -> (path: String, name: String)
+    func deleteImage(path: String) async throws
+}
+
+// MARK: - FirebaseStorageService
+final class FirebaseStorageService: IFirebaseStorageService {
     
     // MARK: - Private Properties
     private let storage = Storage.storage().reference()
@@ -22,15 +29,12 @@ final class FirebaseStorageService {
         storage.child("images")
     }
     
-    // MARK: - Initialization
-    private init() {}
-    
     // MARK: - Private Methods
     
     /// Returns a reference to a user's folder in Firebase Storage
     /// - Parameter userID: The user's unique identifier
     /// - Returns: A StorageReference pointing to the user's folder
-    private func userReferance(userID: String) -> StorageReference {
+    private func userReference(userID: String) -> StorageReference {
         storage.child("users").child(userID)
     }
     
@@ -80,7 +84,7 @@ final class FirebaseStorageService {
         meta.contentType = "image/jpeg"
         
         let path = "\(UUID().uuidString).jpeg"
-        let returnedMetaData = try await userReferance(userID: userID).child(path).putDataAsync(data, metadata: meta)
+        let returnedMetaData = try await userReference(userID: userID).child(path).putDataAsync(data, metadata: meta)
         
         guard let returnedPath = returnedMetaData.path, let returnedName = returnedMetaData.name else {
             throw URLError(.badServerResponse)
