@@ -14,7 +14,7 @@ final class DetailViewModel: ObservableObject {
     @Published var station: StationModel
     @Published var error: Error? = nil
     
-    private let userService = DIService.resolve(forKey: .userService) ?? UserService()
+    private let userService = DIContainer.resolve(forKey: .userService) ?? UserService()
     
     var isFavorite: Bool {
         station.isFavorite

@@ -18,11 +18,11 @@ struct FetchTaskToken: Equatable {
 @MainActor
 final class PopularViewModel: ObservableObject {
     // MARK: - Stored Properties
-    private let userService = DIService.resolve(forKey: .userService) ?? UserService()
-    private let networkService = DIService.resolve(forKey: .networkService) ?? NetworkService()
+    private let userService = DIContainer.resolve(forKey: .userService) ?? UserService()
+    private let networkService = DIContainer.resolve(forKey: .networkService) ?? NetworkService()
     private let timeIntervalForUpdateCache: TimeInterval = 24 * 60
     private let cache: DiskCache<[StationModel]>
-    private let numberLimit = 5
+    private let numberLimit = 10
     
     @Published var userId: String
     @Published var fetchTaskToken: FetchTaskToken
@@ -63,7 +63,7 @@ final class PopularViewModel: ObservableObject {
             expirationInterval: timeIntervalForUpdateCache
         )
         
-        Task(priority: .userInitiated) {
+        Task(priority: .high) {
             try? await cache.loadFromDisk()
         }
     }
@@ -89,7 +89,7 @@ final class PopularViewModel: ObservableObject {
                 phase = .success(stationsFromAPI)
             }
             
-            let favoriteStations = try await userService.getFavoritesForUser(userId)
+            _ = try await userService.getFavoritesForUser(userId)
             updateFavoritesStatus()
         } catch {
             phase = .failure(error)

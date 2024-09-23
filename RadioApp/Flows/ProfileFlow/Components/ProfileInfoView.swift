@@ -17,7 +17,6 @@ struct ProfileInfoView: View {
     // MARK: - Drawing Constants
     private struct Drawing {
         static let avatarSize: CGFloat = 54
-        static let avatarLeadingPadding: CGFloat = 16
         static let textSpacing: CGFloat = 8
         static let textLeadingPadding: CGFloat = 8
         static let cornerRadius: CGFloat = 16
@@ -29,24 +28,19 @@ struct ProfileInfoView: View {
     // MARK: - Body
     var body: some View {
         HStack {
-                AsyncImage(url: profileImageURL) { image in
-                    image
-                        .resizable()
-                        .scaledToFill()
-                        .clipShape(Circle())
-                        .frame(
-                            width: Drawing.avatarSize,
-                            height: Drawing.avatarSize
-                        )
-                } placeholder: {
-                    Image(systemName: Resources.Image.photoIcon)
-                        .frame(
-                            width: Drawing.avatarSize,
-                            height: Drawing.avatarSize
-                        )
-                }
-                .padding(.leading, Drawing.avatarLeadingPadding)
-            
+            AsyncImageView(profileImageURL?.absoluteString) { image in
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                 
+                    .overlay(Circle().stroke(Color.gray, lineWidth: 1))
+                    .shadow(radius: 5)
+            }
+            .clipShape(Circle())
+            .frame(
+                width: Drawing.avatarSize,
+                height: Drawing.avatarSize
+            )
             VStack(
                 alignment: .leading,
                 spacing: Drawing.textSpacing

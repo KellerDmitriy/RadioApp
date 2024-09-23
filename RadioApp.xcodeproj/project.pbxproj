@@ -74,6 +74,8 @@
 		E1C8A2BF2C6A0F7800DF542B /* AuthDataResultModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C8A2BE2C6A0F7800DF542B /* AuthDataResultModel.swift */; };
 		E1DBFD892C735F1B00F9AA86 /* Image + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DBFD882C735F1B00F9AA86 /* Image + Extension.swift */; };
 		E1E0BDA42C9C62AD00DB8D34 /* DIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E0BDA32C9C62AD00DB8D34 /* DIContainer.swift */; };
+		E1E0BDA82CA06DB600DB8D34 /* CacheImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E0BDA72CA06DB600DB8D34 /* CacheImage.swift */; };
+		E1E0BDAB2CA06F3D00DB8D34 /* AsyncImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E0BDAA2CA06F3D00DB8D34 /* AsyncImageView.swift */; };
 		E1E497DA2C56D14F0099440D /* Resources.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E497D92C56D14F0099440D /* Resources.swift */; };
 		E1E497E62C56D5380099440D /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E497E52C56D5380099440D /* NetworkService.swift */; };
 		E1E497EB2C56D8500099440D /* DS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E497EA2C56D8500099440D /* DS.swift */; };
@@ -171,6 +173,8 @@
 		E1C8A2BE2C6A0F7800DF542B /* AuthDataResultModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthDataResultModel.swift; sourceTree = "<group>"; };
 		E1DBFD882C735F1B00F9AA86 /* Image + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image + Extension.swift"; sourceTree = "<group>"; };
 		E1E0BDA32C9C62AD00DB8D34 /* DIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DIContainer.swift; sourceTree = "<group>"; };
+		E1E0BDA72CA06DB600DB8D34 /* CacheImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheImage.swift; sourceTree = "<group>"; };
+		E1E0BDAA2CA06F3D00DB8D34 /* AsyncImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncImageView.swift; sourceTree = "<group>"; };
 		E1E497D92C56D14F0099440D /* Resources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resources.swift; sourceTree = "<group>"; };
 		E1E497E52C56D5380099440D /* NetworkService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		E1E497EA2C56D8500099440D /* DS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DS.swift; sourceTree = "<group>"; };
@@ -507,6 +511,15 @@
 			path = Subiews;
 			sourceTree = "<group>";
 		};
+		E1E0BDA92CA06F2100DB8D34 /* ImageCacheStore */ = {
+			isa = PBXGroup;
+			children = (
+				E1E0BDA72CA06DB600DB8D34 /* CacheImage.swift */,
+				E1E0BDAA2CA06F3D00DB8D34 /* AsyncImageView.swift */,
+			);
+			path = ImageCacheStore;
+			sourceTree = "<group>";
+		};
 		E1E497D82C56D0C70099440D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -648,6 +661,7 @@
 				E1F73CFB2C9023AA00DEBA72 /* CacheEntry.swift */,
 				E1F73D032C90482400DEBA72 /* CacheProtocol.swift */,
 				E1F73D052C9048DE00DEBA72 /* KeysTracker.swift */,
+				E1E0BDA92CA06F2100DB8D34 /* ImageCacheStore */,
 			);
 			path = CacheService;
 			sourceTree = "<group>";
@@ -784,6 +798,7 @@
 				268696642C57DC330075E9DC /* PopularCellView.swift in Sources */,
 				22891AC52C5B5F5F00DE33E6 /* AuthService.swift in Sources */,
 				E1F73D022C903F3C00DEBA72 /* DataFetchPhase.swift in Sources */,
+				E1E0BDA82CA06DB600DB8D34 /* CacheImage.swift in Sources */,
 				E1E497DA2C56D14F0099440D /* Resources.swift in Sources */,
 				E1F73D062C9048DE00DEBA72 /* KeysTracker.swift in Sources */,
 				2663C7802C569E54002EFD0C /* WelcomeView.swift in Sources */,
@@ -822,6 +837,7 @@
 				E1E87BCE2C6893FB0070D855 /* FIrebaseStorageService.swift in Sources */,
 				2277BB4C2C5F2D5700317DD2 /* ForgotPassTwoView.swift in Sources */,
 				E1E87BB12C640CE10070D855 /* NotificationsView.swift in Sources */,
+				E1E0BDAB2CA06F3D00DB8D34 /* AsyncImageView.swift in Sources */,
 				E1E498082C58D60F0099440D /* ProfileInfoView.swift in Sources */,
 				E14AA78E2C5FB5AD00BAC1BE /* LanguageElementView.swift in Sources */,
 				2663C7972C56A037002EFD0C /* ProfileEditView.swift in Sources */,

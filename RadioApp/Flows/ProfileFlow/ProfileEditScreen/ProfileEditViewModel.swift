@@ -17,9 +17,9 @@ final class ProfileEditViewModel: ObservableObject {
     @Published var userEmail: String = ""
     @Published var profileImage: URL? = nil
     
-    private let userService = DIService.resolve(forKey: .userService) ?? UserService()
-    private let authService: IAuthService = DIService.resolve(forKey: .authService) ?? AuthService()
-    private let firebaseStorage: IFirebaseStorageService = DIService.resolve(forKey: .storageService) ?? FirebaseStorageService()
+    private let userService = DIContainer.resolve(forKey: .userService) ?? UserService()
+    private let authService: IAuthService = DIContainer.resolve(forKey: .authService) ?? AuthService()
+    private let firebaseStorage: IFirebaseStorageService = DIContainer.resolve(forKey: .storageService) ?? FirebaseStorageService()
     
     // MARK: - Initializer
     init(){}

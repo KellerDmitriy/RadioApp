@@ -14,12 +14,14 @@ struct ToolbarName: View {
         
         HStack {
             Image(.toolbarplay)
-            Text("Hello \(userName)")
-                .foregroundStyle(.white)
-                .font(.custom(DS.Fonts.sfMedium, size: 25))
             
+            Text("Hello")
+                .foregroundStyle(.white)
+            Text(" \(userName)")
+                .foregroundStyle(DS.Colors.pinkNeon)
             Spacer()
         }
+        .font(.custom(DS.Fonts.sfMedium, size: 25))
         .padding(.leading, 10)
         .padding(.vertical, 20)
         

@@ -16,7 +16,18 @@ struct DetailsView: View {
         static let horizontalPadding: CGFloat = 20
         static let equalizerHeight: CGFloat = 350
         static let radioPlayerHeight: CGFloat = 110
-        static let volumeSliderHeight: CGFloat = 20
+        static let volumeSliderWidth: CGFloat = 300
+        static let volumeSliderHeight: CGFloat = 33
+        static let volumeSliderHorizontalOffset: CGFloat = 120
+        static let volumeSliderVerticalOffset: CGFloat = -70
+        
+        static let textOffsetInitial: CGFloat = -50
+        static let textOffsetFinal: CGFloat = 50
+        static let textFrameWidth: CGFloat = 200
+        static let textFrameHeight: CGFloat = 20
+        static let animationDuration: Double = 8
+        
+        static let cornerRadius: CGFloat = 8.0
         
         static let fontSizeLarge: CGFloat = 30
         static let fontSizeSmall: CGFloat = 20
@@ -26,14 +37,10 @@ struct DetailsView: View {
     @StateObject var viewModel: DetailViewModel
     
     @EnvironmentObject var playerService: PlayerService
-    @State private var textOffset: CGFloat = -50
-    
+    @State private var textOffset: CGFloat = Drawing.textOffsetInitial
     
     // MARK: - Initializer
-    init(_
-         userId: String,
-         station: StationModel
-    ) {
+    init(_ userId: String, station: StationModel) {
         self._viewModel = StateObject(
             wrappedValue: DetailViewModel(
                 userId: userId,
@@ -49,18 +56,17 @@ struct DetailsView: View {
             Spacer()
             
             // MARK: - Favicon
-            AsyncImage(url: URL(string: playerService.currentStation?.favicon ?? "" )) { image in
+            AsyncImageView(playerService.currentStation?.favicon,
+                           configureImage: { image in
                 image
                     .resizable()
-                    .scaledToFit()
-                    .frame(maxWidth: Drawing.faviconSize, maxHeight: Drawing.faviconSize)
-            } placeholder: {
-                Color.pink
-            }
-            .clipShape(Rectangle())
+                    .aspectRatio(contentMode: .fill)
+                    .clipShape(Rectangle())
+            })
+            .cornerRadius(Drawing.cornerRadius)
             .frame(
-                maxWidth: Drawing.faviconFrameSize.width,
-                maxHeight: Drawing.faviconFrameSize.height
+                width: Drawing.faviconFrameSize.width,
+                height: Drawing.faviconFrameSize.height
             )
             
             // MARK: - Station Information
@@ -76,30 +82,28 @@ struct DetailsView: View {
                 .lineLimit(1)
                 .offset(x: textOffset)
                 .onAppear {
-                    withAnimation(.easeInOut(duration: 8)
+                    withAnimation(.easeInOut(duration: Drawing.animationDuration)
                         .repeatForever()) {
-                            textOffset = 50
+                            textOffset = Drawing.textOffsetFinal
                         }
                 }
             }
-            .frame(width: 200, height: 20)
+            .frame(width: Drawing.textFrameWidth, height: Drawing.textFrameHeight)
             .padding(.top, Drawing.bottomPadding)
-            
             
             // MARK: - Equalizer
             EqualizerView(playerService.amplitude)
                 .padding(.top, Drawing.bottomPadding)
                 .frame(height: Drawing.equalizerHeight)
             
-            // MARK: - Vote
+            // MARK: - Vote and Radio Player
             VStack {
                 ZStack {
                     FavoriteButton(
                         isFavorite: viewModel.isFavorite,
-                        action: { viewModel.checkFavorite()
-                        }
+                        action: { viewModel.checkFavorite() }
                     )
-                    .offset(x: 120, y: -70)
+                    .offset(x: Drawing.volumeSliderHorizontalOffset, y: Drawing.volumeSliderVerticalOffset)
                     
                     // MARK: - Radio Player
                     RadioPlayerView(playerService: playerService)
@@ -111,14 +115,12 @@ struct DetailsView: View {
                 VolumeSliderView(
                     volume: $playerService.volume,
                     horizontal: true
-                    )
+                )
                 .environmentObject(playerService)
-                    .frame(width: 300, height: 33)
+                .frame(width: Drawing.volumeSliderWidth, height: Drawing.volumeSliderHeight)
             }
             .padding(.bottom, Drawing.bottomPadding)
-            
         }
-        
         // MARK: - View Configuration
         .background(DS.Colors.darkBlue)
         .navigationBarTitleDisplayMode(.inline)

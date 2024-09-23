@@ -114,19 +114,21 @@ final class PlayerService: ObservableObject {
     /// Plays the next station in the list
     func nextStationStream() {
         guard !stations.isEmpty else { return }
-        if indexRadio != nil {
-            indexRadio = ((indexRadio ?? 0) + 1) % stations.count
-            playAudio()
-        }
+        
+        indexRadio = ((indexRadio ?? -1) + 1) % stations.count
+        playAudio()
     }
     
     /// Plays the previous station in the list
     func backTrackAudioStream() {
         guard !stations.isEmpty else { return }
-        if indexRadio != nil {
-            indexRadio = ((indexRadio ?? 0) - 1) % stations.count
-            playAudio()
+
+        indexRadio = (indexRadio ?? 0) - 1
+        if indexRadio! < 0 {
+            indexRadio = stations.count - 1 
         }
+        
+        playAudio()
     }
     
     /// Plays the audio stream from the current station

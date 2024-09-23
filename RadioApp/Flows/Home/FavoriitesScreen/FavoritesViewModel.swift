@@ -11,7 +11,7 @@ import Foundation
 final class FavoritesViewModel: ObservableObject {
     // MARK: - Stored Properties
     let userId: String
-    private let userService = DIService.resolve(forKey: .userService) ?? UserService()
+    private let userService = DIContainer.resolve(forKey: .userService) ?? UserService()
     
     @Published var favoritesStations: [StationModel] = []
     @Published var selectedIndex: Int?

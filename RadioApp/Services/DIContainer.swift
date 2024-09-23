@@ -24,8 +24,8 @@ enum DIKey {
 }
 
 // DIService with lifecycle management
-final class DIService {
-    static let shared = DIService()
+final class DIContainer {
+    static let shared = DIContainer()
     
     // Dictionary to store dependency factories
     private var factories = [DIKey: (DILifecycle, () -> Any)]()

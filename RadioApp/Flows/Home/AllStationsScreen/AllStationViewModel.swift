@@ -12,8 +12,8 @@ final class AllStationViewModel: ObservableObject {
     
     @Published var currentStation: StationModel?
     
-    private let networkService = DIService.resolve(forKey: .networkService) ?? NetworkService()
-    private let userService = DIService.resolve(forKey: .userService) ?? UserService()
+    private let networkService = DIContainer.resolve(forKey: .networkService) ?? NetworkService()
+    private let userService = DIContainer.resolve(forKey: .userService) ?? UserService()
     
     private let numberLimit = 20
     

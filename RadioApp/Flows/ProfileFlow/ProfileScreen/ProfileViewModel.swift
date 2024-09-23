@@ -32,8 +32,8 @@ final class ProfileViewModel: ObservableObject {
             return url
         }
     
-    private let authService: IAuthService = DIService.resolve(forKey: .authService) ?? AuthService()
-    private let notificationsService: INotificationsService = DIService.resolve(forKey: .notificationsService) ?? NotificationsService()
+    private let authService: IAuthService = DIContainer.resolve(forKey: .authService) ?? AuthService()
+    private let notificationsService: INotificationsService = DIContainer.resolve(forKey: .notificationsService) ?? NotificationsService()
     
     // MARK: - Initializer
     init(

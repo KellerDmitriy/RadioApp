@@ -53,14 +53,16 @@ struct HomeContentView: View {
                                 .foregroundColor(.white)
                         }
                     }
+                    .padding(.horizontal, 16)
                 }
-                .padding(.trailing, 12)
+
                 .padding(.top, 120)
                 
                 Spacer()
                 CustomTabBarView(selectedTab: $selectedTab)
                     .frame(height: 80)
             }
+            
             RadioPlayerView(playerService: playerService)
                 .padding(.bottom, 66)
             

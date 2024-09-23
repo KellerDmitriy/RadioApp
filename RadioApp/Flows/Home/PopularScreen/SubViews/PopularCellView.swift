@@ -49,7 +49,7 @@ struct PopularCellView: View {
                         isFavorite: isFavorite,
                         action: { favoriteAction() }
                     )
-                    .offset(x: 16)
+                    .offset(x: 10)
                 }
                 .frame(height: 25)
                 .padding(.horizontal, 10)

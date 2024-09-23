@@ -32,9 +32,9 @@ final class HomeViewModel: ObservableObject {
         return URL(string: urlString)!
     }
     
-    private let networkService = DIService.resolve(forKey: .networkService) ?? NetworkService()
-    private let userService = DIService.resolve(forKey: .userService) ?? UserService()
-    private let authService = DIService.resolve(forKey: .authService) ?? AuthService()
+    private let networkService = DIContainer.resolve(forKey: .networkService) ?? NetworkService()
+    private let userService = DIContainer.resolve(forKey: .userService) ?? UserService()
+    private let authService = DIContainer.resolve(forKey: .authService) ?? AuthService()
     
 
     
