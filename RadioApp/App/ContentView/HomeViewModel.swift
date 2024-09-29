@@ -9,6 +9,10 @@ import Foundation
 
 @MainActor
 final class HomeViewModel: ObservableObject {
+    
+    private let userService: IUserService
+    private let authService: IAuthService
+    
     // MARK: - Stored Properties
     @Published private(set) var currentUser: DBUser? {
           didSet {
@@ -16,36 +20,40 @@ final class HomeViewModel: ObservableObject {
           }
       }
     @Published var error: Error?
-    @Published var userId = ""
-    
-    var userName: String {
-        currentUser?.name ?? ""
-    }
     
     var user: DBUser {
         guard let currentUser else { return DBUser.getTestDBUser() }
         return currentUser
     }
     
-    var profileImageURL: URL {
-        guard let urlString = currentUser?.profileImagePathUrl else { return URL(fileURLWithPath: "") }
-        return URL(string: urlString)!
+    var userId: String {
+        user.userID
     }
     
-    private let networkService = DIContainer.resolve(forKey: .networkService) ?? NetworkService()
-    private let userService = DIContainer.resolve(forKey: .userService) ?? UserService()
-    private let authService = DIContainer.resolve(forKey: .authService) ?? AuthService()
+    var userName: String {
+        user.name
+    }
     
-
+    var profileImageURL: URL? {
+        guard let urlString = user.profileImagePathUrl else { return URL(fileURLWithPath: "") }
+        return URL(string: urlString)
+    }
     
     // MARK: - Initializer
-    init() {}
+    init(
+        userService: IUserService = DIContainer.resolve(forKey: .userService) ?? UserService(),
+        authServise: IAuthService = DIContainer.resolve(forKey: .authService) ?? AuthService()
+    ) {
+        self.userService = userService
+        self.authService = authServise
+    }
     
     // MARK: - Methods
     func loadCurrentUser() async throws {
         do {
-            self.userId = try authService.getAuthenticatedUser().uid
-            self.currentUser = try await userService.getUser(userId: userId)
+            self.currentUser = try await userService.getUser(
+                userId: authService.getAuthenticatedUser().uid
+            )
         } catch {
             self.error = error
         }

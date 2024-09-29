@@ -46,15 +46,17 @@ struct ToolbarProfile: View {
         Button(action: {
             toolbarRoute()
         }) {
-            AsyncImageView(profileImageURL?.absoluteString, configureImage: { image in
-                image
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 60, height: 70)
-                    .mask {
-                        UserIcon()
-                            .frame(width: 60, height: 70)
-                    }
+            AsyncImageView(
+                profileImageURL?.absoluteString,
+                configureImage: { image in
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 70, height: 60)
+                        .mask {
+                            UserIcon()
+                                .frame(width: 70, height: 60)
+                        }
                 }
             )
         }

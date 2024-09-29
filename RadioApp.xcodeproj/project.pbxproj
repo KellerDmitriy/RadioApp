@@ -76,6 +76,8 @@
 		E1E0BDA42C9C62AD00DB8D34 /* DIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E0BDA32C9C62AD00DB8D34 /* DIContainer.swift */; };
 		E1E0BDA82CA06DB600DB8D34 /* CacheImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E0BDA72CA06DB600DB8D34 /* CacheImage.swift */; };
 		E1E0BDAB2CA06F3D00DB8D34 /* AsyncImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E0BDAA2CA06F3D00DB8D34 /* AsyncImageView.swift */; };
+		E1E0BDAD2CA299BE00DB8D34 /* ShimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E0BDAC2CA299BE00DB8D34 /* ShimerView.swift */; };
+		E1E0BDAF2CA29B6000DB8D34 /* ShimerPopularView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E0BDAE2CA29B6000DB8D34 /* ShimerPopularView.swift */; };
 		E1E497DA2C56D14F0099440D /* Resources.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E497D92C56D14F0099440D /* Resources.swift */; };
 		E1E497E62C56D5380099440D /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E497E52C56D5380099440D /* NetworkService.swift */; };
 		E1E497EB2C56D8500099440D /* DS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E497EA2C56D8500099440D /* DS.swift */; };
@@ -175,6 +177,8 @@
 		E1E0BDA32C9C62AD00DB8D34 /* DIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DIContainer.swift; sourceTree = "<group>"; };
 		E1E0BDA72CA06DB600DB8D34 /* CacheImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheImage.swift; sourceTree = "<group>"; };
 		E1E0BDAA2CA06F3D00DB8D34 /* AsyncImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncImageView.swift; sourceTree = "<group>"; };
+		E1E0BDAC2CA299BE00DB8D34 /* ShimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShimerView.swift; sourceTree = "<group>"; };
+		E1E0BDAE2CA29B6000DB8D34 /* ShimerPopularView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShimerPopularView.swift; sourceTree = "<group>"; };
 		E1E497D92C56D14F0099440D /* Resources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resources.swift; sourceTree = "<group>"; };
 		E1E497E52C56D5380099440D /* NetworkService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		E1E497EA2C56D8500099440D /* DS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DS.swift; sourceTree = "<group>"; };
@@ -286,10 +290,11 @@
 			children = (
 				2663C78B2C569EB6002EFD0C /* App */,
 				2663C7912C569F89002EFD0C /* Models */,
-				E1E497E32C56D4DF0099440D /* Services */,
 				2663C78C2C569ED5002EFD0C /* Flows */,
-				2663C78D2C569EE8002EFD0C /* Components */,
+				E1E497E32C56D4DF0099440D /* Services */,
 				E1E497E82C56D7500099440D /* Extensions */,
+				E1E497DB2C56D1B40099440D /* DesignSystem */,
+				2663C78D2C569EE8002EFD0C /* Components */,
 				E1E497D82C56D0C70099440D /* Resources */,
 				2663C7832C569E55002EFD0C /* Preview Content */,
 			);
@@ -457,6 +462,7 @@
 			isa = PBXGroup;
 			children = (
 				268696632C57DC330075E9DC /* PopularCellView.swift */,
+				E1E0BDB02CA2BEF400DB8D34 /* ShimerViews */,
 			);
 			path = SubViews;
 			sourceTree = "<group>";
@@ -520,10 +526,18 @@
 			path = ImageCacheStore;
 			sourceTree = "<group>";
 		};
+		E1E0BDB02CA2BEF400DB8D34 /* ShimerViews */ = {
+			isa = PBXGroup;
+			children = (
+				E1E0BDAC2CA299BE00DB8D34 /* ShimerView.swift */,
+				E1E0BDAE2CA29B6000DB8D34 /* ShimerPopularView.swift */,
+			);
+			path = ShimerViews;
+			sourceTree = "<group>";
+		};
 		E1E497D82C56D0C70099440D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				E1E497DB2C56D1B40099440D /* DesignSystem */,
 				E1E497FF2C56E6CF0099440D /* Info.plist */,
 				E1C407132C761F00007CBE5C /* GoogleService-Info.plist */,
 				2663C7812C569E55002EFD0C /* Assets.xcassets */,
@@ -785,6 +799,7 @@
 				E1F73CFC2C9023AA00DEBA72 /* CacheEntry.swift in Sources */,
 				E1A7C27E2C80F488004F3EF9 /* HomeContentView.swift in Sources */,
 				E1ACD3122C79B4F200A15703 /* PopularViewModel.swift in Sources */,
+				E1E0BDAF2CA29B6000DB8D34 /* ShimerPopularView.swift in Sources */,
 				E1DBFD892C735F1B00F9AA86 /* Image + Extension.swift in Sources */,
 				26A7379B2C5A4FCB0002F1E9 /* ForwardButtonView.swift in Sources */,
 				E18529DF2C5D11AA00BBE649 /* ProfileHeaderView.swift in Sources */,
@@ -836,6 +851,7 @@
 				E1E498012C56EC900099440D /* Font + Ext.swift in Sources */,
 				E1E87BCE2C6893FB0070D855 /* FIrebaseStorageService.swift in Sources */,
 				2277BB4C2C5F2D5700317DD2 /* ForgotPassTwoView.swift in Sources */,
+				E1E0BDAD2CA299BE00DB8D34 /* ShimerView.swift in Sources */,
 				E1E87BB12C640CE10070D855 /* NotificationsView.swift in Sources */,
 				E1E0BDAB2CA06F3D00DB8D34 /* AsyncImageView.swift in Sources */,
 				E1E498082C58D60F0099440D /* ProfileInfoView.swift in Sources */,

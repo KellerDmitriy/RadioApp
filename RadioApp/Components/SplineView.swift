@@ -35,23 +35,21 @@ struct SplineViewShape: Shape {
     }
 }
 
-struct PointOneView: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        let width = rect.size.width
-        let height = rect.size.height
-        path.addArc(center: CGPoint(x: 0.00308*width, y: 0.33542*height), radius: 5, startAngle: Angle(degrees: 0), endAngle: Angle(degrees: 360), clockwise: true)
-        return path
-    }
-}
 
-struct PointTwoView: Shape {
+struct PointView: Shape {
+    let xFactor: CGFloat
+    let yFactor: CGFloat
+    let radius: CGFloat = 5
+    
     func path(in rect: CGRect) -> Path {
-        var path = Path()
         let width = rect.size.width
         let height = rect.size.height
-        path.addArc(center: CGPoint(x: 0.99921*width, y: 0.30477*height), radius: 5, startAngle: Angle(degrees: 0), endAngle: Angle(degrees: 360), clockwise: true)
-        return path
+        let center = CGPoint(x: xFactor * width, y: yFactor * height)
+        
+        return Path { path in
+            path.addArc(center: center, radius: radius,
+                        startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
+        }
     }
 }
 
@@ -78,7 +76,7 @@ struct SplineView: View {
     //MARK: - PROPERTIES
     @State private var pinColor = PinColor.ColorArr.randomElement()
     @State private var startAnimation: Bool = false
-    var isActive: Bool
+    var isActive = false
     //MARK: - BODY
     var body: some View {
         ZStack{
@@ -92,20 +90,22 @@ struct SplineView: View {
                     .stroke(style: StrokeStyle(lineWidth: 2))
                     .fill(DS.Colors.turquoise)
             }
-            PointOneView()
+            // Point One
+            PointView(xFactor: 0.00308, yFactor: 0.33542)
                 .fill(pinColor?.last ?? .red)
             if isActive {
-                PointTwoView()
+                // Point Two with animation
+                PointView(xFactor: 0.99921, yFactor: 0.30477)
                     .fill(pinColor?.first ?? .blue)
                     .opacity( startAnimation ? 1 : 0)
             } else {
-                PointTwoView()
+                PointView(xFactor: 0.99921, yFactor: 0.30477)
                     .fill(pinColor?.last ?? .red)
             }
         }
         .onAppear{
             withAnimation(.easeInOut(duration: 1).delay(0).repeatForever()) {
-                if isActive{
+                if isActive {
                    startAnimation = true
                 } else {
                    startAnimation = false

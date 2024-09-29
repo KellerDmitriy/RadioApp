@@ -15,20 +15,21 @@ struct PopularView: View {
     @AppStorage("selectedLanguage") private var language = LocalizationService.shared.language
     
     @State private var isDetailViewActive = false
+    @State private var isLoading = true // Состояние загрузки данных
     
     // MARK: - Drawing Constants
     private struct Drawing {
         static let titleFontSize: CGFloat = 30
         static let pickerMaxWidth: CGFloat = 200
         static let pickerOffsetY: CGFloat = 4
-        static let gridItemMinimumWidth: CGFloat = 139
+        static let gridItemMinimumWidth: CGFloat = 129
         static let gridSpacing: CGFloat = 16
         static let verticalPadding: CGFloat = 10
         static let backgroundColor: Color = DS.Colors.darkBlue
     }
     
     // MARK: - Initializer
-    init(userId: String) {
+    init(userId: String? = nil ) {
         self._viewModel = StateObject(
             wrappedValue: PopularViewModel(userId: userId))
     }
@@ -36,9 +37,11 @@ struct PopularView: View {
     // MARK: - Body
     var body: some View {
         VStack {
+            if isLoading {
+                ShimerPopularView()
+            } else {
             // MARK: - Header
             HStack() {
-                // MARK: - Header
                 Text(Resources.Text.popular.localized(language))
                     .font(
                         .custom(DS.Fonts.sfRegular,
@@ -62,31 +65,36 @@ struct PopularView: View {
                 .offset(y: Drawing.pickerOffsetY)
             }
             .padding(.vertical, Drawing.verticalPadding)
-            
+
             // MARK: - Stations Grid
-            ScrollView(.vertical, showsIndicators: false) {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: Drawing.gridItemMinimumWidth))], spacing: Drawing.gridSpacing) {
-                    ForEach(viewModel.getStations().indices, id: \.self) { index in
-                        let station = viewModel.getCurrentStation(index)
-                        
-                        // MARK: - Station Cell
-                        ZStack {
-                            PopularCellView(
-                                isSelect: isSelectCell(index),
-                                isFavorite: viewModel.isFavoriteStation(index),
-                                isPlayMusic: playerService.isPlayMusic,
-                                station: station,
-                                favoriteAction: { viewModel.toggleFavorite(index) }
-                            )
-                        }
-                        .onTapGesture {
-                            viewModel.selectStation(at: index)
-                            playerService.indexRadio = viewModel.selectedIndex
-                            playerService.playAudio()
-                        }
-                        .onLongPressGesture {
-                            if station.id == playerService.currentStation?.id {
-                                isDetailViewActive = true
+                ScrollView(.vertical, showsIndicators: false) {
+                    LazyVGrid(columns: [
+                        GridItem(.adaptive(minimum: Drawing.gridItemMinimumWidth))
+                    ],
+                    spacing: Drawing.gridSpacing)
+                    {
+                        ForEach(viewModel.getStations().indices, id: \.self) { index in
+                            let station = viewModel.getCurrentStation(index)
+
+                            // MARK: - Station Cell
+                            ZStack {
+                                PopularCellView(
+                                    isSelect: isSelectCell(index),
+                                    isFavorite: viewModel.isFavoriteStation(index),
+                                    isPlayMusic: playerService.isPlayMusic,
+                                    station: station,
+                                    favoriteAction: { viewModel.toggleFavorite(index) }
+                                )
+                            }
+                            .onTapGesture {
+                                viewModel.selectStation(at: index)
+                                playerService.indexRadio = viewModel.selectedIndex
+                                playerService.playAudio()
+                            }
+                            .onLongPressGesture {
+                                if station.id == playerService.currentStation?.id {
+                                    isDetailViewActive = true
+                                }
                             }
                         }
                     }
@@ -96,13 +104,12 @@ struct PopularView: View {
         .background(Drawing.backgroundColor)
         .task {
             // MARK: - Fetch Stations Task
-            Task {
-                await viewModel.fetchTopStations()
-                playerService.addStationForPlayer(viewModel.getStations())
-                if let indexRadio = playerService.indexRadio {
-                    viewModel.selectedIndex = indexRadio
-                }
+            await viewModel.fetchTopStations()
+            playerService.addStationForPlayer(viewModel.getStations())
+            if let indexRadio = playerService.indexRadio {
+                viewModel.selectedIndex = indexRadio
             }
+            isLoading = false
         }
         .refreshable {
             await refreshTask()
@@ -116,12 +123,13 @@ struct PopularView: View {
                                         action: viewModel.cancelErrorAlert)
             )
         }
-        
+        .background(Color.black.opacity(0.5))
+
         // MARK: - Detail View Navigation
-        if isDetailViewActive {
+        if isDetailViewActive, let userId = viewModel.userId {
             NavigationLink(
                 destination: DetailsView(
-                    viewModel.userId,
+                    userId,
                     station: viewModel.getCurrentStation(viewModel.currentIndex)
                 )
                 .environmentObject(playerService),

@@ -29,12 +29,11 @@ struct HomeContentView: View {
             VStack {
                 HStack {
                     // MARK: - Volume Slider
-                    VolumeSliderView(
-                        volume: $playerService.volume
-                    )
-                    .environmentObject(playerService)
-                    .frame(width: 30, height: 300)
-                    .padding(.trailing, 16)
+                    VolumeSliderView(volume: $playerService.volume)
+                        .environmentObject(playerService)
+                        .frame(width: 30, height: 300)
+                        .padding(.trailing, 16)
+                    
                     VStack {
                         if !viewModel.userId.isEmpty {
                             switch selectedTab {
@@ -49,13 +48,13 @@ struct HomeContentView: View {
                                     .environmentObject(playerService)
                             }
                         } else {
-                            Text("Loading...")
-                                .foregroundColor(.white)
+                            // MARK: - Shimmer for Loading State
+                            ShimerPopularView()
                         }
                     }
-                    .padding(.horizontal, 16)
+                    .padding(.trailing, 18)
                 }
-
+                .padding(.horizontal, 22)
                 .padding(.top, 120)
                 
                 Spacer()
@@ -90,10 +89,8 @@ struct HomeContentView: View {
                 )
             }
         }
-        .onAppear {
-            Task {
-                try? await viewModel.loadCurrentUser()
-            }
+        .task {
+            try? await viewModel.loadCurrentUser()
         }
         .background(DS.Colors.darkBlue)
         .opacity(0.8)
@@ -108,5 +105,7 @@ struct HomeContentView: View {
 }
 // MARK: - Preview
 #Preview {
-    HomeContentView()
+    NavigationView {
+        HomeContentView()
+    }
 }

@@ -36,8 +36,9 @@ struct AsyncImageView<C: View>: View {
                 configureImage(image)
                 
             case .none:
-                Image(systemName: "photo")
+                Image(systemName: "square.fill")
                     .resizable()
+                    .shimmer()
             }
         }
         .task {

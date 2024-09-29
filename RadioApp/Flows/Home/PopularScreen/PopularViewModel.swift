@@ -18,13 +18,15 @@ struct FetchTaskToken: Equatable {
 @MainActor
 final class PopularViewModel: ObservableObject {
     // MARK: - Stored Properties
-    private let userService = DIContainer.resolve(forKey: .userService) ?? UserService()
-    private let networkService = DIContainer.resolve(forKey: .networkService) ?? NetworkService()
+    private let userService: IUserService
+    private let networkService: INetworkService
+    
     private let timeIntervalForUpdateCache: TimeInterval = 24 * 60
     private let cache: DiskCache<[StationModel]>
     private let numberLimit = 10
     
-    @Published var userId: String
+    let userId: String?
+    
     @Published var fetchTaskToken: FetchTaskToken
     @Published var phase: DataFetchPhase<[StationModel]> = .empty
     @Published var selectedOrder: DisplayOrderType = .alphabetical
@@ -54,8 +56,12 @@ final class PopularViewModel: ObservableObject {
     
     // MARK: - Initializer
     init(
-        userId: String
+        userService: IUserService = DIContainer.resolve(forKey: .userService) ?? UserService(),
+        networkService: INetworkService = DIContainer.resolve(forKey: .networkService) ?? NetworkService(),
+        userId: String? = nil
     ) {
+        self.userService = userService
+        self.networkService = networkService
         self.userId = userId
         self.fetchTaskToken = FetchTaskToken(stations: "RadioStations", token: Date())
         self.cache = DiskCache<[StationModel]>(
@@ -88,7 +94,7 @@ final class PopularViewModel: ObservableObject {
                 print("CACHE MISSED/EXPIRED")
                 phase = .success(stationsFromAPI)
             }
-            
+            guard let userId else { return }
             _ = try await userService.getFavoritesForUser(userId)
             updateFavoritesStatus()
         } catch {
@@ -115,7 +121,7 @@ final class PopularViewModel: ObservableObject {
             do {
                 var updatedStation = getCurrentStation(index)
                 updatedStation.isFavorite.toggle()
-            
+                guard let userId else { return }
                 try await userService.saveFavoriteStatus(
                     for: userId,
                     station: updatedStation,
@@ -136,6 +142,7 @@ final class PopularViewModel: ObservableObject {
     // MARK: - Private Methods
     private func updateFavoritesStatus() {
         guard var currentStations = phase.value else { return }
+        guard let userId else { return }
         Task {
             do {
                 let favoriteStations = try await userService.getFavoritesForUser(userId)

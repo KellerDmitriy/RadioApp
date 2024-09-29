@@ -17,19 +17,17 @@ struct PopularCellView: View {
     
     //MARK: - BODY
     var body: some View {
-        ZStack{
-            Rectangle()
-                .scaledToFit()
-                .foregroundStyle(isSelect ? DS.Colors.pinkNeon : Color.clear)
-                .clipShape(.rect(cornerRadius: 20))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(
-                            isSelect ? DS.Colors.pinkNeon : DS.Colors.frame, lineWidth: 2
-                        )
+        ZStack {
+            RoundedRectangle(cornerRadius: 20)
+                .fill (
+                    isSelect
+                    ? DS.Colors.pinkNeon
+                    : DS.Colors.frame
                 )
-            VStack{
-                HStack{
+                
+            VStack {
+                HStack {
+                    Spacer()
                     if isSelect {
                         Image(systemName: !isPlayMusic
                               ? "play.fill"
@@ -41,47 +39,44 @@ struct PopularCellView: View {
                         
                     }
                     Spacer()
-                    Text("votes \(self.station.votes % 1000)")
-                        .font(.custom(DS.Fonts.sfRegular, size: 14))
+                    Text("votes: \(self.station.votes % 1000)")
+                        .font(.custom(DS.Fonts.sfRegular, size: 10))
                         .foregroundStyle(isSelect ? .white : DS.Colors.frame)
-                    
+                    Spacer()
                     FavoriteButton(
                         isFavorite: isFavorite,
                         action: { favoriteAction() }
                     )
-                    .offset(x: 10)
+                    Spacer()
                 }
                 .frame(height: 25)
-                .padding(.horizontal, 10)
                 .padding(.top, 10)
-                Spacer()
+               
+                
+                Text(getString(tags: self.station.tags)?.uppercased() ?? self.station.countryCode)
+                    .foregroundStyle(isSelect 
+                                     ? .white
+                                     : DS.Colors.frame
+                    )
+                    .font(
+                        .custom(DS.Fonts.sfBold,
+                                  size: getString(tags: self.station.tags) != nil 
+                                ? 20
+                                : 30)
+                    )
+                
                 Text(self.station.name)
                     .foregroundStyle(isSelect ? .white : DS.Colors.frame)
                     .font(.custom(DS.Fonts.sfRegular, size: 15))
-                if isSelect {
-                    SplineView(isActive: true)
-                        .frame(height: 20)
-                        .padding(.horizontal)
-                } else {
-                    SplineView(isActive: false)
-                        .frame(height: 20)
-                        .padding(.horizontal)
-                }
+                
+                SplineView(isActive: isSelect)
+                    .frame(height: 20)
+                    .padding(.horizontal)
             }
-            .frame(maxWidth: 139, maxHeight: 139)
             .padding(.bottom, 10)
         }
         .animation(.easeInOut, value: isSelect)
-        .overlay {
-            Text(getString(tags: self.station.tags)?.uppercased() ?? self.station.countryCode)
-                .lineLimit(2)
-                .truncationMode(.tail)
-                .fixedSize(horizontal: false, vertical: true)
-                .multilineTextAlignment(.center)
-                .foregroundStyle(isSelect ? .white : DS.Colors.frame)
-                .font(.custom(DS.Fonts.sfBold, size: getString(tags: self.station.tags) != nil ? 20 : 30))
-                .offset(CGSize(width: 0.0, height: -15.0))
-        }
+        
     }
     
     // MARK: - Functions
