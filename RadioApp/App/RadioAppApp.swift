@@ -25,7 +25,6 @@ struct RadioAppApp: App {
         DIContainer.register({ FirebaseStorageService() }, forKey: .storageService, lifecycle: .singleton)
         DIContainer.register({ NotificationsService() }, forKey: .notificationsService, lifecycle: .transient)
         DIContainer.register({ NetworkService() }, forKey: .networkService, lifecycle: .singleton)
-        
     }
     
     //MARK: - Body

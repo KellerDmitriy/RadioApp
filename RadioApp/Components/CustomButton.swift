@@ -53,5 +53,5 @@ struct CustomButton: View {
 
 // MARK: - Preview
 #Preview {
-    CustomButton(action: {}, title: "Sign Out", buttonType: .onboarding)
+    CustomButton(action: {}, title: "Sign Out", buttonType: .profile)
 }
